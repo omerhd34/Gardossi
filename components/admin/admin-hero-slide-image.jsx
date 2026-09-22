@@ -3,20 +3,23 @@
 import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { saveContentBlock } from "@/components/admin/content-block-save";
 import {
+ getHomeHeroDeviceImageHint,
  getHomeHeroSlideImageHint,
- HOME_HERO_SLIDE_IMAGE,
+ HOME_HERO_DEVICE_IMAGES,
 } from "@/lib/admin/image-specs";
 import { validateImageUploadFile } from "@/lib/admin/image-upload";
 import {
- mergeHeroSlideImage,
+ getHeroSlideDeviceDefaultImage,
+ getHeroSlideDeviceImage,
+ mergeHeroSlideDeviceImage,
  normalizeHomeHeroContent,
 } from "@/lib/content/home-hero-slides";
 import { toast } from "sonner";
 
 export function AdminHeroSlideImage({
  slideSlug,
- heroImage = "",
- defaultImage,
+ device = "desktop",
+ slide,
  uploadFolder,
  contentKey,
  getContentTr,
@@ -25,13 +28,17 @@ export function AdminHeroSlideImage({
  onFormSync,
  uploading = false,
  onUploadingChange,
- label = "Slayt görseli",
 }) {
+ const spec = HOME_HERO_DEVICE_IMAGES[device] ?? HOME_HERO_DEVICE_IMAGES.desktop;
+ const heroImage = getHeroSlideDeviceImage(slide, device);
+ const defaultImage = getHeroSlideDeviceDefaultImage(slideSlug, device);
+ const label = `${spec.label} görseli`;
+
  function updateSlideImage(content, url) {
   return {
    ...content,
-   slides: normalizeHomeHeroContent(content).slides.map((slide) =>
-    slide.slug === slideSlug ? mergeHeroSlideImage(slide, url) : slide
+   slides: normalizeHomeHeroContent(content).slides.map((item) =>
+    item.slug === slideSlug ? mergeHeroSlideDeviceImage(item, device, url) : item
    ),
   };
  }
@@ -68,7 +75,7 @@ export function AdminHeroSlideImage({
   try {
    const body = new FormData();
    body.append("file", file);
-   body.append("folder", uploadFolder);
+   body.append("folder", `${uploadFolder}/${device}`);
 
    const response = await fetch("/api/admin/upload", {
     method: "POST",
@@ -79,7 +86,7 @@ export function AdminHeroSlideImage({
    if (!data.url) throw new Error("Yüklenen görsel adresi alınamadı");
 
    await persistHeroImage(data.url);
-   toast.success("Slayt görseli kaydedildi");
+   toast.success(`${spec.label} görseli kaydedildi`);
   } catch (error) {
    toast.error(error.message || "Görsel kaydedilemedi");
   } finally {
@@ -91,7 +98,7 @@ export function AdminHeroSlideImage({
   onUploadingChange(true);
   try {
    await persistHeroImage("");
-   toast.success("Slayt görseli kaldırıldı");
+   toast.success(`${spec.label} görseli kaldırıldı`);
   } catch (error) {
    toast.error(error.message || "Görsel kaldırılamadı");
   } finally {
@@ -109,9 +116,8 @@ export function AdminHeroSlideImage({
    }}
    onUpload={uploadHeroImage}
    uploading={uploading}
-   hint=""
-   previewAspectClass={HOME_HERO_SLIDE_IMAGE.previewAspectClass}
-   previewHeightClass="h-48"
+   hint={getHomeHeroDeviceImageHint(device)}
+   previewAspectClass={spec.previewAspectClass}
    fullWidth
   />
  );

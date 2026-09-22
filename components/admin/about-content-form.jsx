@@ -5,7 +5,7 @@ import { MdAdd, MdDeleteOutline, MdSave } from "react-icons/md";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import { handleContentSave } from "@/components/admin/content-block-save";
 import { normalizeAboutHeroImages } from "@/lib/content/about-hero-images";
-import { PAGE_HERO_DEFAULT_IMAGE } from "@/lib/content/page-hero-images";
+import { keepPageHeroImages } from "@/lib/content/page-hero-images";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ function updateParagraphs(content, index, value) {
 }
 
 function stripLockedFields(content) {
- const { heroEyebrow, pageTitle, heroImages, ...editable } = content;
+ const { heroEyebrow, pageTitle, ...editable } = keepPageHeroImages(content);
  return editable;
 }
 
@@ -37,8 +37,6 @@ export function AboutContentForm({ initial }) {
  const [form, setForm] = useState(() => normalizeInitialForm(initial));
  const [loading, setLoading] = useState(false);
  const [uploadingHero, setUploadingHero] = useState(false);
-
- const heroImage = form.contentTr.heroImage ?? "";
 
  function updateLocale(locale, updater) {
   setForm((current) => ({
@@ -98,8 +96,8 @@ export function AboutContentForm({ initial }) {
     </CardHeader>
     <CardContent className="space-y-6">
      <AdminPageHeroImages
-      heroImage={heroImage}
-      defaultImage={PAGE_HERO_DEFAULT_IMAGE.about}
+      content={form.contentTr}
+      defaultPage="about"
       uploadFolder={ABOUT_HERO_UPLOAD_FOLDER}
       contentKey="about"
       getContentTr={() => form.contentTr}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MdSave } from "react-icons/md";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import { handleContentSave } from "@/components/admin/content-block-save";
-import { normalizePageHeroImages, PAGE_HERO_DEFAULT_IMAGE } from "@/lib/content/page-hero-images";
+import { normalizePageHeroImages, keepPageHeroImages } from "@/lib/content/page-hero-images";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -29,11 +29,10 @@ const LOCKED_FIELDS = [
 ];
 
 function stripLockedFields(content) {
- const editable = { ...content };
+ const editable = keepPageHeroImages(content);
  for (const field of LOCKED_FIELDS) {
   delete editable[field];
  }
- delete editable.heroImages;
  return editable;
 }
 
@@ -49,8 +48,6 @@ export function MissionContentForm({ initial }) {
  const [form, setForm] = useState(() => normalizeInitialForm(initial));
  const [loading, setLoading] = useState(false);
  const [uploadingHero, setUploadingHero] = useState(false);
-
- const heroImage = form.contentTr.heroImage ?? "";
 
  function updateLocale(locale, updater) {
   setForm((current) => ({
@@ -79,8 +76,8 @@ export function MissionContentForm({ initial }) {
     </CardHeader>
     <CardContent className="space-y-6">
      <AdminPageHeroImages
-      heroImage={heroImage}
-      defaultImage={PAGE_HERO_DEFAULT_IMAGE.missionVision}
+      content={form.contentTr}
+      defaultPage="missionVision"
       uploadFolder={MISSION_HERO_UPLOAD_FOLDER}
       contentKey="missionVision"
       getContentTr={() => form.contentTr}

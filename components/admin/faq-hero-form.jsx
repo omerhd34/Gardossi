@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import {
+ keepPageHeroImages,
  normalizePageHeroImages,
- PAGE_HERO_DEFAULT_IMAGE,
 } from "@/lib/content/page-hero-images";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,15 +19,12 @@ function normalizeInitialForm(initial) {
 }
 
 function stripHeroFields(content) {
- const { heroImages, ...editable } = content;
- return editable;
+ return keepPageHeroImages(content);
 }
 
 export function FaqHeroForm({ initial }) {
  const [form, setForm] = useState(() => normalizeInitialForm(initial));
  const [uploadingHero, setUploadingHero] = useState(false);
-
- const heroImage = form.contentTr.heroImage ?? "";
 
  function syncForm({ contentTr, contentEn }) {
   setForm((current) => ({ ...current, contentTr, contentEn }));
@@ -40,8 +37,8 @@ export function FaqHeroForm({ initial }) {
    </CardHeader>
    <CardContent className="space-y-6">
     <AdminPageHeroImages
-     heroImage={heroImage}
-     defaultImage={PAGE_HERO_DEFAULT_IMAGE.faq}
+     content={form.contentTr}
+     defaultPage="faq"
      uploadFolder={FAQ_HERO_UPLOAD_FOLDER}
      contentKey="faq"
      getContentTr={() => form.contentTr}

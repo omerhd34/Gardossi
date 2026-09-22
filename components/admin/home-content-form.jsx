@@ -30,7 +30,7 @@ export function HomeContentForm({ initialHero, initialBrand }) {
  const [heroForm, setHeroForm] = useState(() => normalizeHeroInitial(initialHero));
  const [brandForm, setBrandForm] = useState(() => normalizeBrandInitial(initialBrand));
  const [loading, setLoading] = useState(false);
- const [uploadingSlideSlug, setUploadingSlideSlug] = useState(null);
+ const [uploadingSlot, setUploadingSlot] = useState(null);
  const [uploadingBrandHero, setUploadingBrandHero] = useState(false);
 
  async function handleSubmit(event) {
@@ -75,8 +75,8 @@ export function HomeContentForm({ initialHero, initialBrand }) {
    <HomeHeroFields
     form={heroForm}
     setForm={setHeroForm}
-    uploadingSlideSlug={uploadingSlideSlug}
-    setUploadingSlideSlug={setUploadingSlideSlug}
+    uploadingSlot={uploadingSlot}
+    setUploadingSlot={setUploadingSlot}
    />
 
    <HomeBrandExperienceFields

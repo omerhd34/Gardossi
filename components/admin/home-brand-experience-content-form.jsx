@@ -5,8 +5,8 @@ import { MdSave } from "react-icons/md";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import { handleContentSave } from "@/components/admin/content-block-save";
 import {
+ keepPageHeroImages,
  normalizePageHeroImages,
- PAGE_HERO_DEFAULT_IMAGE,
 } from "@/lib/content/page-hero-images";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 const HOME_BRAND_EXPERIENCE_UPLOAD_FOLDER = "anasayfa-marka-banner";
 
 export function stripBrandLockedFields(content) {
- const { heroImages, ...editable } = content;
- return editable;
+ return keepPageHeroImages(content);
 }
 
 function normalizeInitialForm(initial) {
@@ -41,8 +40,6 @@ export function HomeBrandExperienceFields({
  uploadingHero,
  setUploadingHero,
 }) {
- const heroImage = form.contentTr.heroImage ?? "";
-
  function updateLocale(locale, updater) {
   setForm((current) => ({
    ...current,
@@ -57,8 +54,8 @@ export function HomeBrandExperienceFields({
    </CardHeader>
    <CardContent className="space-y-6">
     <AdminPageHeroImages
-     heroImage={heroImage}
-     defaultImage={PAGE_HERO_DEFAULT_IMAGE.homeBrandExperience}
+     content={form.contentTr}
+     defaultPage="homeBrandExperience"
      uploadFolder={HOME_BRAND_EXPERIENCE_UPLOAD_FOLDER}
      contentKey="homeBrandExperience"
      getContentTr={() => form.contentTr}

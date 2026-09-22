@@ -1,22 +1,63 @@
 "use client";
 
+import { useState } from "react";
 import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { saveContentBlock } from "@/components/admin/content-block-save";
 import {
+ getPageHeroDeviceImageHint,
  getPageHeroImageHint,
- PAGE_HERO_IMAGE,
+ PAGE_HERO_DEVICE_IMAGES,
 } from "@/lib/admin/image-specs";
 import { validateImageUploadFile } from "@/lib/admin/image-upload";
 import {
- mergePageHeroImage,
+ getPageHeroDeviceDefaultImage,
+ getPageHeroDeviceImage,
+ mergePageHeroDeviceImage,
  normalizePageHeroImages,
+ PAGE_HERO_DEVICES,
 } from "@/lib/content/page-hero-images";
+import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
+const DEFAULT_DEVICE = "desktop";
+
+function DeviceTabList({ device, onDeviceChange, ariaLabel }) {
+ return (
+  <div
+   role="tablist"
+   aria-label={ariaLabel}
+   className="inline-flex shrink-0 rounded-lg border border-border/70 bg-muted/40 p-1"
+  >
+   {PAGE_HERO_DEVICES.map((deviceId) => {
+    const { label } = PAGE_HERO_DEVICE_IMAGES[deviceId];
+    const isActive = device === deviceId;
+
+    return (
+     <button
+      key={deviceId}
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      className={cn(
+       "cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-[background-color,color,box-shadow] duration-150",
+       isActive
+        ? "bg-background text-foreground shadow-sm"
+        : "text-muted-foreground hover:text-foreground"
+      )}
+      onClick={() => onDeviceChange(deviceId)}
+     >
+      {label}
+     </button>
+    );
+   })}
+  </div>
+ );
+}
+
 export function AdminPageHeroImages({
- heroImage = "",
- defaultImage,
+ content,
+ defaultPage,
  uploadFolder,
  contentKey,
  getContentTr,
@@ -25,10 +66,21 @@ export function AdminPageHeroImages({
  onFormSync,
  uploading = false,
  onUploadingChange,
+ sectionLabel = "Başlık arkaplan görseli",
 }) {
+ const [device, setDevice] = useState(DEFAULT_DEVICE);
+ const spec = PAGE_HERO_DEVICE_IMAGES[device] ?? PAGE_HERO_DEVICE_IMAGES.desktop;
+ const heroImage = getPageHeroDeviceImage(content, device);
+ const defaultImage = getPageHeroDeviceDefaultImage(defaultPage, device);
+ const heroHint = getPageHeroImageHint();
+
+ function updateContentImage(current, url) {
+  return mergePageHeroDeviceImage(current, device, url);
+ }
+
  async function persistHeroImage(url) {
-  const contentTr = mergePageHeroImage(getContentTr(), url);
-  const contentEn = mergePageHeroImage(getContentEn(), url);
+  const contentTr = updateContentImage(getContentTr(), url);
+  const contentEn = updateContentImage(getContentEn(), url);
 
   if (!contentKey) {
    onFormSync({ contentTr, contentEn });
@@ -58,7 +110,7 @@ export function AdminPageHeroImages({
   try {
    const body = new FormData();
    body.append("file", file);
-   body.append("folder", uploadFolder);
+   body.append("folder", `${uploadFolder}/${device}`);
 
    const response = await fetch("/api/admin/upload", {
     method: "POST",
@@ -69,7 +121,7 @@ export function AdminPageHeroImages({
    if (!data.url) throw new Error("Yüklenen görsel adresi alınamadı");
 
    await persistHeroImage(data.url);
-   toast.success("Başlık görseli kaydedildi");
+   toast.success(`${spec.label} görseli kaydedildi`);
   } catch (error) {
    toast.error(error.message || "Görsel kaydedilemedi");
   } finally {
@@ -81,7 +133,7 @@ export function AdminPageHeroImages({
   onUploadingChange(true);
   try {
    await persistHeroImage("");
-   toast.success("Başlık görseli kaldırıldı");
+   toast.success(`${spec.label} görseli kaldırıldı`);
   } catch (error) {
    toast.error(error.message || "Görsel kaldırılamadı");
   } finally {
@@ -89,18 +141,22 @@ export function AdminPageHeroImages({
   }
  }
 
- const heroHint = getPageHeroImageHint();
-
  return (
   <div className="space-y-3">
-   <div className="space-y-1">
-    <Label className="text-sm font-medium">Başlık arkaplan görseli</Label>
-    <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
-    <p className="text-xs text-muted-foreground">{heroHint.specs}</p>
+   <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="min-w-0 flex-1 space-y-1">
+     <Label className="text-sm font-medium">{sectionLabel}</Label>
+     <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
+    </div>
+    <DeviceTabList
+     device={device}
+     onDeviceChange={setDevice}
+     ariaLabel={`${sectionLabel} cihaz seçimi`}
+    />
    </div>
 
    <AdminImageUpload
-    label="Hero görseli"
+    label={`${spec.label} görseli`}
     value={heroImage}
     defaultPreview={defaultImage}
     onChange={(url) => {
@@ -108,9 +164,8 @@ export function AdminPageHeroImages({
     }}
     onUpload={uploadHeroImage}
     uploading={uploading}
-    hint=""
-    previewAspectClass={PAGE_HERO_IMAGE.previewAspectClass}
-    previewHeightClass="h-48"
+    hint={getPageHeroDeviceImageHint(device)}
+    previewAspectClass={spec.previewAspectClass}
     fullWidth
    />
   </div>

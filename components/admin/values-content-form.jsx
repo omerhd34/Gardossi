@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MdAdd, MdDeleteOutline, MdSave } from "react-icons/md";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import { handleContentSave } from "@/components/admin/content-block-save";
-import { normalizePageHeroImages, PAGE_HERO_DEFAULT_IMAGE } from "@/lib/content/page-hero-images";
+import { normalizePageHeroImages, keepPageHeroImages } from "@/lib/content/page-hero-images";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DynamicReactIcon } from "@/components/ui/dynamic-react-icon";
@@ -17,8 +17,7 @@ const VALUES_HERO_UPLOAD_FOLDER = "degerlerimiz";
 const DEFAULT_VALUE_ICON = "MdVerifiedUser";
 
 function stripContent(content) {
- const { heroImages, ...editable } = content;
- return editable;
+ return keepPageHeroImages(content);
 }
 
 function normalizeInitialForm(initial) {
@@ -34,7 +33,6 @@ export function ValuesContentForm({ initial }) {
  const [loading, setLoading] = useState(false);
  const [uploadingHero, setUploadingHero] = useState(false);
 
- const heroImage = form.contentTr.heroImage ?? "";
  const valueCount = Math.max(
   form.contentTr.values?.length ?? 0,
   form.contentEn.values?.length ?? 0
@@ -92,8 +90,8 @@ export function ValuesContentForm({ initial }) {
     </CardHeader>
     <CardContent className="space-y-6">
      <AdminPageHeroImages
-      heroImage={heroImage}
-      defaultImage={PAGE_HERO_DEFAULT_IMAGE.values}
+      content={form.contentTr}
+      defaultPage="values"
       uploadFolder={VALUES_HERO_UPLOAD_FOLDER}
       contentKey="values"
       getContentTr={() => form.contentTr}
