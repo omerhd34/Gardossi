@@ -35,7 +35,7 @@ const productPanelClassName =
  "overflow-hidden rounded-3xl border border-charcoal/12 bg-white px-5 shadow-[0_1px_3px_rgb(0_0_0/4%)]";
 
 const productBreadcrumbLinkClass =
- "inline-block scale-100 transition-[scale,color] duration-200 ease-out active:duration-75 hover:scale-110 hover:text-charcoal motion-reduce:duration-150";
+ "inline-block scale-100 touch-manipulation transition-[scale,color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-110 hover:text-charcoal motion-reduce:duration-150 motion-reduce:active:scale-100";
 
 const productBreadcrumbRootLinkClass = cn(productBreadcrumbLinkClass, "origin-right");
 

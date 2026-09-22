@@ -11,7 +11,7 @@ import { HeaderSearchForm } from "@/components/layout/header-search-form";
 import { useTranslations } from "@/contexts/locale-provider";
 import { getCategoryLabelForProduct } from "@/lib/product-category";
 import { getPrimaryImageUrl, getProductCardBottomLabel } from "@/lib/product-utils";
-import { containerPremiumClass } from "@/lib/layout/shared-styles";
+import { containerPremiumClass, navPressClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 
 const searchResultsBackdropTopClass =
@@ -26,7 +26,7 @@ function SearchProductCard({ product, onNavigate, dictionary, locale }) {
   <Link
    href={`/urunler/${product.slug}`}
    onClick={onNavigate}
-   className="group block"
+   className={cn("group block", navPressClass)}
   >
    <div className="search-product-card relative aspect-5/4 overflow-hidden rounded-2xl border border-charcoal/10 bg-cream/50 shadow-[0_2px_10px_rgb(0_0_0/5%)] transition-[border-color,box-shadow] duration-200 hover:border-charcoal/20 hover:shadow-[0_6px_20px_rgb(0_0_0/8%)]">
     {imageUrl ? (

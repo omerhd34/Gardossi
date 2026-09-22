@@ -7,6 +7,7 @@ import { useTranslations } from "@/contexts/locale-provider";
 import {
  containerPremiumClass,
  headingDisplayClass,
+ navPressClass,
  productCardKalifClass,
  sectionPaddingClass,
 } from "@/lib/layout/shared-styles";
@@ -21,7 +22,10 @@ function CategoryCard({ category }) {
   "inline-flex rounded-full border border-white/20 bg-white/15 font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md";
 
  return (
-  <Link href={category.href} className="group/card block">
+  <Link
+   href={category.href}
+   className={cn("group/card block", navPressClass)}
+  >
    <div
     className={cn(
      productCardKalifClass,

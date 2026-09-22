@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useTranslations } from "@/contexts/locale-provider";
+import { navPressClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
 
@@ -35,9 +36,10 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
      onClick={onClose}
      className={cn(
       "group relative block overflow-hidden rounded-2xl bg-charcoal/20",
+      navPressClass,
       !isDrawer && "aspect-3/2 bg-cream/60 min-[49rem]:aspect-auto min-[49rem]:h-52",
       isDrawer &&
-      "aspect-3/2 lg:flex lg:aspect-auto lg:flex-col lg:rounded-xl lg:border lg:border-(--glass-hero-border) lg:bg-transparent lg:shadow-[0_8px_24px_rgb(0_0_0/18%)] lg:transition-[border-color,box-shadow] lg:duration-300 lg:hover:border-(--glass-hero-border) lg:hover:shadow-[0_10px_28px_rgb(0_0_0/24%)]"
+      "aspect-3/2 lg:flex lg:aspect-auto lg:flex-col lg:rounded-xl lg:border lg:border-(--glass-hero-border) lg:bg-transparent lg:shadow-[0_8px_24px_rgb(0_0_0/18%)] lg:transition-[border-color,box-shadow,transform] lg:duration-300 lg:hover:border-(--glass-hero-border) lg:hover:shadow-[0_10px_28px_rgb(0_0_0/24%)]"
      )}
     >
      {category.image ? (

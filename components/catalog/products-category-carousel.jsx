@@ -8,6 +8,7 @@ import { useTranslations } from "@/contexts/locale-provider";
 import { HeroChevronLeft, HeroChevronRight } from "@/lib/icons";
 import { contactFloatBtnClass } from "@/lib/layout/header-styles";
 import { productCategoryTileClass } from "@/lib/layout/product-styles";
+import { navPressClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
 
@@ -61,6 +62,7 @@ export function ProductsCategoryCarousel({ activeSlug, className }) {
         href={category.href}
         className={cn(
          "group relative min-w-0 shrink-0 cursor-pointer basis-[calc((100%-4rem)/5)]",
+         navPressClass,
          active &&
           "rounded-2xl ring-2 ring-charcoal/55 ring-offset-2 ring-offset-cream"
         )}

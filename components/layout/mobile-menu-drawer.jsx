@@ -168,7 +168,7 @@ export function MobileMenuDrawer({ pathname, onClose }) {
       <Link
        href="/urunler"
        onClick={onClose}
-       className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-2.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm transition-[color,background-color,border-color,scale] duration-200 ease-out active:duration-75 hover:scale-[1.02] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150 lg:py-2"
+       className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-2.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm touch-manipulation transition-[color,background-color,border-color,scale] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-[1.02] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150 motion-reduce:active:scale-100 lg:py-2"
       >
        {t("categories.allProducts")}
        <HeroChevronRight className="size-3.5 shrink-0" strokeWidth={3.5} aria-hidden />

@@ -32,14 +32,14 @@ export function MissionCta({ className }) {
    <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
     <Link
      href="/urunler"
-     className="inline-flex h-11 scale-100 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-semibold text-charcoal transition-[scale,background-color] duration-200 ease-out active:duration-75 hover:scale-110 hover:bg-white/92 motion-reduce:duration-150"
+     className="inline-flex h-11 scale-100 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-semibold text-charcoal touch-manipulation transition-[scale,background-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-110 hover:bg-white/92 motion-reduce:duration-150 motion-reduce:active:scale-100"
     >
      <ViewModule className="size-4.5 shrink-0" aria-hidden />
      {missionVision.ctaProducts}
     </Link>
     <Link
      href="/iletisim"
-     className="inline-flex h-11 scale-100 items-center justify-center gap-2 rounded-full border border-white/35 px-8 text-sm font-semibold text-white transition-[scale,background-color,border-color] duration-200 ease-out active:duration-75 hover:scale-110 hover:border-white/50 hover:bg-white/10 motion-reduce:duration-150"
+     className="inline-flex h-11 scale-100 items-center justify-center gap-2 rounded-full border border-white/35 px-8 text-sm font-semibold text-white touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-110 hover:border-white/50 hover:bg-white/10 motion-reduce:duration-150 motion-reduce:active:scale-100"
     >
      <SupportAgent className="size-4.5 shrink-0" aria-hidden />
      {missionVision.ctaContact}

@@ -30,7 +30,7 @@ function getInstagramLabel(href) {
 }
 
 const contactLinkClassName =
- "inline-flex w-fit scale-100 origin-left items-center gap-2.5 text-charcoal/85 transition-[scale,color] duration-200 ease-out active:duration-75 hover:scale-105 hover:text-charcoal motion-reduce:duration-150";
+ "inline-flex w-fit scale-100 origin-left items-center gap-2.5 text-charcoal/85 touch-manipulation transition-[scale,color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:text-charcoal motion-reduce:duration-150 motion-reduce:active:scale-100";
 
 export function StoreShowcase() {
  const { t, locale, dictionary } = useTranslations();
@@ -131,7 +131,7 @@ export function StoreShowcase() {
         href={store.mapUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex scale-100 items-center gap-1.5 font-display text-[0.65rem] tracking-[0.22em] text-charcoal/70 uppercase transition-[scale,color] duration-200 ease-out active:duration-75 hover:scale-105 hover:text-charcoal motion-reduce:duration-150"
+        className="inline-flex scale-100 items-center gap-1.5 font-display text-[0.65rem] tracking-[0.22em] text-charcoal/70 uppercase touch-manipulation transition-[scale,color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:text-charcoal motion-reduce:duration-150 motion-reduce:active:scale-100"
        >
         <FaLocationArrow className="size-3.5 shrink-0" aria-hidden />
         {t("contact.viewOnMap")}

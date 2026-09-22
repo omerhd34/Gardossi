@@ -22,7 +22,7 @@ const footerContactIconLinkClass =
 
 function FooterColumn({ title, titleHref, children, className }) {
  const titleClassName =
-  "font-body text-[13px] font-semibold tracking-wide text-charcoal transition-colors hover:text-charcoal/80";
+  "font-body text-[13px] font-semibold tracking-wide text-charcoal touch-manipulation transition-[color,transform] duration-75 hover:text-charcoal/80 active:scale-[0.98] motion-reduce:active:scale-100";
 
  return (
   <div className={cn("flex min-w-0 flex-col gap-4", className)}>
@@ -160,7 +160,7 @@ export function Footer() {
         href="https://www.veltstack.com/"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-charcoal/70 underline underline-offset-2 transition-colors hover:text-charcoal"
+        className="text-charcoal/70 underline underline-offset-2 touch-manipulation transition-[color,transform] duration-75 hover:text-charcoal active:scale-[0.98] motion-reduce:active:scale-100"
        >
         VeltStack
        </Link>

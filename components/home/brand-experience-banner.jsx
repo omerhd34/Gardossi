@@ -62,7 +62,7 @@ export function BrandExperienceBanner() {
     <div className="mt-auto flex w-full justify-center pt-6 sm:pt-8">
      <Link
       href="/hakkimizda"
-      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full border border-white/35 bg-white/15 px-8 text-sm font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.97] active:duration-75 hover:scale-105 hover:border-white/50 hover:bg-white/22 motion-reduce:transition-none"
+      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full border border-white/35 bg-white/15 px-8 text-sm font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:border-white/50 hover:bg-white/22 motion-reduce:transition-none motion-reduce:active:scale-100"
      >
       {brandExperienceCta}
      </Link>

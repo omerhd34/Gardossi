@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Fragment } from "react";
+import { navPressClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 
 export function NavSeparatorRow({ items, variant = "secondary", pathname }) {
@@ -26,7 +27,8 @@ export function NavSeparatorRow({ items, variant = "secondary", pathname }) {
         : undefined
       }
       className={cn(
-       "nav-menu-link font-display transition-colors hover:text-white",
+       "nav-menu-link font-display transition-[colors,transform] hover:text-white",
+       navPressClass,
        variant === "secondary" &&
        "text-[0.6rem] font-normal tracking-[0.22em] uppercase md:text-[0.65rem]",
        variant === "primary" &&

@@ -10,7 +10,7 @@ import {
  getProductCardBottomLabel,
  getProductDisplayPrice,
 } from "@/lib/product-utils";
-import { productCardKalifClass } from "@/lib/layout/shared-styles";
+import { navPressClass, productCardKalifClass } from "@/lib/layout/shared-styles";
 import { catalogProductCardClass } from "@/lib/layout/product-styles";
 import { cn } from "@/lib/utils";
 
@@ -53,7 +53,7 @@ export function ProductCard({
    >
     <Link
      href={`/urunler/${product.slug}`}
-     className="absolute inset-0 block cursor-pointer touch-manipulation transition-transform duration-75 active:scale-[0.98] motion-reduce:active:scale-100"
+     className={cn("absolute inset-0 block cursor-pointer", navPressClass)}
     >
      {imageUrl ? (
       <Image

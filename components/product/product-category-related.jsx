@@ -51,7 +51,7 @@ export function ProductCategoryRelated({
          key={product.id}
          href={`/urunler/${product.slug}`}
          className={cn(
-          "group flex cursor-pointer items-center gap-3 rounded-2xl p-2.5 no-underline transition-[border-color,background-color,box-shadow] duration-200",
+          "group flex cursor-pointer items-center gap-3 rounded-2xl p-2.5 no-underline touch-manipulation transition-[border-color,background-color,box-shadow,transform] duration-200 active:scale-[0.98] active:duration-75 motion-reduce:active:scale-100",
           productRelatedItemClass
          )}
         >

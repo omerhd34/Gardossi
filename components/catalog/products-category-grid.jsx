@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useTranslations } from "@/contexts/locale-provider";
-import { productCardKalifClass } from "@/lib/layout/shared-styles";
+import { navPressClass, productCardKalifClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +33,7 @@ export function ProductsCategoryGrid() {
     <Link
      key={category.slug}
      href={category.href}
-     className="group/card block"
+     className={cn("group/card block", navPressClass)}
     >
      <div
       className={cn(

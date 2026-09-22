@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "@/contexts/locale-provider";
 import { brandFullName } from "@/lib/brand";
 import { brandLogoImageFilterClass } from "@/lib/layout/header-styles";
+import { navPressClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 
 const LOGO_WIDTH = 536;
@@ -35,6 +36,7 @@ export function BrandLogoLink({ href = "/", size = "md", className }) {
    href={href}
    className={cn(
     "group/logo inline-flex h-fit w-fit cursor-pointer items-center rounded-md px-3.5 py-2.5 -mx-3.5 -my-2.5 align-middle leading-none",
+    navPressClass,
     className
    )}
    aria-label={`${brandFullName} - ${t("common.home")}`}

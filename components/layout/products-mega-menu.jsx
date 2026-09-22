@@ -24,13 +24,13 @@ import {
  lightMegaMenuTitleClass,
  lightMegaMenuViewAllClass,
 } from "@/lib/layout/header-styles";
-import { containerPremiumClass, productCardKalifClass } from "@/lib/layout/shared-styles";
+import { containerPremiumClass, navPressClass, productCardKalifClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
 
 function ProductMenuCard({ item, onNavigate }) {
  return (
-  <Link href={item.href} onClick={onNavigate} className="group block h-full">
+  <Link href={item.href} onClick={onNavigate} className={cn("group block h-full", navPressClass)}>
    <div
     className={cn(
      productCardKalifClass,
@@ -77,7 +77,7 @@ function handleMegaMenuWheel(event) {
 const megaMenuProductGridClass = "grid grid-cols-2 gap-2.5 md:gap-3";
 
 const viewAllLinkClass = cn(
- "products-mega-menu-view-all inline-flex shrink-0 items-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm transition-[color,background-color,border-color,scale] duration-200 ease-out active:duration-75 hover:scale-[1.03] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150",
+ "products-mega-menu-view-all inline-flex shrink-0 items-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm transition-[color,background-color,border-color,scale] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-[1.03] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150 motion-reduce:active:scale-100",
  lightMegaMenuViewAllClass
 );
 
@@ -141,7 +141,7 @@ function CategoryNavItem({ group, isActive, index, onSelect, menuOpen }) {
    <ChevronRight
     className={cn(
      "size-3.5 shrink-0 text-white transition-[opacity,transform] duration-300",
-     isActive ? "translate-x-0 opacity-90" : "translate-x-[-2px] opacity-0",
+     isActive ? "translate-x-0 opacity-90" : "-translate-x-0.5 opacity-0",
      lightMegaMenuCategoryChevronClass
     )}
     aria-hidden
