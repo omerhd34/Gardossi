@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
+import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
 import { useTranslations } from "@/contexts/locale-provider";
 import {
  containerPremiumClass,
@@ -32,13 +32,11 @@ function CategoryCard({ category }) {
      "relative h-48 rounded-3xl sm:h-52 sm:rounded-[1.25rem] md:h-56 lg:h-60"
     )}
    >
-    <Image
-     src={category.image}
+    <CategoryCoverPicture
+     group={category.group}
      alt=""
-     fill
      sizes="(max-width: 64rem) 50vw, 480px"
-     quality={60}
-     className="size-full object-cover transition-transform duration-200 ease-out active:duration-75 group-hover/card:scale-[1.03] motion-reduce:duration-150"
+     className="object-cover transition-transform duration-200 ease-out active:duration-75 group-hover/card:scale-[1.03] motion-reduce:duration-150"
     />
     <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent" />
     <div className="absolute right-3 bottom-3 left-3">
@@ -60,9 +58,9 @@ export function CategoriesShowcase() {
      slug: group.slug,
      label: group.label,
      href: group.href,
-     image: getCategoryGroupCoverImage(group),
+     group,
     }))
-    .filter((category) => category.image),
+    .filter((category) => getCategoryGroupCoverImage(category.group)),
   [navigation]
  );
 

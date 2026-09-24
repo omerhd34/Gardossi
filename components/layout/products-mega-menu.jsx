@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "@/lib/icons";
+import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
 import { useTranslations } from "@/contexts/locale-provider";
 import {
  heroMegaMenuScrollClass,
@@ -110,13 +111,11 @@ function CategoryNavItem({ group, isActive, index, onSelect, menuOpen }) {
     )}
    >
     {previewImage ? (
-     <Image
-      src={previewImage}
+     <CategoryCoverPicture
+      group={group}
       alt=""
-      fill
       sizes="48px"
       className="object-cover"
-      aria-hidden
      />
     ) : null}
     <span
@@ -167,7 +166,9 @@ export function ProductsMegaMenu({ open, panelRef, onClose }) {
  const [activeSlug, setActiveSlug] = useState(groups[0]?.slug ?? null);
 
  const activeGroup = groups.find((group) => group.slug === activeSlug) ?? groups[0];
- const featuredImage = activeGroup ? getCategoryGroupCoverImage(activeGroup) : null;
+ const hasFeaturedImage = activeGroup
+  ? Boolean(getCategoryGroupCoverImage(activeGroup))
+  : false;
 
  useEffect(() => {
   if (!open) return;
@@ -289,12 +290,11 @@ export function ProductsMegaMenu({ open, panelRef, onClose }) {
         heroMegaMenuScrollClass
        )}
       >
-       {featuredImage ? (
+       {hasFeaturedImage ? (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-         <Image
-          src={featuredImage}
+         <CategoryCoverPicture
+          group={activeGroup}
           alt=""
-          fill
           sizes="60vw"
           className={cn(
            "scale-110 object-cover opacity-28 blur-2xl saturate-125",

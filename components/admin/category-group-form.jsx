@@ -19,48 +19,115 @@ import {
  validateImageUploadFile,
 } from "@/lib/admin/image-upload";
 import {
+ CATEGORY_COVER_DEVICE_IMAGES,
+ getCategoryCoverDeviceImageHint,
  getCategoryCoverImageRequirements,
  getCategoryCoverImageSummary,
 } from "@/lib/admin/image-specs";
 import { slugify } from "@/lib/admin/slug";
+import {
+ CATEGORY_COVER_DEVICES,
+ EMPTY_CATEGORY_COVER_IMAGES,
+ mergeCategoryCoverDeviceImage,
+ normalizeCategoryCoverImages,
+} from "@/lib/content/category-cover-images";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const DEFAULT_DEVICE = "desktop";
+
 const emptyCategoryGroup = {
  name: "",
  nameEn: "",
  slug: "",
  coverImage: "",
+ coverImages: { ...EMPTY_CATEGORY_COVER_IMAGES },
  sortOrder: 0,
  isPublished: true,
 };
 
-function getDefaultCoverPreview(categoryGroup) {
- if (!categoryGroup || categoryGroup.coverImage) return "";
+function initForm(categoryGroup) {
+ if (!categoryGroup) return emptyCategoryGroup;
 
- const firstProduct = categoryGroup.products?.[0];
+ const limited = applyAdminCategoryNameLimits(categoryGroup);
+ const { coverImage, coverImages } = normalizeCategoryCoverImages(
+  limited.coverImages,
+  limited.coverImage
+ );
+
+ return {
+  ...limited,
+  coverImage,
+  coverImages,
+ };
+}
+
+function getDefaultCoverPreview(categoryGroup, device) {
+ const { coverImages } = normalizeCategoryCoverImages(
+  categoryGroup?.coverImages,
+  categoryGroup?.coverImage
+ );
+ if (coverImages[device]) return "";
+
+ const firstProduct = categoryGroup?.products?.[0];
  return firstProduct?.images?.[0]?.url ?? "";
+}
+
+function DeviceTabList({ device, onDeviceChange }) {
+ return (
+  <div
+   role="tablist"
+   aria-label="Kapak görseli cihaz seçimi"
+   className="inline-flex shrink-0 rounded-lg border border-border/70 bg-muted/40 p-1"
+  >
+   {CATEGORY_COVER_DEVICES.map((deviceId) => {
+    const { label } = CATEGORY_COVER_DEVICE_IMAGES[deviceId];
+    const isActive = device === deviceId;
+
+    return (
+     <button
+      key={deviceId}
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      className={cn(
+       "cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-[background-color,color,box-shadow] duration-150",
+       isActive
+        ? "bg-background text-foreground shadow-sm"
+        : "text-muted-foreground hover:text-foreground"
+      )}
+      onClick={() => onDeviceChange(deviceId)}
+     >
+      {label}
+     </button>
+    );
+   })}
+  </div>
+ );
 }
 
 export function CategoryGroupForm({ categoryGroup = null }) {
  const router = useRouter();
- const [form, setForm] = useState(() =>
-  categoryGroup ? applyAdminCategoryNameLimits(categoryGroup) : emptyCategoryGroup
- );
+ const [form, setForm] = useState(() => initForm(categoryGroup));
+ const [device, setDevice] = useState(DEFAULT_DEVICE);
  const [loading, setLoading] = useState(false);
  const [uploading, setUploading] = useState(false);
  const isEdit = Boolean(categoryGroup?.id);
+ const spec = CATEGORY_COVER_DEVICE_IMAGES[device] ?? CATEGORY_COVER_DEVICE_IMAGES.desktop;
+ const coverValue = form.coverImages?.[device] ?? "";
  const defaultCoverPreview = useMemo(
-  () => getDefaultCoverPreview(categoryGroup),
-  [categoryGroup]
+  () => getDefaultCoverPreview(categoryGroup, device),
+  [categoryGroup, device]
  );
 
  function getCoverUploadFolder(currentForm) {
-  if (currentForm.coverImage) {
-   const parts = currentForm.coverImage.split("/").filter(Boolean);
+  const activeUrl = currentForm.coverImages?.[device] || currentForm.coverImage;
+  if (activeUrl) {
+   const parts = activeUrl.split("/").filter(Boolean);
    if (parts.length >= 2) return parts[0];
   }
 
@@ -79,6 +146,17 @@ export function CategoryGroupForm({ categoryGroup = null }) {
   });
  }
 
+ function updateCoverDevice(url) {
+  setForm((current) => {
+   const merged = mergeCategoryCoverDeviceImage(current.coverImages, device, url);
+   return {
+    ...current,
+    coverImage: merged.coverImage,
+    coverImages: merged.coverImages,
+   };
+  });
+ }
+
  async function uploadCoverImage(file) {
   const fileTypeError = validateImageUploadFile(file);
   if (fileTypeError) {
@@ -86,7 +164,7 @@ export function CategoryGroupForm({ categoryGroup = null }) {
    return;
   }
 
-  const folder = getCoverUploadFolder(form);
+  const folder = `${getCoverUploadFolder(form)}/${device}`;
 
   setUploading(true);
   try {
@@ -101,8 +179,8 @@ export function CategoryGroupForm({ categoryGroup = null }) {
    const data = await response.json();
    if (!response.ok) throw new Error(data.error || "Yükleme başarısız");
 
-   updateField("coverImage", data.url);
-   toast.success("Kapak görseli yüklendi");
+   updateCoverDevice(data.url);
+   toast.success(`${spec.label} kapak görseli yüklendi`);
   } catch (error) {
    toast.error(error.message);
   } finally {
@@ -127,6 +205,11 @@ export function CategoryGroupForm({ categoryGroup = null }) {
 
   setLoading(true);
 
+  const { coverImage, coverImages } = normalizeCategoryCoverImages(
+   form.coverImages,
+   form.coverImage
+  );
+
   try {
    const response = await fetch(
     isEdit
@@ -139,7 +222,8 @@ export function CategoryGroupForm({ categoryGroup = null }) {
       name: form.name,
       nameEn: form.nameEn,
       slug: slugify(form.name),
-      coverImage: form.coverImage,
+      coverImage,
+      coverImages,
       sortOrder: form.sortOrder,
       isPublished: form.isPublished,
      }),
@@ -200,15 +284,27 @@ export function CategoryGroupForm({ categoryGroup = null }) {
       />
      </div>
      <p className="text-xs text-muted-foreground md:col-span-8">{ADMIN_CATEGORY_NAME_FIELDS_HINT}</p>
-     <div className="md:col-span-10">
+     <div className="space-y-3 md:col-span-10">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+       <div className="min-w-0 flex-1 space-y-1">
+        <Label>Kapak görseli</Label>
+        <p className="text-xs text-muted-foreground">{getCategoryCoverImageSummary()}</p>
+        <p className="text-xs text-muted-foreground">{getCategoryCoverImageRequirements()}</p>
+        <p className="text-xs text-muted-foreground">{getCategoryCoverDeviceImageHint(device)}</p>
+       </div>
+       <DeviceTabList device={device} onDeviceChange={setDevice} />
+      </div>
       <AdminImageUpload
-       value={form.coverImage ?? ""}
+       label="Kapak görseli"
+       hideLabel
+       value={coverValue}
        defaultPreview={defaultCoverPreview}
-       onChange={(value) => updateField("coverImage", value)}
+       onChange={(value) => updateCoverDevice(value)}
        onUpload={uploadCoverImage}
        uploading={uploading}
-       hint={getCategoryCoverImageSummary()}
-       dropzoneHint={getCategoryCoverImageRequirements()}
+       hint=""
+       previewAspectClass={spec.previewAspectClass}
+       fullWidth
       />
      </div>
      <label className="flex cursor-pointer items-center gap-2 md:col-span-10">

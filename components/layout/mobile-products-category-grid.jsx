@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
+import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
 import { useTranslations } from "@/contexts/locale-provider";
 import { navPressClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
@@ -17,7 +17,8 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
     slug: group.slug,
     label: group.label,
     href: group.href,
-    image: getCategoryGroupCoverImage(group),
+    group,
+    hasImage: Boolean(getCategoryGroupCoverImage(group)),
    })),
   [navigation]
  );
@@ -42,14 +43,13 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
       "aspect-3/2 lg:flex lg:aspect-auto lg:flex-col lg:rounded-xl lg:border lg:border-(--glass-hero-border) lg:bg-transparent lg:shadow-[0_8px_24px_rgb(0_0_0/18%)] lg:transition-[border-color,box-shadow,transform] lg:duration-300 lg:hover:border-(--glass-hero-border) lg:hover:shadow-[0_10px_28px_rgb(0_0_0/24%)]"
      )}
     >
-     {category.image ? (
+     {category.hasImage ? (
       isDrawer ? (
        <>
         <div className="relative aspect-3/2 w-full overflow-hidden rounded-t-2xl bg-charcoal/30 lg:aspect-4/3 lg:shrink-0 lg:rounded-t-xl lg:bg-charcoal/35">
-         <Image
-          src={category.image}
+         <CategoryCoverPicture
+          group={category.group}
           alt={category.label}
-          fill
           sizes="(max-width: 640px) 50vw, (max-width: 1440px) 45vw, 240px"
           className="object-cover transition-transform duration-700 ease-out scale-[1.03] group-hover:scale-[1.05] lg:scale-[1.04] lg:group-hover:scale-[1.06]"
          />
@@ -61,14 +61,13 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
         </div>
         <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/35 lg:backdrop-blur-sm">
          {category.label}
-         </span>
+        </span>
        </>
       ) : (
        <>
-        <Image
-         src={category.image}
+        <CategoryCoverPicture
+         group={category.group}
          alt={category.label}
-         fill
          sizes="(max-width: 640px) 50vw, (max-width: 1440px) 45vw, 240px"
          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
         />

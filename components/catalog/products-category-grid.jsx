@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
+import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
 import { useTranslations } from "@/contexts/locale-provider";
 import { navPressClass, productCardKalifClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
@@ -17,9 +17,9 @@ export function ProductsCategoryGrid() {
      slug: group.slug,
      label: group.label,
      href: group.href,
-     image: getCategoryGroupCoverImage(group),
+     group,
     }))
-    .filter((category) => category.image),
+    .filter((category) => getCategoryGroupCoverImage(category.group)),
   [navigation]
  );
 
@@ -41,12 +41,11 @@ export function ProductsCategoryGrid() {
        "relative h-48 overflow-hidden rounded-3xl sm:h-52 sm:rounded-[1.25rem] md:h-56 lg:h-60"
       )}
      >
-      <Image
-       src={category.image}
+      <CategoryCoverPicture
+       group={category.group}
        alt={category.label}
-       fill
        sizes="(max-width: 768px) 50vw, 33vw"
-       className="size-full object-cover transition-transform duration-200 ease-out active:duration-75 group-hover/card:scale-[1.03] motion-reduce:duration-150"
+       className="object-cover transition-transform duration-200 ease-out active:duration-75 group-hover/card:scale-[1.03] motion-reduce:duration-150"
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent" />
       <div className="absolute right-3 bottom-3 left-3">

@@ -5,6 +5,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/admin/slug";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
+import { normalizeCategoryCoverImages } from "@/lib/content/category-cover-images";
 
 export async function GET() {
  try {
@@ -49,14 +50,18 @@ export async function POST(request) {
    return Response.json({ error: "Bu slug zaten kullanılıyor" }, { status: 409 });
   }
 
-  const coverImage = body.coverImage?.trim() || null;
+  const { coverImage, coverImages } = normalizeCategoryCoverImages(
+   body.coverImages,
+   body.coverImage
+  );
 
   const group = await prisma.productCategoryGroup.create({
    data: {
     slug,
     name,
     nameEn,
-    coverImage,
+    coverImage: coverImage || null,
+    coverImages: coverImage ? coverImages : null,
     sortOrder: Number(body.sortOrder) || 0,
     isPublished: body.isPublished !== false,
    },

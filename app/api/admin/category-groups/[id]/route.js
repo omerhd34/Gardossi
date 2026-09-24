@@ -5,6 +5,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/admin/slug";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
+import { normalizeCategoryCoverImages } from "@/lib/content/category-cover-images";
 
 export async function GET(_request, { params }) {
  try {
@@ -45,10 +46,6 @@ export async function PUT(request, { params }) {
   const name = body.name?.trim() ?? existing.name;
   const nameEn =
    body.nameEn !== undefined ? body.nameEn?.trim() || null : existing.nameEn;
-  const coverImage =
-   body.coverImage !== undefined
-    ? body.coverImage?.trim() || null
-    : existing.coverImage;
   const slug = slugify(name) || existing.slug;
 
   const nameError = validateAdminCategoryName(name, "Ad (TR)");
@@ -67,13 +64,22 @@ export async function PUT(request, { params }) {
    }
   }
 
+  const coverSource =
+   body.coverImages !== undefined || body.coverImage !== undefined
+    ? normalizeCategoryCoverImages(
+     body.coverImages !== undefined ? body.coverImages : existing.coverImages,
+     body.coverImage !== undefined ? body.coverImage : existing.coverImage
+    )
+    : normalizeCategoryCoverImages(existing.coverImages, existing.coverImage);
+
   const group = await prisma.productCategoryGroup.update({
    where: { id },
    data: {
     slug,
     name,
     nameEn,
-    coverImage,
+    coverImage: coverSource.coverImage || null,
+    coverImages: coverSource.coverImage ? coverSource.coverImages : null,
     sortOrder: Number(body.sortOrder) ?? existing.sortOrder,
     isPublished: body.isPublished ?? existing.isPublished,
    },
