@@ -2,11 +2,7 @@
 
 import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { saveContentBlock } from "@/components/admin/content-block-save";
-import {
- getHomeHeroDeviceImageHint,
- getHomeHeroSlideImageHint,
- HOME_HERO_DEVICE_IMAGES,
-} from "@/lib/admin/image-specs";
+import { getHomeHeroSlideImageHint, HOME_HERO_DEVICE_IMAGES } from "@/lib/admin/image-specs";
 import { validateImageUploadFile } from "@/lib/admin/image-upload";
 import {
  getHeroSlideDeviceDefaultImage,
@@ -109,6 +105,7 @@ export function AdminHeroSlideImage({
  return (
   <AdminImageUpload
    label={label}
+   hideLabel
    value={heroImage}
    defaultPreview={defaultImage}
    onChange={(url) => {
@@ -116,7 +113,7 @@ export function AdminHeroSlideImage({
    }}
    onUpload={uploadHeroImage}
    uploading={uploading}
-   hint={getHomeHeroDeviceImageHint(device)}
+   hint=""
    previewAspectClass={spec.previewAspectClass}
    fullWidth
   />

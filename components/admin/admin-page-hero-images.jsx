@@ -6,6 +6,7 @@ import { saveContentBlock } from "@/components/admin/content-block-save";
 import {
  getPageHeroDeviceImageHint,
  getPageHeroImageHint,
+ getPageHeroImageRequirements,
  PAGE_HERO_DEVICE_IMAGES,
 } from "@/lib/admin/image-specs";
 import { validateImageUploadFile } from "@/lib/admin/image-upload";
@@ -147,6 +148,8 @@ export function AdminPageHeroImages({
     <div className="min-w-0 flex-1 space-y-1">
      <Label className="text-sm font-medium">{sectionLabel}</Label>
      <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
+     <p className="text-xs text-muted-foreground">{getPageHeroImageRequirements()}</p>
+     <p className="text-xs text-muted-foreground">{getPageHeroDeviceImageHint(device)}</p>
     </div>
     <DeviceTabList
      device={device}
@@ -156,7 +159,8 @@ export function AdminPageHeroImages({
    </div>
 
    <AdminImageUpload
-    label={`${spec.label} görseli`}
+    label={sectionLabel}
+    hideLabel
     value={heroImage}
     defaultPreview={defaultImage}
     onChange={(url) => {
@@ -164,7 +168,7 @@ export function AdminPageHeroImages({
     }}
     onUpload={uploadHeroImage}
     uploading={uploading}
-    hint={getPageHeroDeviceImageHint(device)}
+    hint=""
     previewAspectClass={spec.previewAspectClass}
     fullWidth
    />

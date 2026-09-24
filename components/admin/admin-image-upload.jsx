@@ -26,6 +26,7 @@ function AdminUploadSpinner({ className }) {
 
 export function AdminImageUpload({
  label = "Kapak görseli",
+ hideLabel = false,
  value = "",
  defaultPreview = "",
  onChange,
@@ -47,6 +48,7 @@ export function AdminImageUpload({
  const hasCustomImage = Boolean(value);
  const previewSrc = value || defaultPreview;
  const showPreview = Boolean(previewSrc);
+ const showHeading = !hideLabel || Boolean(hint);
 
  async function processFile(file) {
   if (!file || isDisabled) return;
@@ -96,19 +98,21 @@ export function AdminImageUpload({
 
  return (
   <div className={cn(stretch ? "flex h-full flex-col space-y-3" : "space-y-3", className)}>
-   <div className={cn("space-y-1", hintMinHeightClass)}>
-    <Label>{label}</Label>
-    {hint ? (
-     <p
-      className={cn(
-       "text-[11px] leading-snug text-muted-foreground",
-       fullWidth && "line-clamp-2"
-      )}
-     >
-      {hint}
-     </p>
-    ) : null}
-   </div>
+   {showHeading ? (
+    <div className={cn("space-y-1", hintMinHeightClass)}>
+     {hideLabel ? null : <Label>{label}</Label>}
+     {hint ? (
+      <p
+       className={cn(
+        "text-[11px] leading-snug text-muted-foreground",
+        fullWidth && "line-clamp-2"
+       )}
+      >
+       {hint}
+      </p>
+     ) : null}
+    </div>
+   ) : null}
 
    <input
     ref={inputRef}
@@ -164,7 +168,7 @@ export function AdminImageUpload({
        type="button"
        variant="secondary"
        size="icon"
-       className="absolute top-3 right-3 z-10 size-10 cursor-pointer border-border/70 bg-background/95 text-destructive shadow-md backdrop-blur-sm hover:bg-background hover:text-destructive"
+       className="absolute top-3 right-3 z-10 size-10 cursor-pointer border-border/70 bg-background/95 text-destructive shadow-md backdrop-blur-sm transition-[scale]! delay-0 duration-350! ease-out! hover:scale-110 hover:delay-100 hover:bg-background hover:text-destructive"
        disabled={isDisabled}
        aria-label="Görseli kaldır"
        onClick={(event) => {
@@ -201,12 +205,12 @@ export function AdminImageUpload({
       type="button"
       variant="outline"
       size="sm"
-      className="cursor-pointer"
+      className="cursor-pointer transition-[scale]! delay-0 duration-350! ease-out! hover:scale-105 hover:delay-100"
       disabled={isDisabled}
       onClick={openFilePicker}
      >
       <MdCloudUpload className="size-4" />
-      Değiştir
+      Görsel yükle
      </Button>
      <p className="text-center text-xs text-muted-foreground sm:text-left">
       {dropzoneHint || "Görseli buraya sürükleyip bırakabilirsiniz."}

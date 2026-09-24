@@ -7,7 +7,11 @@ import {
  getHomeHeroSlideImageHint,
 } from "@/components/admin/admin-hero-slide-image";
 import { handleContentSave } from "@/components/admin/content-block-save";
-import { HOME_HERO_DEVICE_IMAGES } from "@/lib/admin/image-specs";
+import {
+ getHomeHeroDeviceImageHint,
+ getHomeHeroImageRequirements,
+ HOME_HERO_DEVICE_IMAGES,
+} from "@/lib/admin/image-specs";
 import {
  EMPTY_HERO_SLIDE_IMAGES,
  HOME_HERO_DEVICES,
@@ -90,23 +94,26 @@ function SlideCard({
     </CardAction>
    </CardHeader>
    <CardContent className="space-y-6">
-    <AdminHeroSlideImage
-     slideSlug={slug}
-     device={device}
-     slide={slide}
-     uploadFolder={`${HOME_HERO_UPLOAD_FOLDER}/${slideNumber}`}
-     contentKey="homeHero"
-     getContentTr={() => form.contentTr}
-     getContentEn={() => form.contentEn}
-     stripContent={stripHeroLockedFields}
-     onFormSync={({ contentTr, contentEn }) =>
-      setForm((current) => ({ ...current, contentTr, contentEn }))
-     }
-     uploading={uploadingSlot === slotKey}
-     onUploadingChange={(isUploading) =>
-      setUploadingSlot(isUploading ? slotKey : null)
-     }
-    />
+    <div className="space-y-3">
+     <p className="text-xs text-muted-foreground">{getHomeHeroDeviceImageHint(device)}</p>
+     <AdminHeroSlideImage
+      slideSlug={slug}
+      device={device}
+      slide={slide}
+      uploadFolder={`${HOME_HERO_UPLOAD_FOLDER}/${slideNumber}`}
+      contentKey="homeHero"
+      getContentTr={() => form.contentTr}
+      getContentEn={() => form.contentEn}
+      stripContent={stripHeroLockedFields}
+      onFormSync={({ contentTr, contentEn }) =>
+       setForm((current) => ({ ...current, contentTr, contentEn }))
+      }
+      uploading={uploadingSlot === slotKey}
+      onUploadingChange={(isUploading) =>
+       setUploadingSlot(isUploading ? slotKey : null)
+      }
+     />
+    </div>
 
     <div className="grid gap-4 xl:grid-cols-2">
      <div className="space-y-2">
@@ -200,8 +207,9 @@ export function HomeHeroFields({
     <CardHeader>
      <CardTitle>Hero Slayt Görselleri</CardTitle>
     </CardHeader>
-    <CardContent className="space-y-2">
+    <CardContent className="space-y-1">
      <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
+     <p className="text-xs text-muted-foreground">{getHomeHeroImageRequirements()}</p>
     </CardContent>
    </Card>
 
