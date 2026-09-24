@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import {
  Accordion,
  AccordionContent,
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/carousel";
 import { ProductCornerStandardTable } from "@/components/product/product-corner-standard-table";
 import { ProductDimensionsTable } from "@/components/product/product-dimensions-table";
+import { ProductImagePicture } from "@/components/ui/product-image-picture";
 import { useLocale } from "@/contexts/locale-provider";
 import { FiInfo, Ruler } from "@/lib/icons";
 import { isCornerGroupProduct } from "@/lib/product-category";
@@ -53,10 +53,9 @@ function ProductGalleryImage({
  );
 
  const imageElement = (
-  <Image
-   src={image.url}
+  <ProductImagePicture
+   image={image}
    alt={image.alt ?? t("product.productImage")}
-   fill
    sizes="(max-width: 1151px) 100vw, 60vw"
    draggable={false}
    className={cn(

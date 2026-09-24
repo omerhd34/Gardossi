@@ -30,6 +30,13 @@ import {
  parseTurkishAmount,
 } from "@/lib/admin/price-input";
 import { slugify } from "@/lib/admin/slug";
+import {
+ EMPTY_PRODUCT_IMAGE_URLS,
+ mergeProductImageDeviceUrl,
+ normalizeProductImage,
+ PRODUCT_IMAGE_DEVICES,
+} from "@/lib/content/product-images";
+import { PRODUCT_IMAGE_DEVICE_IMAGES } from "@/lib/admin/image-specs";
 import { CORNER_CATEGORY_SLUG } from "@/lib/product-category";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,10 +69,13 @@ function normalizeDimensionItemQuantity(quantity) {
 
 const emptyImage = {
  url: "",
+ urls: { ...EMPTY_PRODUCT_IMAGE_URLS },
  alt: "",
  altEn: "",
  isPrimary: false,
 };
+
+const DEFAULT_IMAGE_DEVICE = "desktop";
 
 function createEmptyProduct(categoryGroupId = "") {
  return {
@@ -125,8 +135,9 @@ export function ProductForm({
      }))
      : [{ ...emptyDimensionItem }],
    images:
-    product.images?.map((image) => ({
+    product.images?.map((image) => normalizeProductImage({
      url: image.url ?? "",
+     urls: image.urls ?? null,
      alt: image.alt ?? "",
      altEn: image.altEn ?? "",
      isPrimary: Boolean(image.isPrimary),
@@ -137,10 +148,13 @@ export function ProductForm({
  const [loading, setLoading] = useState(false);
  const [uploading, setUploading] = useState(false);
  const [uploadStatus, setUploadStatus] = useState("");
+ const [imageDevice, setImageDevice] = useState(DEFAULT_IMAGE_DEVICE);
  const fileInputRef = useRef(null);
  const canMarkFeatured = Boolean(form.isFeatured) || featuredCount < maxFeatured;
  const selectedCategory = categoryGroups.find((group) => group.id === form.categoryGroupId);
  const isCornerCategory = selectedCategory?.slug === CORNER_CATEGORY_SLUG;
+ const imageDeviceLabel =
+  PRODUCT_IMAGE_DEVICE_IMAGES[imageDevice]?.label ?? "Masaüstü";
 
  const totalPrice = useMemo(() => {
   return form.dimensionItems.reduce((sum, item) => {
@@ -225,10 +239,57 @@ export function ProductForm({
   return slugify(form.name) || product?.slug || ADMIN_DRAFT_UPLOAD_FOLDER;
  }
 
+ async function uploadSingleFile(file, folder) {
+  const body = new FormData();
+  body.append("file", file);
+  body.append("folder", `${folder}/${imageDevice}`);
+
+  const response = await fetch("/api/admin/upload", {
+   method: "POST",
+   body,
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Yükleme başarısız.");
+  if (!data.url) throw new Error("Yüklenen görsel adresi alınamadı.");
+  return data.url;
+ }
+
  async function handleUpload(event) {
   const files = Array.from(event.target.files ?? []);
   event.target.value = "";
   await uploadImageFiles(files);
+ }
+
+ async function handleReplaceUpload(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  const imageIndex = replaceImageIndex;
+  setReplaceImageIndex(null);
+  if (!file || imageIndex == null) return;
+
+  const fileTypeError = validateImageUploadFile(file);
+  if (fileTypeError) {
+   toast.error(fileTypeError);
+   return;
+  }
+
+  setUploadStatus(`${file.name} güncelleniyor…`);
+  setUploading(true);
+  try {
+   const url = await uploadSingleFile(file, getUploadFolder());
+   updateImages((images) =>
+    images.map((image, index) =>
+     index === imageIndex ? mergeProductImageDeviceUrl(image, imageDevice, url) : image
+    )
+   );
+   setUploadStatus(`${imageDeviceLabel} görseli güncellendi.`);
+   toast.success(`${imageDeviceLabel} görseli güncellendi.`);
+  } catch (error) {
+   setUploadStatus("");
+   toast.error(error.message);
+  } finally {
+   setUploading(false);
+  }
  }
 
  async function uploadImageFiles(files) {
@@ -246,27 +307,19 @@ export function ProductForm({
    setUploadStatus(`${file.name} yükleniyor…`);
    setUploading(true);
    try {
-    const body = new FormData();
-    body.append("file", file);
-    body.append("folder", folder);
-
-    const response = await fetch("/api/admin/upload", {
-     method: "POST",
-     body,
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Yükleme başarısız.");
+    const url = await uploadSingleFile(file, folder);
 
     updateImages((images) => [
      ...images,
-     {
+     normalizeProductImage({
       ...emptyImage,
-      url: data.url,
+      urls: { ...EMPTY_PRODUCT_IMAGE_URLS, [imageDevice]: url },
+      url,
       isPrimary: images.length === 0,
-     },
+     }),
     ]);
     setUploadStatus(`${file.name} eklendi.`);
-    toast.success("Görsel yüklendi.");
+    toast.success(`${imageDeviceLabel} görseli yüklendi.`);
    } catch (error) {
     setUploadStatus("");
     toast.error(error.message);
@@ -300,7 +353,15 @@ export function ProductForm({
    return;
   }
 
-  if (!(form.images ?? []).some((image) => image.url?.trim())) {
+  if (
+   !(form.images ?? []).some((image) => {
+    const normalized = normalizeProductImage(image);
+    return Boolean(
+     normalized.url ||
+     PRODUCT_IMAGE_DEVICES.some((device) => normalized.urls[device])
+    );
+   })
+  ) {
    toast.error("En az bir görsel gereklidir.");
    return;
   }
@@ -317,12 +378,15 @@ export function ProductForm({
    const payload = {
     ...form,
     slug: slugify(form.name),
-    images: (form.images ?? []).map((image, index) => ({
-     ...image,
-     isPrimary:
-      image.isPrimary ||
-      (index === 0 && !(form.images ?? []).some((item) => item.isPrimary)),
-    })),
+    images: (form.images ?? []).map((image, index) => {
+     const normalized = normalizeProductImage(image);
+     return {
+      ...normalized,
+      isPrimary:
+       Boolean(normalized.isPrimary) ||
+       (index === 0 && !(form.images ?? []).some((item) => item.isPrimary)),
+     };
+    }),
    };
 
    const response = await fetch(
@@ -670,6 +734,8 @@ export function ProductForm({
      <VariantImagesEditor
       images={form.images ?? []}
       productName={form.name}
+      device={imageDevice}
+      onDeviceChange={setImageDevice}
       uploading={uploading}
       uploadStatus={uploadStatus}
       onSelectFile={openUpload}
@@ -678,7 +744,14 @@ export function ProductForm({
       onMove={moveImage}
       onRemove={(imageIndex) =>
        updateImages((images) =>
-        images.filter((_, itemIndex) => itemIndex !== imageIndex)
+        images
+         .map((image, index) =>
+          index === imageIndex ? mergeProductImageDeviceUrl(image, imageDevice, "") : image
+         )
+         .filter((image) => {
+          const normalized = normalizeProductImage(image);
+          return PRODUCT_IMAGE_DEVICES.some((device) => normalized.urls[device]);
+         })
        )
       }
      />

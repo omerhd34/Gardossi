@@ -1,12 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ProductFavoriteButton } from "@/components/favorites/product-favorite-button";
+import { ProductImagePicture } from "@/components/ui/product-image-picture";
 import { useLocale } from "@/contexts/locale-provider";
 import {
  formatProductPrice,
  getPrimaryImageUrl,
+ getPrimaryProductImage,
  getProductCardBottomLabel,
  getProductDisplayPrice,
 } from "@/lib/product-utils";
@@ -23,6 +24,7 @@ export function ProductCard({
  omitCategoryInLabel = false,
 }) {
  const { locale } = useLocale();
+ const primaryImage = getPrimaryProductImage(product);
  const imageUrl = getPrimaryImageUrl(product);
  const isCatalog = variant === "catalog";
  const isFeatured = variant === "featured";
@@ -55,11 +57,10 @@ export function ProductCard({
      href={`/urunler/${product.slug}`}
      className={cn("absolute inset-0 block cursor-pointer", navPressClass)}
     >
-     {imageUrl ? (
-      <Image
-       src={imageUrl}
-       alt={product.images?.[0]?.alt ?? product.name}
-       fill
+     {imageUrl && primaryImage ? (
+      <ProductImagePicture
+       image={primaryImage}
+       alt={primaryImage.alt ?? product.name}
        sizes={
         isCatalog
          ? "(max-width: 640px) 100vw, 50vw"

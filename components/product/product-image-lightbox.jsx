@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import { ProductImagePicture } from "@/components/ui/product-image-picture";
 import { useLocale } from "@/contexts/locale-provider";
 import { ChevronLeft, ChevronRight, FullscreenExitIcon, FullscreenIcon, Loader2Icon, X } from "@/lib/icons";
 import {
@@ -47,10 +47,9 @@ function LightboxImage({
  };
 
  const imageElement = (
-  <Image
-   src={image.url}
+  <ProductImagePicture
+   image={image}
    alt={alt}
-   fill
    sizes={isFullscreen ? "100vw" : "(max-width: 1024px) 100vw, 90vw"}
    draggable={false}
    className={cn(
@@ -260,7 +259,7 @@ export function ProductImageLightbox({
   if (open) return;
 
   if (document.fullscreenElement === overlayRef.current) {
-   document.exitFullscreen?.().catch(() => {});
+   document.exitFullscreen?.().catch(() => { });
   }
  }, [open]);
 
