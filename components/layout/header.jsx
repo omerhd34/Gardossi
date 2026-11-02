@@ -16,6 +16,15 @@ const HeaderSearchBar = dynamic(() =>
 const LOGO_LIGHT_ZONE_SELECTORS =
  ".hero-carousel, .page-header-bleed, .faq-hero, .mission-hero, .about-hero, .header-logo-light-zone";
 
+const HEADER_DIVIDER_EXCLUDED_PATHS = new Set([
+ "/",
+ "/hakkimizda",
+ "/misyon-vizyon",
+ "/degerlerimiz",
+ "/taahhutlerimiz",
+ "/sss",
+]);
+
 function getHeaderHideThreshold() {
  const header = document.querySelector(".site-header");
  const headerHeight = header
@@ -70,6 +79,7 @@ export function Header() {
  const [submittedQuery, setSubmittedQuery] = useState("");
 
  const isHome = pathname === "/";
+ const showHeaderDivider = !HEADER_DIVIDER_EXCLUDED_PATHS.has(pathname);
  const isProductsPage =
   pathname === "/urunler" || pathname.startsWith("/urunler/");
  const headerHidden =
@@ -202,7 +212,10 @@ export function Header() {
    data-menu-open={menuOpen || searchOpen || submittedQuery ? "true" : "false"}
    data-hidden={headerHidden ? "true" : "false"}
    className={cn(
-    "site-header group/header pointer-events-none fixed inset-x-0 top-0 z-50 bg-transparent transition-[transform,opacity] duration-300 ease-out [&_.header-search-shell]:pointer-events-auto **:[[role=search]]:pointer-events-auto [&_a]:pointer-events-auto [&_button]:pointer-events-auto [&_form]:pointer-events-auto [&_input]:pointer-events-auto",
+    "site-header group/header pointer-events-none fixed inset-x-0 top-0 z-50 bg-transparent transition-[transform,opacity,background-color,border-color,box-shadow,backdrop-filter] duration-300 ease-out [&_.header-search-shell]:pointer-events-auto **:[[role=search]]:pointer-events-auto [&_a]:pointer-events-auto [&_button]:pointer-events-auto [&_form]:pointer-events-auto [&_input]:pointer-events-auto",
+    showHeaderDivider &&
+    !heroOverlay &&
+    "border-b border-border/70 bg-white shadow-sm",
     headerHidden && "pointer-events-none -translate-y-full opacity-0"
    )}
   >

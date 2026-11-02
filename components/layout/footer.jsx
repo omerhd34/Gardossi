@@ -63,7 +63,7 @@ export function Footer() {
  const workingHours = getSiteWorkingHours(locale, dictionary);
 
  return (
-  <footer className="bg-white pt-12 lg:pt-14" data-nosnippet>
+  <footer className="border-t border-border/70 bg-white pt-12 shadow-[0_-1px_2px_rgb(0_0_0/4%)] lg:pt-14" data-nosnippet>
    <div className={containerPremiumClass}>
     <div className="mx-auto grid max-w-3xl gap-x-10 gap-y-10 sm:grid-cols-2 lg:max-w-4xl lg:grid-cols-3 lg:gap-x-14">
      <FooterColumn title={t("footer.categories")} titleHref="/urunler">
