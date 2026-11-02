@@ -47,7 +47,7 @@ function ProductMenuCard({ item, onNavigate }) {
     />
     <div className="absolute inset-0 bg-linear-to-t from-black/52 via-black/8 to-transparent" />
     <div className="absolute right-3 bottom-3 left-3">
-     <span className="inline-flex max-w-full truncate rounded-full border border-white/22 bg-white/16 px-3 py-1 text-xs font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/22%)] backdrop-blur-md transition-[scale,background-color] duration-200 ease-out active:duration-75 group-hover:scale-[1.03] group-hover:bg-white/24 motion-reduce:duration-150">
+     <span className="inline-flex max-w-full truncate rounded-full border border-white/20 bg-black/72 px-3 py-1 text-xs font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] transition-[scale,background-color] duration-200 ease-out active:duration-75 group-hover:scale-[1.03] group-hover:bg-black/80 motion-reduce:duration-150">
       {item.label}
      </span>
     </div>

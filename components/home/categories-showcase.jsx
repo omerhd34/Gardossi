@@ -19,7 +19,7 @@ function CategoryCard({ category }) {
   "scale-100 origin-left transition-[scale] duration-200 ease-out active:duration-75 group-hover/card:scale-105 motion-reduce:duration-150";
 
  const badgeClassName =
-  "inline-flex rounded-full border border-white/20 bg-white/15 font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md";
+  "inline-flex rounded-full border border-white/20 bg-black/72 font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)]";
 
  return (
   <Link

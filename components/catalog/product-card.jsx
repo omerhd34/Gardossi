@@ -34,7 +34,7 @@ export function ProductCard({
  const displayPrice = getProductDisplayPrice(product);
  const priceLabel = formatProductPrice(displayPrice, locale);
  const badgeClassName = cn(
-  "inline-flex scale-100 rounded-full border border-white/20 bg-white/15 font-medium text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md transition-[scale] duration-200 ease-out active:duration-75 hover:scale-[1.08] motion-reduce:duration-150",
+  "inline-flex scale-100 rounded-full border border-white/20 bg-black/72 font-medium text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] transition-[scale] duration-200 ease-out active:duration-75 hover:scale-[1.08] motion-reduce:duration-150",
   isCatalog
    ? "px-3 py-1.5 text-xs lg:px-4 lg:py-2 lg:text-sm"
    : "px-2.5 py-1 text-[0.65rem] lg:px-3 lg:py-1.5 lg:text-xs"
