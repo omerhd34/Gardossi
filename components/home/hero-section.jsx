@@ -14,7 +14,7 @@ import { headerGlassBtnClass } from "@/lib/layout/header-styles";
 import { DESKTOP_LAYOUT_MQ } from "@/lib/layout/breakpoints";
 import { cn } from "@/lib/utils";
 
-const HERO_AUTOPLAY_MS = 12_000;
+const HERO_AUTOPLAY_MS = 3_000;
 const HERO_IMAGE_QUALITY = 60;
 
 function isHeroDesktopViewport() {
