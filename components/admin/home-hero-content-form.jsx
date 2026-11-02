@@ -209,6 +209,7 @@ export function HomeHeroFields({
     </CardHeader>
     <CardContent className="space-y-1">
      <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
+     <p className="text-xs text-muted-foreground">{heroHint.safeZone}</p>
      <p className="text-xs text-muted-foreground">{getHomeHeroImageRequirements()}</p>
     </CardContent>
    </Card>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { MdCloudUpload, MdDeleteOutline, MdImage } from "react-icons/md";
 import { toast } from "sonner";
+import { AdminSafeZoneOverlay } from "@/components/admin/admin-safe-zone-overlay";
 import { IMAGE_UPLOAD_MAX_SIZE_LABEL, validateImageUploadFile } from "@/lib/admin/image-upload";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -38,6 +39,7 @@ export function AdminImageUpload({
  previewAspectClass = "aspect-16/10",
  previewHeightClass = "",
  hintMinHeightClass = "",
+ showSafeZone = false,
  stretch = false,
  fullWidth = false,
  className,
@@ -156,6 +158,10 @@ export function AdminImageUpload({
        <p className="text-sm">Henüz görsel yüklenmedi</p>
       </div>
      )}
+
+     {showSafeZone && showPreview && !uploading && !isDragging ? (
+      <AdminSafeZoneOverlay />
+     ) : null}
 
      {!hasCustomImage && showPreview && !uploading ? (
       <span className="pointer-events-none absolute top-3 left-3 z-10 rounded-full border border-white/35 bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">

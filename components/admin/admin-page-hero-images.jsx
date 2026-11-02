@@ -148,6 +148,7 @@ export function AdminPageHeroImages({
     <div className="min-w-0 flex-1 space-y-1">
      <Label className="text-sm font-medium">{sectionLabel}</Label>
      <p className="text-xs text-muted-foreground">{heroHint.lead}</p>
+     <p className="text-xs text-muted-foreground">{heroHint.safeZone}</p>
      <p className="text-xs text-muted-foreground">{getPageHeroImageRequirements()}</p>
      <p className="text-xs text-muted-foreground">{getPageHeroDeviceImageHint(device)}</p>
     </div>
@@ -170,6 +171,7 @@ export function AdminPageHeroImages({
     uploading={uploading}
     hint=""
     previewAspectClass={spec.previewAspectClass}
+    showSafeZone
     fullWidth
    />
   </div>

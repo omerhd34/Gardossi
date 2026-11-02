@@ -115,6 +115,7 @@ export function AdminHeroSlideImage({
    uploading={uploading}
    hint=""
    previewAspectClass={spec.previewAspectClass}
+   showSafeZone
    fullWidth
   />
  );
