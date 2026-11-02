@@ -13,8 +13,12 @@ import {
  getAvailableFavoriteCategories,
  sortFavorites,
 } from "@/lib/favorites-filters";
+import { Loader2Icon } from "@/lib/icons";
 import { headingDisplayClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
+
+const favoritesHeroShellClass =
+ "flex flex-1 flex-col items-center justify-center rounded-3xl border border-dashed border-charcoal/12 bg-cream/40 px-6 py-16 text-center";
 
 export function FavoritesView({ productMetaBySlug = {} }) {
  const { favorites, hydrated } = useFavorites();
@@ -45,13 +49,19 @@ export function FavoritesView({ productMetaBySlug = {} }) {
 
  if (!hydrated) {
   return (
-   <p className="text-muted-foreground text-sm">{t("common.loading")}…</p>
+   <div className={favoritesHeroShellClass}>
+    <Loader2Icon
+     className="size-6 animate-spin text-charcoal/40"
+     role="status"
+     aria-label={t("common.loading")}
+    />
+   </div>
   );
  }
 
  if (favorites.length === 0) {
   return (
-   <div className="rounded-3xl border border-dashed border-charcoal/12 bg-cream/40 px-6 py-20 text-center">
+   <div className={favoritesHeroShellClass}>
     <h1 className={cn(headingDisplayClass, "text-charcoal")}>{t("favorites.title")}</h1>
     <p className="text-muted-foreground mx-auto mt-3 max-w-md text-sm">
      {t("favorites.emptyDescription")}
@@ -67,7 +77,7 @@ export function FavoritesView({ productMetaBySlug = {} }) {
  }
 
  return (
-  <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
+  <div className="flex flex-col gap-8 pb-14 md:pb-20 lg:flex-row lg:items-start lg:gap-12">
    <FavoritesFiltersSidebar
     categories={categories}
     selectedCategory={selectedCategory}
