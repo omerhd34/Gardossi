@@ -31,14 +31,16 @@ function getSlideClassName(slidesPerView) {
 const SHOWCASE_AUTOPLAY_MS = 6000;
 
 const navOverlayButtonClassName = cn(
- "inline-flex size-10 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/15 text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md hover:scale-110 hover:bg-white/22 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-9",
+ contactFloatBtnClass,
+ "size-10 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-9",
  interactiveMotionClass,
  "[&_svg]:size-5.5 sm:[&_svg]:size-5 [&_svg]:[stroke-width:2.5]"
 );
 
 const navFlankButtonClassName = cn(
  contactFloatBtnClass,
- "inline-flex size-10 text-white/96 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-11 lg:size-12 [&_svg]:size-5 md:[&_svg]:size-[1.375rem] [&_svg]:[stroke-width:3.5]"
+ "size-10 text-white/96 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-11 lg:size-12",
+ "[&_svg]:size-5 md:[&_svg]:size-[1.375rem] [&_svg]:[stroke-width:3.5]"
 );
 
 const navOverlayPrevClassName =
@@ -216,12 +218,15 @@ export function HomeShowcaseSlider({
       <Link
        href={action.href}
        className={cn(
-        "mt-4 inline-flex origin-center items-center gap-1 text-sm font-semibold text-charcoal/70 hover:scale-105 hover:text-charcoal",
+        "group/action mt-6 inline-flex origin-center items-center gap-1.5 rounded-full border border-charcoal/12 bg-white px-5 py-2.5 text-sm font-semibold text-charcoal shadow-[0_1px_2px_rgb(0_0_0/4%)] hover:scale-105 hover:border-charcoal/25 hover:bg-cream/60",
         interactiveMotionClass
        )}
       >
        {action.label}
-       <ChevronRight className="size-4 shrink-0" aria-hidden />
+       <ChevronRight
+        className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover/action:translate-x-0.5 motion-reduce:transition-none"
+        aria-hidden
+       />
       </Link>
      ) : null}
     </div>
