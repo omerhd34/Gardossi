@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
+import { OverlaySurface } from "@/components/ui/overlay-surface";
 import { useTranslations } from "@/contexts/locale-provider";
 import { navPressClass, productCardKalifClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
@@ -49,11 +50,11 @@ export function ProductsCategoryGrid() {
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent" />
       <div className="absolute right-3 bottom-3 left-3">
-       <span
-        className="inline-flex rounded-full border border-white/20 bg-black/72 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] scale-100 origin-left transition-[scale] duration-200 ease-out active:duration-75 group-hover/card:scale-105 motion-reduce:duration-150"
+       <OverlaySurface
+        className="inline-flex scale-100 origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out active:duration-75 group-hover/card:scale-105 motion-reduce:duration-150"
        >
         {category.label}
-       </span>
+       </OverlaySurface>
       </div>
      </div>
     </Link>

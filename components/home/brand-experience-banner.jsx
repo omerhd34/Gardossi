@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { PageHeroPicture } from "@/components/ui/page-hero-picture";
+import { OverlaySurface } from "@/components/ui/overlay-surface";
 import { useLocale } from "@/contexts/locale-provider";
 import {
  visualHeroTitleLineClass,
@@ -60,12 +61,13 @@ export function BrandExperienceBanner() {
      </p>
     </div>
     <div className="mt-auto flex w-full justify-center pt-6 sm:pt-8">
-     <Link
+     <OverlaySurface
+      as={Link}
       href="/hakkimizda"
-      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full border border-white/35 bg-white/15 px-8 text-sm font-semibold tracking-[0.08em] text-white uppercase shadow-[0_4px_16px_rgb(0_0_0/18%)] backdrop-blur-md touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:border-white/50 hover:bg-white/22 motion-reduce:transition-none motion-reduce:active:scale-100"
+      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full px-8 text-sm font-semibold tracking-[0.08em] uppercase touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:border-white/50 motion-reduce:transition-none motion-reduce:active:scale-100"
      >
       {brandExperienceCta}
-     </Link>
+     </OverlaySurface>
     </div>
    </div>
   </section>

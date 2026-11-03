@@ -74,6 +74,7 @@
   --sand: oklch(0.955 0.006 90);
   --stone: oklch(0.91 0.008 90);
   --charcoal: oklch(0.22 0.01 260);
+  --media-overlay-surface: #8f8f8f55;
   --kalif-blue: oklch(0.52 0.14 250);
   --brand-logo-bg: #3b4d32;
   --brand-logo-border: oklch(0.34 0.04 125 / 72%);

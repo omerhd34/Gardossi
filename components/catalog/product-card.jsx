@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ProductFavoriteButton } from "@/components/favorites/product-favorite-button";
+import { OverlaySurface } from "@/components/ui/overlay-surface";
 import { ProductImagePicture } from "@/components/ui/product-image-picture";
 import { useLocale } from "@/contexts/locale-provider";
 import {
@@ -34,7 +35,7 @@ export function ProductCard({
  const displayPrice = getProductDisplayPrice(product);
  const priceLabel = formatProductPrice(displayPrice, locale);
  const badgeClassName = cn(
-  "inline-flex scale-100 rounded-full border border-white/20 bg-black/72 font-medium text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] transition-[scale] duration-200 ease-out active:duration-75 hover:scale-[1.08] motion-reduce:duration-150",
+  "inline-flex scale-100 rounded-full font-medium transition-[scale] duration-200 ease-out active:duration-75 hover:scale-[1.08] motion-reduce:duration-150",
   isCatalog
    ? "px-3 py-1.5 text-xs lg:px-4 lg:py-2 lg:text-sm"
    : "px-2.5 py-1 text-[0.65rem] lg:px-3 lg:py-1.5 lg:text-xs"
@@ -85,17 +86,17 @@ export function ProductCard({
       )}
      >
       {priceLabel ? (
-       <span
+       <OverlaySurface
         className={cn(
          badgeClassName,
          "w-fit shrink-0 self-start origin-left lg:order-2 lg:ml-auto lg:self-auto lg:origin-right"
         )}
        >
         {priceLabel}
-       </span>
+       </OverlaySurface>
       ) : null}
 
-      <span
+      <OverlaySurface
        className={cn(
         badgeClassName,
         "mt-auto w-fit max-w-full min-w-0 origin-left text-left leading-snug line-clamp-2",
@@ -103,7 +104,7 @@ export function ProductCard({
        )}
       >
        {bottomLabel}
-      </span>
+      </OverlaySurface>
      </div>
     </Link>
 
