@@ -55,11 +55,11 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
          />
          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-black/5 lg:from-black/40 lg:via-transparent lg:to-transparent" />
          <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/12 lg:group-hover:bg-black/8" />
-         <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/20 bg-black/72 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm lg:hidden">
+         <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/35 bg-black/28 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm lg:hidden">
           {category.label}
          </span>
         </div>
-        <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/80">
+        <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/35 lg:backdrop-blur-sm">
          {category.label}
         </span>
        </>
@@ -73,7 +73,7 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
         />
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-black/5" />
         <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/12" />
-        <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/20 bg-black/72 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_4px_16px_rgb(0_0_0/18%)] transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm">
+        <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/35 bg-black/28 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm">
          {category.label}
         </span>
        </>
