@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { MdCloudUpload, MdDeleteOutline, MdImage } from "react-icons/md";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { MdCloudUpload, MdDeleteOutline, MdImage, MdZoomIn } from "react-icons/md";
 import { toast } from "sonner";
-import { AdminSafeZoneOverlay } from "@/components/admin/admin-safe-zone-overlay";
 import { IMAGE_UPLOAD_MAX_SIZE_LABEL, validateImageUploadFile } from "@/lib/admin/image-upload";
+import { X } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,53 @@ function AdminUploadSpinner({ className }) {
  );
 }
 
+function AdminImageLightbox({ src, alt, onClose }) {
+ useEffect(() => {
+  const previousOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+
+  function onKeyDown(event) {
+   if (event.key === "Escape") onClose();
+  }
+
+  window.addEventListener("keydown", onKeyDown);
+  return () => {
+   document.body.style.overflow = previousOverflow;
+   window.removeEventListener("keydown", onKeyDown);
+  };
+ }, [onClose]);
+
+ return createPortal(
+  <div
+   className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4 backdrop-blur-[2px] sm:p-8"
+   role="dialog"
+   aria-modal="true"
+   aria-label={`${alt} — gerçek boyut`}
+   onClick={onClose}
+  >
+   <Button
+    type="button"
+    variant="secondary"
+    size="icon"
+    className="absolute top-4 right-4 z-10 size-10 cursor-pointer border-white/20 bg-background/95 text-foreground shadow-md"
+    aria-label="Kapat"
+    onClick={onClose}
+   >
+    <X className="size-5" />
+   </Button>
+
+   {/* eslint-disable-next-line @next/next/no-img-element */}
+   <img
+    src={src}
+    alt={alt}
+    className="max-h-[min(92vh,1600px)] max-w-[min(96vw,1600px)] object-contain shadow-2xl"
+    onClick={(event) => event.stopPropagation()}
+   />
+  </div>,
+  document.body
+ );
+}
+
 export function AdminImageUpload({
  label = "Kapak görseli",
  hideLabel = false,
@@ -39,13 +87,13 @@ export function AdminImageUpload({
  previewAspectClass = "aspect-16/10",
  previewHeightClass = "",
  hintMinHeightClass = "",
- showSafeZone = false,
  stretch = false,
  fullWidth = false,
  className,
 }) {
  const inputRef = useRef(null);
  const [isDragging, setIsDragging] = useState(false);
+ const [lightboxOpen, setLightboxOpen] = useState(false);
  const isDisabled = disabled || uploading;
  const hasCustomImage = Boolean(value);
  const previewSrc = value || defaultPreview;
@@ -67,6 +115,15 @@ export function AdminImageUpload({
  function openFilePicker() {
   if (isDisabled) return;
   inputRef.current?.click();
+ }
+
+ function handlePreviewClick() {
+  if (uploading || isDragging) return;
+  if (showPreview) {
+   setLightboxOpen(true);
+   return;
+  }
+  openFilePicker();
  }
 
  function handleFileChange(event) {
@@ -92,10 +149,14 @@ export function AdminImageUpload({
   void processFile(event.dataTransfer.files?.[0]);
  }
 
+ const isPortraitPreview =
+  !previewHeightClass &&
+  /aspect-(2\/3|3\/4|9\/16)/.test(previewAspectClass || "");
+
  const previewClassName = cn(
-  "relative w-full overflow-hidden bg-muted",
+  "relative overflow-hidden bg-muted",
   previewHeightClass || previewAspectClass,
-  !previewHeightClass && "max-h-80"
+  isPortraitPreview ? "mx-auto w-full max-w-xs" : "w-full"
  );
 
  return (
@@ -135,14 +196,27 @@ export function AdminImageUpload({
       : "border-border/70",
      fullWidth ? "w-full" : "mx-auto w-full max-w-2xl",
      stretch && "flex flex-1 flex-col",
-     !isDisabled && "cursor-pointer"
+     (!isDisabled || showPreview) && "cursor-pointer"
     )}
     onDragEnter={handleDragOver}
     onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
     onDrop={handleDrop}
    >
-    <div className={cn(previewClassName, "select-none")} onClick={openFilePicker}>
+    <div
+     className={cn(previewClassName, "select-none", showPreview && "cursor-zoom-in")}
+     onClick={handlePreviewClick}
+     role={showPreview ? "button" : undefined}
+     tabIndex={showPreview ? 0 : undefined}
+     aria-label={showPreview ? `${label} — gerçek boyutta aç` : undefined}
+     onKeyDown={(event) => {
+      if (!showPreview) return;
+      if (event.key === "Enter" || event.key === " ") {
+       event.preventDefault();
+       setLightboxOpen(true);
+      }
+     }}
+    >
      {showPreview ? (
       <Image
        src={previewSrc}
@@ -159,13 +233,16 @@ export function AdminImageUpload({
       </div>
      )}
 
-     {showSafeZone && showPreview && !uploading && !isDragging ? (
-      <AdminSafeZoneOverlay />
-     ) : null}
-
      {!hasCustomImage && showPreview && !uploading ? (
       <span className="pointer-events-none absolute top-3 left-3 z-10 rounded-full border border-white/35 bg-black/45 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
        Varsayılan görsel
+      </span>
+     ) : null}
+
+     {showPreview && !uploading ? (
+      <span className="pointer-events-none absolute bottom-3 left-3 z-10 inline-flex items-center gap-1 rounded-full border border-white/35 bg-black/45 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+       <MdZoomIn className="size-3.5" aria-hidden />
+       Gerçek boyut
       </span>
      ) : null}
 
@@ -223,6 +300,14 @@ export function AdminImageUpload({
      </p>
     </div>
    </div>
+
+   {lightboxOpen && previewSrc ? (
+    <AdminImageLightbox
+     src={previewSrc}
+     alt={label}
+     onClose={() => setLightboxOpen(false)}
+    />
+   ) : null}
   </div>
  );
 }
