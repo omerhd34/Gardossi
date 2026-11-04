@@ -2,11 +2,11 @@
 import { getImageProps } from "next/image";
 import { PAGE_HERO_IMAGE_KEYS } from "@/lib/content/page-hero-images";
 import {
+ HERO_LG_MQ,
+ HERO_MD_MQ,
  HERO_SM2X_MQ,
  HERO_XL2X_MQ,
  HERO_XL_MQ,
- LG_MQ,
- MD_MQ,
 } from "@/lib/layout/breakpoints";
 
 const IMAGE_SIZES = "100vw";
@@ -14,8 +14,8 @@ const IMAGE_SIZES = "100vw";
 const PAGE_HERO_BREAKPOINTS = [
  { media: HERO_XL2X_MQ, key: "xl2x", width: 2560, height: 1440 },
  { media: HERO_XL_MQ, key: "xl", width: 1920, height: 1080 },
- { media: LG_MQ, key: "lg", width: 1280, height: 720 },
- { media: MD_MQ, key: "md", width: 1024, height: 768 },
+ { media: HERO_LG_MQ, key: "lg", width: 1440, height: 810 },
+ { media: HERO_MD_MQ, key: "md", width: 1024, height: 768 },
  { media: HERO_SM2X_MQ, key: "sm2x", width: 1080, height: 1620 },
 ];
 

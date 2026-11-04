@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PageHeroPicture } from "@/components/ui/page-hero-picture";
 import { SeoH1 } from "@/components/seo/seo-h1";
 import { useTranslations } from "@/contexts/locale-provider";
-import { resolvePageHeroImage } from "@/lib/content/page-hero-images";
+import { resolvePageHeroImages } from "@/lib/content/page-hero-images";
 import { visualHeroTitleShadowClass } from "@/lib/layout/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,7 @@ export function MissionHero({
  const heroAlt = heroContent.heroImageAlt ?? t("missionVision.heroImageAlt");
  const pageTitle = t(titleKey);
  const [headerOffset, setHeaderOffset] = useState(0);
- const heroImage = resolvePageHeroImage(heroKey, heroContent);
+ const heroImages = resolvePageHeroImages(heroKey, heroContent);
 
  useEffect(() => {
   const update = () => setHeaderOffset(getSiteHeaderHeight());
@@ -50,7 +50,7 @@ export function MissionHero({
    style={{ "--mission-hero-header-offset": `${headerOffset}px` }}
   >
    <div className="relative min-h-[min(42vh,400px)] w-full sm:min-h-[min(48vh,480px)] md:min-h-[min(52vh,560px)] lg:min-h-[min(48vh,520px)]">
-    <PageHeroPicture src={heroImage} alt={heroAlt} />
+    <PageHeroPicture images={heroImages} alt={heroAlt} />
     <div className="absolute inset-0 bg-black/30" aria-hidden />
 
     <div

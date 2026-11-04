@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PageHeroPicture } from "@/components/ui/page-hero-picture";
 import { SeoH1 } from "@/components/seo/seo-h1";
 import { useTranslations } from "@/contexts/locale-provider";
-import { resolvePageHeroImage } from "@/lib/content/page-hero-images";
+import { resolvePageHeroImages } from "@/lib/content/page-hero-images";
 import { visualHeroTitleShadowClass } from "@/lib/layout/page-styles";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,7 @@ export function AboutHero() {
  const { about } = dictionary;
  const heroAlt = about.visualTitleLines.join(" ");
  const [headerOffset, setHeaderOffset] = useState(0);
- const heroImage = resolvePageHeroImage("about", about);
+ const heroImages = resolvePageHeroImages("about", about);
 
  useEffect(() => {
   const update = () => setHeaderOffset(getSiteHeaderHeight());
@@ -46,7 +46,7 @@ export function AboutHero() {
    style={{ "--about-hero-header-offset": `${headerOffset}px` }}
   >
    <div className="relative min-h-[min(42vh,400px)] w-full sm:min-h-[min(48vh,480px)] md:min-h-[min(52vh,560px)] lg:min-h-[min(48vh,520px)]">
-    <PageHeroPicture src={heroImage} alt={heroAlt} />
+    <PageHeroPicture images={heroImages} alt={heroAlt} />
     <div className="absolute inset-0 bg-black/30" aria-hidden />
 
     <div
