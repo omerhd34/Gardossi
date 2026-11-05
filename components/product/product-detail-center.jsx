@@ -42,11 +42,11 @@ function ProductGalleryImage({
 }) {
  const isSlide = variant === "slide";
  const wrapperClassName = cn(
-  "group/gallery-image relative block w-full overflow-hidden",
+  "group/gallery-image relative block w-full cursor-pointer overflow-hidden",
   isSlide
    ? "aspect-4/3 bg-white min-[48rem]:aspect-16/10"
    : cn(
-    "aspect-4/3 min-[1152px]:aspect-16/10 cursor-pointer rounded-3xl bg-white",
+    "aspect-4/3 min-[1152px]:aspect-16/10 rounded-3xl bg-white",
     productGalleryFrameClass
    ),
   className
@@ -70,14 +70,6 @@ function ProductGalleryImage({
   onContextMenu: preventImageSaveInteraction,
   onDragStart: preventImageSaveInteraction,
  };
-
- if (isSlide) {
-  return (
-   <div className={wrapperClassName} {...saveGuardProps}>
-    {imageElement}
-   </div>
-  );
- }
 
  return (
   <button
