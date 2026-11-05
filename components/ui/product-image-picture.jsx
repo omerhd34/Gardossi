@@ -19,6 +19,7 @@ export function ProductImagePicture({
  className,
  sizes = "(max-width: 768px) 50vw, 25vw",
  fill = true,
+ contained = false,
  priority = false,
  quality = 60,
  draggable = false,
@@ -26,12 +27,15 @@ export function ProductImagePicture({
  const resolved = resolveProductImageUrls(image);
  if (!resolved?.mobile) return null;
 
+ const useFill = fill && !contained;
+ const containedImageClass =
+  "block h-auto w-auto max-h-[100cqh] max-w-[100cqw] object-contain";
  const shared = {
   alt,
   sizes,
   quality,
   priority,
-  ...(fill ? { fill: true } : { width: 1600, height: 1200 }),
+  ...(useFill ? { fill: true } : { width: 1600, height: 1200 }),
  };
 
  if (allSourcesEqual(resolved)) {
@@ -45,7 +49,11 @@ export function ProductImagePicture({
     {...props}
     alt={alt}
     draggable={draggable}
-    className={cn(fill && "absolute inset-0 size-full", className)}
+    className={cn(
+     useFill && "absolute inset-0 size-full",
+     contained && containedImageClass,
+     className
+    )}
    />
   );
  }
@@ -64,14 +72,23 @@ export function ProductImagePicture({
  });
 
  return (
-  <picture className={cn(fill && "absolute inset-0 block size-full")}>
+  <picture
+   className={cn(
+    useFill && "absolute inset-0 block size-full",
+    contained && "inline-block w-auto max-h-[100cqh] max-w-[100cqw]"
+   )}
+  >
    <source media={LG_MQ} srcSet={desktop.props.srcSet} sizes={desktop.props.sizes} />
    <source media={MD_MQ} srcSet={tablet.props.srcSet} sizes={tablet.props.sizes} />
    <img
     {...mobile.props}
     alt={alt}
     draggable={draggable}
-    className={cn(fill && "size-full", className)}
+    className={cn(
+     useFill && "size-full",
+     contained && containedImageClass,
+     className
+    )}
    />
   </picture>
  );

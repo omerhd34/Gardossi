@@ -32,12 +32,12 @@ function LightboxImage({
  onToggleFullscreen,
  toggleLabel,
  interactive = true,
+ flanked = false,
 }) {
  const frameClassName = cn(
-  lightboxImageFrameClass,
+  "inline-flex max-h-full max-w-full items-center justify-center",
   interactive &&
-  "block h-full w-full cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
-  isFullscreen && "rounded-none border-0 bg-black shadow-none",
+  "cursor-zoom-in text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
   isFullscreen && interactive && "cursor-zoom-out"
  );
 
@@ -50,11 +50,14 @@ function LightboxImage({
   <ProductImagePicture
    image={image}
    alt={alt}
+   contained
    sizes={isFullscreen ? "100vw" : "(max-width: 1024px) 100vw, 90vw"}
    draggable={false}
    className={cn(
-    "object-cover object-center transition-[object-fit] duration-300",
-    productProtectedImageClass
+    productProtectedImageClass,
+    flanked && "md:max-w-[calc(100cqw-7rem)] min-[1100px]:max-w-[100cqw]",
+    !isFullscreen && lightboxImageFrameClass,
+    isFullscreen && "rounded-none border-0 bg-transparent shadow-none"
    )}
    priority
   />
@@ -71,7 +74,10 @@ function LightboxImage({
  return (
   <button
    type="button"
-   onClick={onToggleFullscreen}
+   onClick={(event) => {
+    event.stopPropagation();
+    onToggleFullscreen?.();
+   }}
    className={frameClassName}
    aria-label={toggleLabel}
    {...saveGuardProps}
@@ -111,6 +117,35 @@ function LightboxControlButton({
   >
    {children}
   </button>
+ );
+}
+
+function LightboxNavButton({
+ direction,
+ label,
+ isTransitioning,
+ onClick,
+ className,
+}) {
+ return (
+  <LightboxControlButton
+   variant="dark"
+   isInactive={isTransitioning}
+   onClick={(event) => {
+    event.stopPropagation();
+    onClick();
+   }}
+   className={className}
+   aria-label={label}
+  >
+   {isTransitioning ? (
+    <Loader2Icon className="size-5 animate-spin" aria-hidden="true" />
+   ) : direction === "prev" ? (
+    <ChevronLeft className="size-6" aria-hidden="true" />
+   ) : (
+    <ChevronRight className="size-6" aria-hidden="true" />
+   )}
+  </LightboxControlButton>
  );
 }
 
@@ -356,57 +391,116 @@ export function ProductImageLightbox({
     className={cn(
      isFullscreen
       ? "fixed inset-0 z-10 h-dvh w-full"
-      : "absolute inset-0 flex h-full w-full items-center justify-center px-14 pt-14 pb-4 md:px-20 md:pt-16 lg:px-24 lg:pt-20 lg:pb-8"
+      : "absolute inset-0 flex h-full w-full items-center justify-center px-3 pt-16 pb-6 sm:px-4 lg:pt-20"
     )}
    >
     <div
      className={cn(
       lightboxStageClass,
+      "@container-size",
       isFullscreen && "h-dvh w-full max-w-none"
      )}
-     onClick={(event) => event.stopPropagation()}
      onTouchStart={handleTouchStart}
      onTouchEnd={handleTouchEnd}
     >
-     {transition && images[transition.from] ? (
+     <div className="flex h-full w-full items-center justify-center">
       <div
-       key={`exit-${transition.from}-${visibleIndex}`}
        className={cn(
-        lightboxSlideLayerClass,
-        "pointer-events-none z-1",
-        getExitClass(transition.direction)
+        "flex max-h-full min-h-0 w-full items-center justify-center",
+        images.length > 1 && "md:gap-3 min-[1100px]:gap-0"
        )}
       >
-       <LightboxImage
-        image={images[transition.from]}
-        alt={
-         images[transition.from].alt ?? t("product.productImage")
-        }
-        isFullscreen={isFullscreen}
-        interactive={false}
-       />
-      </div>
-     ) : null}
+       {images.length > 1 ? (
+        <div className="hidden w-11 shrink-0 justify-center md:flex min-[1100px]:hidden">
+         {hasPrev ? (
+          <LightboxNavButton
+           direction="prev"
+           label={t("product.previousImage")}
+           isTransitioning={isTransitioning}
+           onClick={goPrev}
+           className="size-11"
+          />
+         ) : null}
+        </div>
+       ) : null}
 
-     <div
-      key={`active-${visibleIndex}`}
-      className={cn(
-       lightboxSlideLayerClass,
-       "z-2",
-       transition
-        ? cn(getEnterClass(transition.direction), "z-2")
-        : showOpenAnimation
-         ? lightboxSlideOpenClass
-         : null
-      )}
-     >
-      <LightboxImage
-       image={activeImage}
-       alt={activeImage.alt ?? t("product.productImage")}
-       isFullscreen={isFullscreen}
-       onToggleFullscreen={toggleFullscreen}
-       toggleLabel={fullscreenToggleLabel}
-      />
+       <div className="relative min-w-0">
+        {transition && images[transition.from] ? (
+         <div
+          key={`exit-${transition.from}-${visibleIndex}`}
+          className={cn(
+           lightboxSlideLayerClass,
+           "flex items-center justify-center pointer-events-none z-1",
+           getExitClass(transition.direction)
+          )}
+         >
+          <LightboxImage
+           image={images[transition.from]}
+           alt={
+            images[transition.from].alt ?? t("product.productImage")
+           }
+           isFullscreen={isFullscreen}
+           interactive={false}
+           flanked={images.length > 1}
+          />
+         </div>
+        ) : null}
+
+        <div
+         key={`active-${visibleIndex}`}
+         className={cn(
+          "relative z-2",
+          transition
+           ? getEnterClass(transition.direction)
+           : showOpenAnimation
+            ? lightboxSlideOpenClass
+            : null
+         )}
+        >
+         <LightboxImage
+          image={activeImage}
+          alt={activeImage.alt ?? t("product.productImage")}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={toggleFullscreen}
+          toggleLabel={fullscreenToggleLabel}
+          flanked={images.length > 1}
+         />
+        </div>
+
+        {hasPrev ? (
+         <LightboxNavButton
+          direction="prev"
+          label={t("product.previousImage")}
+          isTransitioning={isTransitioning}
+          onClick={goPrev}
+          className="absolute top-1/2 left-3 z-20 size-11 -translate-y-1/2 md:hidden"
+         />
+        ) : null}
+        {hasNext ? (
+         <LightboxNavButton
+          direction="next"
+          label={t("product.nextImage")}
+          isTransitioning={isTransitioning}
+          onClick={goNext}
+          className="absolute top-1/2 right-3 z-20 size-11 -translate-y-1/2 md:hidden"
+         />
+        ) : null}
+       </div>
+
+       {images.length > 1 ? (
+        <div className="hidden w-11 shrink-0 justify-center md:flex min-[1100px]:hidden">
+         {hasNext ? (
+          <LightboxNavButton
+           direction="next"
+           label={t("product.nextImage")}
+           isTransitioning={isTransitioning}
+           onClick={goNext}
+           className="size-11"
+          />
+         ) : null}
+        </div>
+       ) : null}
+      </div>
      </div>
     </div>
    </div>
@@ -454,41 +548,22 @@ export function ProductImageLightbox({
    </header>
 
    {hasPrev ? (
-    <LightboxControlButton
-     variant="dark"
-     isInactive={isTransitioning}
-     onClick={(event) => {
-      event.stopPropagation();
-      goPrev();
-     }}
-     className="absolute top-1/2 left-3 z-20 size-11 -translate-y-1/2 md:left-6 md:size-12"
-     aria-label={t("product.previousImage")}
-    >
-     {isTransitioning ? (
-      <Loader2Icon className="size-5 animate-spin" aria-hidden="true" />
-     ) : (
-      <ChevronLeft className="size-6" aria-hidden="true" />
-     )}
-    </LightboxControlButton>
+    <LightboxNavButton
+     direction="prev"
+     label={t("product.previousImage")}
+     isTransitioning={isTransitioning}
+     onClick={goPrev}
+     className="absolute top-1/2 left-6 z-20 hidden size-12 -translate-y-1/2 min-[1100px]:flex"
+    />
    ) : null}
-
    {hasNext ? (
-    <LightboxControlButton
-     variant="dark"
-     isInactive={isTransitioning}
-     onClick={(event) => {
-      event.stopPropagation();
-      goNext();
-     }}
-     className="absolute top-1/2 right-3 z-20 size-11 -translate-y-1/2 md:right-6 md:size-12"
-     aria-label={t("product.nextImage")}
-    >
-     {isTransitioning ? (
-      <Loader2Icon className="size-5 animate-spin" aria-hidden="true" />
-     ) : (
-      <ChevronRight className="size-6" aria-hidden="true" />
-     )}
-    </LightboxControlButton>
+    <LightboxNavButton
+     direction="next"
+     label={t("product.nextImage")}
+     isTransitioning={isTransitioning}
+     onClick={goNext}
+     className="absolute top-1/2 right-6 z-20 hidden size-12 -translate-y-1/2 min-[1100px]:flex"
+    />
    ) : null}
   </div>,
   document.body
