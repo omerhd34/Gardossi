@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CategoryCoverPicture } from "@/components/ui/category-cover-picture";
+import { OverlaySurface } from "@/components/ui/overlay-surface";
 import { useTranslations } from "@/contexts/locale-provider";
 import { navPressClass } from "@/lib/layout/shared-styles";
 import { getCategoryGroupCoverImage } from "@/lib/product-utils";
@@ -36,28 +37,30 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
      href={category.href}
      onClick={onClose}
      className={cn(
-      "group relative block overflow-hidden rounded-2xl bg-charcoal/20",
+      "group relative block overflow-hidden rounded-2xl",
       navPressClass,
       !isDrawer && "aspect-3/2 bg-cream/60 min-[49rem]:aspect-auto min-[49rem]:h-52",
       isDrawer &&
-      "aspect-3/2 lg:flex lg:aspect-auto lg:flex-col lg:rounded-xl lg:border lg:border-(--glass-hero-border) lg:bg-transparent lg:shadow-[0_8px_24px_rgb(0_0_0/18%)] lg:transition-[border-color,box-shadow,transform] lg:duration-300 lg:hover:border-(--glass-hero-border) lg:hover:shadow-[0_10px_28px_rgb(0_0_0/24%)]"
+      "aspect-3/2 bg-(--product-card-bg) lg:flex lg:aspect-auto lg:flex-col lg:rounded-xl lg:border lg:border-(--glass-hero-border) lg:bg-transparent lg:shadow-[0_8px_24px_rgb(0_0_0/18%)] lg:transition-[border-color,box-shadow,transform] lg:duration-300 lg:hover:border-(--glass-hero-border) lg:hover:shadow-[0_10px_28px_rgb(0_0_0/24%)]"
      )}
     >
      {category.hasImage ? (
       isDrawer ? (
        <>
-        <div className="relative aspect-3/2 w-full overflow-hidden rounded-t-2xl bg-charcoal/30 lg:aspect-4/3 lg:shrink-0 lg:rounded-t-xl lg:bg-charcoal/35">
+        <div className="relative aspect-3/2 w-full overflow-hidden rounded-t-2xl bg-(--product-card-bg) lg:aspect-4/3 lg:shrink-0 lg:rounded-t-xl lg:bg-charcoal/35">
          <CategoryCoverPicture
           group={category.group}
           alt={category.label}
           sizes="(max-width: 640px) 50vw, (max-width: 1440px) 45vw, 240px"
           className="object-cover transition-transform duration-700 ease-out scale-[1.03] group-hover:scale-[1.05] lg:scale-[1.04] lg:group-hover:scale-[1.06]"
          />
-         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-black/5 lg:from-black/40 lg:via-transparent lg:to-transparent" />
-         <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/12 lg:group-hover:bg-black/8" />
-         <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/35 bg-black/28 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm lg:hidden">
-          {category.label}
-         </span>
+         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent lg:from-black/40 lg:via-transparent lg:to-transparent" />
+         <div className="pointer-events-none absolute inset-0 hidden bg-black/0 transition-colors duration-300 lg:block lg:group-hover:bg-black/8" />
+         <div className="absolute right-2.5 bottom-2.5 left-2.5 sm:right-3.5 sm:bottom-3.5 sm:left-3.5 lg:hidden">
+          <OverlaySurface className="inline-flex origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out group-hover:scale-105 motion-reduce:duration-150 sm:px-3.5 sm:text-sm">
+           {category.label}
+          </OverlaySurface>
+         </div>
         </div>
         <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/35 lg:backdrop-blur-sm">
          {category.label}
