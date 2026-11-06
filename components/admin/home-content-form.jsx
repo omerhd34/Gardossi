@@ -64,7 +64,7 @@ export function HomeContentForm({ initialHero, initialBrand }) {
 
    toast.success("Anasayfa kaydedildi.");
   } catch (error) {
-   toast.error(error.message || "Kaydedilemedi");
+   toast.error(error.message || "Kaydedilemedi.");
   } finally {
    setLoading(false);
   }

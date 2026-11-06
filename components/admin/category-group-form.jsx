@@ -231,7 +231,7 @@ export function CategoryGroupForm({ categoryGroup = null }) {
    );
 
    const data = await response.json();
-   if (!response.ok) throw new Error(data.error || "Kaydedilemedi");
+   if (!response.ok) throw new Error(data.error || "Kaydedilemedi.");
 
    toast.success(isEdit ? "Kategori grubu güncellendi" : "Kategori grubu oluşturuldu.");
 

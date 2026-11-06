@@ -56,14 +56,14 @@ export function FaqContentForm({ categories: initialCategories }) {
    }
   );
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Kategori kaydedilemedi");
+  if (!response.ok) throw new Error(data.error || "Kategori kaydedilemedi.");
   await refreshCategories();
-  toast.success("Kategori kaydedildi");
+  toast.success("Kategori kaydedildi.");
  }
 
  async function saveItem(item, categoryId) {
   if (!categoryId || categoryId.startsWith("default-") || categoryId.startsWith("temp-")) {
-   throw new Error("Önce kategoriyi kaydedin");
+   throw new Error("Önce kategoriyi kaydedin.");
   }
 
   const isNew = !item.id || item.id.startsWith("default-") || item.id.startsWith("temp-");
@@ -73,9 +73,9 @@ export function FaqContentForm({ categories: initialCategories }) {
    body: JSON.stringify({ ...item, categoryId }),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "Soru kaydedilemedi");
+  if (!response.ok) throw new Error(data.error || "Soru kaydedilemedi.");
   await refreshCategories();
-  toast.success("Soru kaydedildi");
+  toast.success("Soru kaydedildi.");
  }
 
  function updateCategory(index, patch) {
