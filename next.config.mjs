@@ -16,6 +16,7 @@ const nextConfig = {
   return config;
  },
  experimental: {
+  proxyClientMaxBodySize: "32mb",
   inlineCss: true,
   optimizePackageImports: [
    "embla-carousel-react",

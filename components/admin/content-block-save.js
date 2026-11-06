@@ -1,5 +1,6 @@
 "use client";
 
+import { getUploadErrorMessage, readJsonBody } from "@/lib/admin/upload-response";
 import { toast } from "sonner";
 
 export async function saveContentBlock(key, contentTr, contentEn) {
@@ -9,8 +10,15 @@ export async function saveContentBlock(key, contentTr, contentEn) {
   body: JSON.stringify({ contentTr, contentEn }),
  });
 
- const data = await response.json();
- if (!response.ok) throw new Error(data.error || "Kaydedilemedi");
+ const { text, data } = await readJsonBody(response);
+ if (!response.ok || !data) {
+  throw new Error(
+   getUploadErrorMessage(response.status, text, data, {
+    fallback: "Kaydedilemedi.",
+    tooLarge: "Kayıt sunucunun kabul ettiği boyuttan büyük.",
+   })
+  );
+ }
  return data;
 }
 
