@@ -4,6 +4,7 @@ import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import { saveContentBlock } from "@/components/admin/content-block-save";
 import { getHomeHeroSlideImageHint, HOME_HERO_DEVICE_IMAGES } from "@/lib/admin/image-specs";
 import { validateImageUploadFile } from "@/lib/admin/image-upload";
+import { uploadAdminImage } from "@/lib/admin/upload-admin-image";
 import {
  getHeroSlideDeviceDefaultImage,
  getHeroSlideDeviceImage,
@@ -69,22 +70,16 @@ export function AdminHeroSlideImage({
 
   onUploadingChange(true);
   try {
-   const body = new FormData();
-   body.append("file", file);
-   body.append("folder", `${uploadFolder}/${device}`);
-
-   const response = await fetch("/api/admin/upload", {
-    method: "POST",
-    body,
+   const url = await uploadAdminImage(file, {
+    folder: `${uploadFolder}/${device}`,
+    maxWidth: spec.width,
+    maxHeight: spec.height,
    });
-   const data = await response.json();
-   if (!response.ok) throw new Error(data.error || "Yükleme başarısız");
-   if (!data.url) throw new Error("Yüklenen görsel adresi alınamadı");
 
-   await persistHeroImage(data.url);
-   toast.success(`${spec.label} görseli kaydedildi`);
+   await persistHeroImage(url);
+   toast.success(`${spec.label} görseli kaydedildi.`);
   } catch (error) {
-   toast.error(error.message || "Görsel kaydedilemedi");
+   toast.error(error.message || "Görsel kaydedilemedi.");
   } finally {
    onUploadingChange(false);
   }
@@ -94,9 +89,9 @@ export function AdminHeroSlideImage({
   onUploadingChange(true);
   try {
    await persistHeroImage("");
-   toast.success(`${spec.label} görseli kaldırıldı`);
+   toast.success(`${spec.label} görseli kaldırıldı.`);
   } catch (error) {
-   toast.error(error.message || "Görsel kaldırılamadı");
+   toast.error(error.message || "Görsel kaldırılamadı.");
   } finally {
    onUploadingChange(false);
   }
