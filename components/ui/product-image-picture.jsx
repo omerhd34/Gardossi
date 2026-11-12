@@ -2,7 +2,10 @@
 "use client";
 
 import { getImageProps } from "next/image";
-import { LG_MQ, MD_MQ } from "@/lib/layout/breakpoints";
+import {
+ DEVICE_IMAGE_DESKTOP_MQ,
+ DEVICE_IMAGE_TABLET_MQ,
+} from "@/lib/layout/breakpoints";
 import { resolveProductImageUrls } from "@/lib/content/product-images";
 import { cn } from "@/lib/utils";
 
@@ -78,8 +81,16 @@ export function ProductImagePicture({
     contained && "inline-block w-auto max-h-[100cqh] max-w-[100cqw]"
    )}
   >
-   <source media={LG_MQ} srcSet={desktop.props.srcSet} sizes={desktop.props.sizes} />
-   <source media={MD_MQ} srcSet={tablet.props.srcSet} sizes={tablet.props.sizes} />
+   <source
+    media={DEVICE_IMAGE_DESKTOP_MQ}
+    srcSet={desktop.props.srcSet}
+    sizes={desktop.props.sizes}
+   />
+   <source
+    media={DEVICE_IMAGE_TABLET_MQ}
+    srcSet={tablet.props.srcSet}
+    sizes={tablet.props.sizes}
+   />
    <img
     {...mobile.props}
     alt={alt}

@@ -1,3 +1,8 @@
+const {
+ PRODUCT_DETAIL_GRID_MIN,
+ PRODUCT_DETAIL_RIGHT_MIN,
+} = require("./lib/layout/breakpoints");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
  content: [
@@ -10,6 +15,8 @@ module.exports = {
    sm: "640px",
    md: "768px",
    lg: "1024px",
+   "detail-grid": PRODUCT_DETAIL_GRID_MIN,
+   "detail-right": PRODUCT_DETAIL_RIGHT_MIN,
    xl: "1440px",
    "2xl": "1536px",
   },

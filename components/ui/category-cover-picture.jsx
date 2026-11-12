@@ -2,7 +2,10 @@
 "use client";
 
 import { getImageProps } from "next/image";
-import { LG_MQ, MD_MQ } from "@/lib/layout/breakpoints";
+import {
+ DEVICE_IMAGE_DESKTOP_MQ,
+ DEVICE_IMAGE_TABLET_MQ,
+} from "@/lib/layout/breakpoints";
 import { getCategoryGroupCoverImages } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
 
@@ -66,8 +69,16 @@ export function CategoryCoverPicture({
 
  return (
   <picture className={cn(fill && "absolute inset-0 block size-full")}>
-   <source media={LG_MQ} srcSet={desktop.props.srcSet} sizes={desktop.props.sizes} />
-   <source media={MD_MQ} srcSet={tablet.props.srcSet} sizes={tablet.props.sizes} />
+   <source
+    media={DEVICE_IMAGE_DESKTOP_MQ}
+    srcSet={desktop.props.srcSet}
+    sizes={desktop.props.sizes}
+   />
+   <source
+    media={DEVICE_IMAGE_TABLET_MQ}
+    srcSet={tablet.props.srcSet}
+    sizes={tablet.props.sizes}
+   />
    <img
     {...mobile.props}
     alt={alt}
