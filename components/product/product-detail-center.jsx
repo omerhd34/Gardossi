@@ -21,7 +21,7 @@ import { useLocale } from "@/contexts/locale-provider";
 import { FiInfo, Ruler } from "@/lib/icons";
 import { isCornerGroupProduct } from "@/lib/product-category";
 import { getCornerStandardSize, getDimensionItems } from "@/lib/product-utils";
-import { LG_MQ } from "@/lib/layout/breakpoints";
+import { PRODUCT_DETAIL_GRID_MQ } from "@/lib/layout/breakpoints";
 import {
  preventImageSaveInteraction,
  productDetailAccordionItemClass,
@@ -46,7 +46,7 @@ function ProductGalleryImage({
   isSlide
    ? "aspect-4/3 bg-white min-[48rem]:aspect-16/10"
    : cn(
-    "aspect-4/3 min-[1152px]:aspect-16/10 rounded-3xl bg-white",
+    "aspect-4/3 detail-grid:aspect-16/10 rounded-3xl bg-white",
     productGalleryFrameClass
    ),
   className
@@ -97,7 +97,7 @@ function ProductGallery({ images, onImageClick, t }) {
 
  return (
   <>
-   <div className={cn("min-[1152px]:hidden", productGalleryMobileCarouselClass)}>
+   <div className={cn("detail-grid:hidden", productGalleryMobileCarouselClass)}>
     <Carousel
      opts={{
       align: "start",
@@ -124,7 +124,7 @@ function ProductGallery({ images, onImageClick, t }) {
     </Carousel>
    </div>
 
-   <div className="hidden min-[1152px]:block min-[1152px]:space-y-4">
+   <div className="hidden detail-grid:block detail-grid:space-y-4">
     {images.map((image, index) => (
      <ProductGalleryImage
       key={image.id}
@@ -155,7 +155,7 @@ export function ProductDetailCenter({
  const [accordionValue, setAccordionValue] = useState([]);
 
  useEffect(() => {
-  if (window.matchMedia(LG_MQ).matches) {
+  if (window.matchMedia(PRODUCT_DETAIL_GRID_MQ).matches) {
    setAccordionValue(["product-info"]);
   }
  }, []);

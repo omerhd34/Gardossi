@@ -17,7 +17,7 @@ export function ProductDetailRight({
  }
 
  return (
-  <aside className={cn("flex flex-col gap-4 lg:self-start", className)}>
+  <aside className={cn("flex flex-col gap-4", className)}>
    {hasPrimary ? (
     <ProductCategoryRelated
      products={categoryProducts}
