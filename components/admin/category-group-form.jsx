@@ -303,7 +303,7 @@ export function CategoryGroupForm({ categoryGroup = null }) {
        onUpload={uploadCoverImage}
        uploading={uploading}
        hint=""
-       previewAspectClass={spec.previewAspectClass}
+       previewHeightClass="h-56 w-full"
        fullWidth
       />
      </div>

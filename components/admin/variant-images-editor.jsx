@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { MdCloudUpload, MdDeleteOutline } from "react-icons/md";
+import { MdCloudUpload, MdDeleteOutline, MdZoomIn } from "react-icons/md";
+import { AdminImageLightbox } from "@/components/admin/admin-image-lightbox";
 import {
  PRODUCT_IMAGE_DEVICE_IMAGES,
  getProductDeviceImageHint,
@@ -60,6 +61,7 @@ export function VariantImagesEditor({
  onRemove,
 }) {
  const [isDragging, setIsDragging] = useState(false);
+ const [lightbox, setLightbox] = useState({ src: "", alt: "" });
  const isDisabled = uploading;
  const spec = PRODUCT_IMAGE_DEVICE_IMAGES[device] ?? PRODUCT_IMAGE_DEVICE_IMAGES.desktop;
  const visibleImages = images.flatMap((image, imageIndex) => {
@@ -147,7 +149,17 @@ export function VariantImagesEditor({
          key={`${normalized.url}-${imageIndex}`}
          className="space-y-2 rounded-lg border bg-background p-2.5"
         >
-         <div className="relative aspect-4/3 overflow-hidden rounded-md bg-muted">
+         <button
+          type="button"
+          className="relative aspect-4/3 w-full cursor-zoom-in overflow-hidden rounded-md bg-muted text-left"
+          aria-label={`${normalized.alt || productName} — gerçek boyutta aç`}
+          onClick={() =>
+           setLightbox({
+            src: previewUrl,
+            alt: normalized.alt || productName || "Ürün görseli",
+           })
+          }
+         >
           {previewUrl ? (
            <Image
             src={previewUrl}
@@ -161,7 +173,11 @@ export function VariantImagesEditor({
             {spec.label} yok
            </div>
           )}
-         </div>
+          <span className="pointer-events-none absolute bottom-2 left-2 z-10 inline-flex items-center gap-1 rounded-full border border-white/35 bg-black/45 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+           <MdZoomIn className="size-3" aria-hidden />
+           Gerçek boyut
+          </span>
+         </button>
          <div className="flex flex-wrap gap-2">
           <Button
            type="button"
@@ -209,6 +225,14 @@ export function VariantImagesEditor({
      </div>
     )}
    </div>
+
+   {lightbox.src ? (
+    <AdminImageLightbox
+     src={lightbox.src}
+     alt={lightbox.alt}
+     onClose={() => setLightbox({ src: "", alt: "" })}
+    />
+   ) : null}
   </div>
  );
 }
