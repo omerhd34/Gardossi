@@ -87,6 +87,8 @@ const nextConfig = {
   ];
  },
  images: {
+  loader: "custom",
+  loaderFile: "./lib/cloudinary-image-loader.js",
   deviceSizes: [320, 384, 420, 480, 560, 640, 750, 828, 1080, 1200, 1600, 1920, 2560],
   qualities: [60, 75, 92],
   remotePatterns: [
