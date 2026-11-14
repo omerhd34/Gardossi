@@ -8,8 +8,10 @@ import { CloudinaryConfigError, uploadImageBuffer } from "@/lib/cloudinary";
 
 function sanitizeFolder(folder) {
  return String(folder ?? "")
-  .replace(/[^a-zA-Z0-9_-]/g, "")
-  .slice(0, 80);
+  .split("/")
+  .map((part) => part.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80))
+  .filter(Boolean)
+  .join("/");
 }
 
 function sanitizePublicId(name) {

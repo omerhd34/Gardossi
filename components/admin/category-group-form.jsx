@@ -125,12 +125,6 @@ export function CategoryGroupForm({ categoryGroup = null }) {
  );
 
  function getCoverUploadFolder(currentForm) {
-  const activeUrl = currentForm.coverImages?.[device] || currentForm.coverImage;
-  if (activeUrl) {
-   const parts = activeUrl.split("/").filter(Boolean);
-   if (parts.length >= 2) return parts[0];
-  }
-
   return slugify(currentForm.name) || ADMIN_DRAFT_UPLOAD_FOLDER;
  }
 
