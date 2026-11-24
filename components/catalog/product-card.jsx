@@ -37,8 +37,8 @@ export function ProductCard({
  const badgeClassName = cn(
   "inline-flex scale-100 rounded-full font-medium transition-[scale] duration-200 ease-out active:duration-75 hover:scale-[1.08] motion-reduce:duration-150",
   isCatalog
-   ? "px-3 py-1.5 text-xs lg:px-4 lg:py-2 lg:text-sm"
-   : "px-2.5 py-1 text-[0.65rem] lg:px-3 lg:py-1.5 lg:text-xs"
+   ? "px-3 py-1.5 text-xs lg:px-4 lg:py-2 lg:text-sm ultra:px-6 ultra:py-3 ultra:text-lg tv:px-7 tv:py-3.5 tv:text-xl"
+   : "px-2.5 py-1 text-[0.65rem] lg:px-3 lg:py-1.5 lg:text-xs ultra:px-4 ultra:py-2 ultra:text-sm tv:px-5 tv:py-2.5 tv:text-base"
  );
 
  return (
@@ -48,9 +48,12 @@ export function ProductCard({
      productCardKalifClass,
      "group/card relative",
      isCatalog
-      ? cn("product-card-kalif--catalog aspect-5/4 rounded-3xl", catalogProductCardClass)
+      ? cn(
+       "product-card-kalif--catalog aspect-5/4 rounded-3xl ultra:rounded-[1.75rem] tv:rounded-[2rem]",
+       catalogProductCardClass
+      )
       : isFeatured
-       ? "aspect-5/4 sm:aspect-3/2"
+       ? "aspect-5/4 sm:aspect-3/2 ultra:rounded-[1.5rem] tv:rounded-[1.75rem]"
        : "aspect-4/5"
     )}
    >
@@ -64,9 +67,9 @@ export function ProductCard({
        alt={primaryImage.alt ?? product.name}
        sizes={
         isCatalog
-         ? "(max-width: 640px) 100vw, 50vw"
+         ? "(max-width: 640px) 100vw, (max-width: 160rem) 46vw, 920px"
          : isFeatured
-          ? "(max-width: 640px) calc(100vw - 2rem), (max-width: 1280px) 50vw, 600px"
+          ? "(max-width: 640px) calc(100vw - 2rem), (max-width: 1280px) 50vw, (max-width: 160rem) 42vw, 960px"
           : "(max-width: 768px) 50vw, 25vw"
        }
        quality={60}
@@ -82,7 +85,8 @@ export function ProductCard({
      <div
       className={cn(
        "absolute inset-3 z-10 flex flex-col",
-       "lg:inset-x-4 lg:top-auto lg:bottom-4 lg:flex-row lg:items-end lg:gap-3"
+       "lg:inset-x-4 lg:top-auto lg:bottom-4 lg:flex-row lg:items-end lg:gap-3",
+       "ultra:inset-5 ultra:bottom-5 ultra:gap-4 tv:inset-6 tv:bottom-6 tv:gap-5"
       )}
      >
       {priceLabel ? (
@@ -100,7 +104,7 @@ export function ProductCard({
        className={cn(
         badgeClassName,
         "mt-auto w-fit max-w-full min-w-0 origin-left text-left leading-snug line-clamp-2",
-        "lg:order-1 lg:mt-0 lg:max-w-[calc(100%-9.5rem)]"
+        "lg:order-1 lg:mt-0 lg:max-w-[calc(100%-9.5rem)] ultra:max-w-[calc(100%-12rem)] tv:max-w-[calc(100%-14.5rem)]"
        )}
       >
        {bottomLabel}
@@ -114,7 +118,7 @@ export function ProductCard({
       className={cn(
        "absolute top-3 right-3 z-20 lg:top-4 lg:right-4",
        (isCatalog || isFeatured) &&
-       "size-10 sm:size-9 [&_svg]:size-5.5 sm:[&_svg]:size-5 lg:size-11 lg:[&_svg]:size-6"
+       "size-10 sm:size-9 [&_svg]:size-5.5 sm:[&_svg]:size-5 lg:size-11 lg:[&_svg]:size-6 ultra:size-12 ultra:[&_svg]:size-6.5 tv:size-14 tv:[&_svg]:size-7"
       )}
      />
     ) : null}

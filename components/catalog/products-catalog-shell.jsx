@@ -8,7 +8,11 @@ import { ProductsCategoryGrid } from "@/components/catalog/products-category-gri
 import { SeoH1 } from "@/components/seo/seo-h1";
 import { useLocale } from "@/contexts/locale-provider";
 import { getProductDisplayPrice } from "@/lib/product-utils";
-import { headingDisplayClass } from "@/lib/layout/shared-styles";
+import {
+ headingDisplayClass,
+ pageBodyParagraphClass,
+ pageLeadParagraphClass,
+} from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 
 function compareByPrice(a, b, ascending) {
@@ -84,7 +88,12 @@ export function ProductsCatalogShell({
      >
       {t("pages.products.title")}
      </SeoH1>
-     <p className="text-muted-foreground mx-auto mt-3 max-w-4xl text-sm md:mx-0 md:text-base">
+     <p
+      className={cn(
+       pageLeadParagraphClass,
+       "text-muted-foreground mx-auto mt-3 max-w-4xl md:mx-0 ultra:mt-4 ultra:max-w-5xl tv:mt-5 tv:max-w-6xl"
+      )}
+     >
       {t("home.categoriesDescription")}
      </p>
     </div>
@@ -106,7 +115,12 @@ export function ProductsCatalogShell({
      {activeGroup ? activeGroup.label : t("catalog.allProductsTitle")}
     </SeoH1>
     {hasCategoryDescription ? (
-     <p className="text-muted-foreground mt-3 max-w-4xl text-sm md:text-base">
+     <p
+      className={cn(
+       pageLeadParagraphClass,
+       "text-muted-foreground mt-3 max-w-4xl ultra:mt-4 ultra:max-w-5xl tv:mt-5 tv:max-w-6xl"
+      )}
+     >
       {categoryDescription}
      </p>
     ) : null}
@@ -121,7 +135,7 @@ export function ProductsCatalogShell({
     />
 
     {filteredProducts.length > 0 ? (
-     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:gap-6 md:mt-8">
+     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:gap-6 md:mt-8 ultra:gap-7 tv:gap-8">
       {filteredProducts.map((product, index) => (
        <ProductCard
         key={product.id}
@@ -134,24 +148,34 @@ export function ProductsCatalogShell({
       ))}
      </div>
     ) : (
-     <div className="mt-6 rounded-3xl border border-dashed border-charcoal/12 bg-cream/40 px-6 py-20 text-center md:mt-8">
-      <p className="text-sm font-medium text-charcoal">
+     <div className="mt-6 rounded-3xl border border-dashed border-charcoal/12 bg-cream/40 px-6 py-16 text-center sm:py-20 md:mt-8 lg:px-8 lg:py-24 ultra:rounded-[2rem] ultra:px-10 ultra:py-28 tv:rounded-[2.25rem] tv:px-12 tv:py-32">
+      <p
+       className={cn(
+        pageBodyParagraphClass,
+        "mx-auto max-w-md font-medium text-charcoal sm:max-w-lg lg:max-w-xl ultra:max-w-2xl tv:max-w-3xl"
+       )}
+      >
        {t("catalog.noProducts")}
       </p>
-      <p className="text-muted-foreground mt-2 text-sm">
+      <p
+       className={cn(
+        pageLeadParagraphClass,
+        "text-muted-foreground mx-auto mt-2 max-w-md sm:max-w-lg lg:mt-3 lg:max-w-xl ultra:mt-4 ultra:max-w-2xl tv:mt-5 tv:max-w-3xl"
+       )}
+      >
        {t("catalog.tryAgain")}
       </p>
      </div>
     )}
 
     {categorySlug ? (
-     <div className="mt-8 md:mt-12">
+     <div className="mt-8 md:mt-12 ultra:mt-14 tv:mt-16">
       <div
        className="border-t border-charcoal/8"
        role="separator"
        aria-hidden="true"
       />
-      <div className="pt-5 md:pt-8">
+      <div className="pt-5 md:pt-8 ultra:pt-10 tv:pt-12">
        <ProductsCategoryCarousel activeSlug={categorySlug} />
       </div>
      </div>

@@ -29,7 +29,7 @@ export function ProductsCategoryGrid() {
  }
 
  return (
-  <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:gap-6">
+  <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:gap-6 ultra:gap-7 tv:gap-8">
    {categories.map((category) => (
     <Link
      key={category.slug}
@@ -39,19 +39,19 @@ export function ProductsCategoryGrid() {
      <div
       className={cn(
        productCardKalifClass,
-       "relative h-48 overflow-hidden rounded-3xl sm:h-52 sm:rounded-[1.25rem] md:h-56 lg:h-60"
+       "relative h-48 overflow-hidden rounded-3xl sm:h-52 sm:rounded-[1.25rem] md:h-56 lg:h-60 ultra:h-64 tv:h-72"
       )}
      >
       <CategoryCoverPicture
        group={category.group}
        alt={category.label}
-       sizes="(max-width: 768px) 50vw, 33vw"
+       sizes="(max-width: 768px) 50vw, (max-width: 120rem) 33vw, 640px"
        className="object-cover transition-transform duration-200 ease-out active:duration-75 group-hover/card:scale-[1.03] motion-reduce:duration-150"
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent" />
       <div className="absolute right-3 bottom-3 left-3">
        <OverlaySurface
-        className="inline-flex scale-100 origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out active:duration-75 group-hover/card:scale-105 motion-reduce:duration-150"
+        className="inline-flex scale-100 origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out active:duration-75 group-hover/card:scale-105 motion-reduce:duration-150 ultra:px-4 ultra:py-2 ultra:text-sm tv:px-5 tv:py-2.5 tv:text-base"
        >
         {category.label}
        </OverlaySurface>
