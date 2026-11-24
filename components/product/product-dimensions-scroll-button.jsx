@@ -1,6 +1,9 @@
 "use client";
 
-import { productDetailActionButtonClass } from "@/lib/layout/product-styles";
+import {
+ productDetailActionButtonClass,
+ productDetailActionIconClass,
+} from "@/lib/layout/product-styles";
 import { Ruler } from "@/lib/icons";
 import { getDimensionItems } from "@/lib/product-utils";
 import { cn } from "@/lib/utils";
@@ -21,7 +24,7 @@ export function ProductDimensionsScrollButton({
    onClick={() => onClick?.()}
    className={cn(productDetailActionButtonClass, className)}
   >
-   <Ruler className="size-5 shrink-0 text-black" aria-hidden />
+   <Ruler className={productDetailActionIconClass} aria-hidden />
    <span>{t("product.viewDimensionsTable")}</span>
   </button>
  );

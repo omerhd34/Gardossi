@@ -93,8 +93,8 @@ export function ProductDetailView({
     className={cn(
      "flex flex-col gap-4 detail-grid:grid detail-grid:items-start detail-grid:gap-8",
      hasRightPanel
-      ? "detail-grid:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] detail-right:grid-cols-[minmax(0,17rem)_minmax(0,1fr)_minmax(0,19rem)] xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)_minmax(0,21rem)] xl:gap-10"
-      : "detail-grid:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]"
+      ? "detail-grid:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] detail-right:grid-cols-[minmax(0,17rem)_minmax(0,1fr)_minmax(0,19rem)] xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)_minmax(0,21rem)] xl:gap-10 ultra:grid-cols-[minmax(0,20rem)_minmax(0,1fr)_minmax(0,22rem)] ultra:gap-12 tv:grid-cols-[minmax(0,22rem)_minmax(0,1fr)_minmax(0,24rem)] tv:gap-14"
+      : "detail-grid:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] ultra:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] ultra:gap-12 tv:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] tv:gap-14"
     )}
    >
     <ProductDetailLeft
@@ -118,7 +118,7 @@ export function ProductDetailView({
     <section
      ref={centerScrollRef}
      className={cn(
-      "min-h-0 detail-grid:max-h-[calc(100dvh-var(--header-height-desktop)-2rem)] detail-grid:overflow-y-auto detail-grid:pr-2 detail-grid:pb-6",
+      "min-h-0 detail-grid:max-h-[calc(100dvh-var(--header-height-desktop)-var(--page-header-gap)-1rem)] detail-grid:overflow-y-auto detail-grid:pr-2 detail-grid:pb-6",
       productDetailScrollClass
      )}
     >

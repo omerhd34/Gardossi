@@ -26,6 +26,8 @@ import {
  preventImageSaveInteraction,
  productDetailAccordionItemClass,
  productDetailAccordionTriggerClass,
+ productDetailActionIconClass,
+ productDetailBodyTextClass,
  productGalleryFrameClass,
  productGalleryMobileCarouselClass,
  productProtectedImageClass,
@@ -177,7 +179,12 @@ export function ProductDetailCenter({
  }, [openProductInfo]);
 
  return (
-  <div className={cn("flex flex-col gap-4 md:gap-10", className)}>
+  <div
+   className={cn(
+    "flex flex-col gap-4 md:gap-10 ultra:gap-12 tv:gap-14",
+    className
+   )}
+  >
    <ProductGallery images={images} onImageClick={onImageClick} t={t} />
 
    {belowGallery}
@@ -186,7 +193,7 @@ export function ProductDetailCenter({
     type="multiple"
     value={accordionValue}
     onValueChange={setAccordionValue}
-    className="flex flex-col gap-4"
+    className="flex flex-col gap-4 ultra:gap-5 tv:gap-6"
    >
     <AccordionItem
      value="product-info"
@@ -194,10 +201,12 @@ export function ProductDetailCenter({
      className={cn(productDetailAccordionItemClass)}
     >
      <AccordionTrigger className={productDetailAccordionTriggerClass}>
-      <FiInfo className="size-5 shrink-0 text-black" aria-hidden />
+      <FiInfo className={productDetailActionIconClass} aria-hidden />
       <span className="min-w-0 flex-1">{t("product.productInfo")}</span>
      </AccordionTrigger>
-     <AccordionContent className="pb-6 text-sm leading-relaxed text-charcoal/75">
+     <AccordionContent
+      className={cn("pb-6 ultra:pb-8 tv:pb-10", productDetailBodyTextClass)}
+     >
       {product.description ? (
        <p className="whitespace-pre-line">{product.description}</p>
       ) : null}
@@ -211,12 +220,12 @@ export function ProductDetailCenter({
       className={cn(productDetailAccordionItemClass)}
      >
       <AccordionTrigger className={productDetailAccordionTriggerClass}>
-       <Ruler className="size-5 shrink-0 text-black" aria-hidden />
+       <Ruler className={productDetailActionIconClass} aria-hidden />
        <span className="min-w-0 flex-1">
         {t("product.dimensionsTableTitle")} ({t("product.dimensionUnit")})
        </span>
       </AccordionTrigger>
-      <AccordionContent className="space-y-4 pb-5">
+      <AccordionContent className="space-y-4 pb-5 ultra:space-y-5 ultra:pb-7 tv:space-y-6 tv:pb-8">
        {showCornerStandard ? (
         <ProductCornerStandardTable product={product} t={t} />
        ) : null}

@@ -9,6 +9,12 @@ import {
  TableRow,
 } from "@/components/ui/table";
 import { getDimensionItems } from "@/lib/product-utils";
+import {
+ productDetailTableCellClass,
+ productDetailTableClass,
+ productDetailTableHeadClass,
+ productDetailTableWrapClass,
+} from "@/lib/layout/product-styles";
 import { cn } from "@/lib/utils";
 
 function formatValue(value) {
@@ -24,27 +30,28 @@ export function ProductDimensionsTable({ product, t, className }) {
  const hasPieceNames = items.some((item) => item.name);
 
  return (
-  <div
-   className={cn(
-    "overflow-hidden rounded-xl border border-charcoal/10 bg-cream/20",
-    className
-   )}
-  >
-   <Table className="text-xs text-charcoal/75">
+  <div className={cn(productDetailTableWrapClass, className)}>
+   <Table className={productDetailTableClass}>
     <TableHeader>
      <TableRow className="border-charcoal/10 hover:bg-transparent">
       {hasPieceNames ? (
-       <TableHead className="h-8 px-2 font-semibold text-charcoal/55">
+       <TableHead className={productDetailTableHeadClass}>
         {t("product.dimensionPiece")}
        </TableHead>
       ) : null}
-      <TableHead className="h-8 px-2 text-center font-semibold text-charcoal/55">
+      <TableHead
+       className={cn(productDetailTableHeadClass, "text-center")}
+      >
        {t("product.width")}
       </TableHead>
-      <TableHead className="h-8 px-2 text-center font-semibold text-charcoal/55">
+      <TableHead
+       className={cn(productDetailTableHeadClass, "text-center")}
+      >
        {t("product.depth")}
       </TableHead>
-      <TableHead className="h-8 px-2 text-center font-semibold text-charcoal/55">
+      <TableHead
+       className={cn(productDetailTableHeadClass, "text-center")}
+      >
        {t("product.height")}
       </TableHead>
      </TableRow>
@@ -56,17 +63,28 @@ export function ProductDimensionsTable({ product, t, className }) {
        className="border-charcoal/8 hover:bg-charcoal/2"
       >
        {hasPieceNames ? (
-        <TableCell className="px-2 py-2 font-medium text-charcoal/80">
+        <TableCell
+         className={cn(
+          productDetailTableCellClass,
+          "font-medium text-charcoal/80"
+         )}
+        >
          {item.name?.trim() ?? "-"}
         </TableCell>
        ) : null}
-       <TableCell className="px-2 py-2 text-center tabular-nums">
+       <TableCell
+        className={cn(productDetailTableCellClass, "text-center tabular-nums")}
+       >
         {formatValue(item.widthCm)}
        </TableCell>
-       <TableCell className="px-2 py-2 text-center tabular-nums">
+       <TableCell
+        className={cn(productDetailTableCellClass, "text-center tabular-nums")}
+       >
         {formatValue(item.depthCm)}
        </TableCell>
-       <TableCell className="px-2 py-2 text-center tabular-nums">
+       <TableCell
+        className={cn(productDetailTableCellClass, "text-center tabular-nums")}
+       >
         {formatValue(item.heightCm)}
        </TableCell>
       </TableRow>

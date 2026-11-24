@@ -1,6 +1,9 @@
 "use client";
 
-import { productDetailActionButtonClass } from "@/lib/layout/product-styles";
+import {
+ productDetailActionButtonClass,
+ productDetailActionIconClass,
+} from "@/lib/layout/product-styles";
 import { FiInfo } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +16,7 @@ export function ProductInfoScrollButton({ product, t, onClick, className }) {
    onClick={() => onClick?.()}
    className={cn(productDetailActionButtonClass, className)}
   >
-   <FiInfo className="size-5 shrink-0 text-black" aria-hidden />
+   <FiInfo className={productDetailActionIconClass} aria-hidden />
    <span>{t("product.viewProductInfo")}</span>
   </button>
  );
