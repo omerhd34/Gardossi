@@ -10,6 +10,10 @@ import {
  headerCompactSearchFieldClass,
  headerCompactSearchInputClass,
  headerCompactSearchPillClass,
+ headerCompactSearchSubmitBtnClass,
+ headerCompactSearchSubmitIconClass,
+ headerSearchSubmitBtnClass,
+ headerSearchSubmitIconClass,
 } from "@/lib/layout/header-styles";
 import { cn } from "@/lib/utils";
 
@@ -65,12 +69,16 @@ export function HeaderSearchForm({
      <button
       type="submit"
       className={cn(
-       "flex shrink-0 scale-100 cursor-pointer items-center justify-center border-0 bg-transparent transition-[scale,opacity] duration-200 ease-out active:duration-75 hover:scale-125 hover:opacity-65 motion-reduce:duration-150",
-       compact ? cn("size-8", headerCompactSearchActionClass) : "size-7 text-charcoal/78"
+       compact
+        ? cn(headerCompactSearchSubmitBtnClass, headerCompactSearchActionClass)
+        : headerSearchSubmitBtnClass
       )}
       aria-label={t("common.search")}
      >
-      <Search className={compact ? "size-5" : "size-4.5"} aria-hidden />
+      <Search
+       className={compact ? headerCompactSearchSubmitIconClass : headerSearchSubmitIconClass}
+       aria-hidden
+      />
      </button>
     </div>
    </div>

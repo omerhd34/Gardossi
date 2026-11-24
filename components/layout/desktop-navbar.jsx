@@ -177,7 +177,7 @@ export function DesktopNavbar({
      className={cn(
       headerPillClass,
       heroNavPillOverlayClass,
-      "nav-desktop-pill ml-auto inline-flex h-12 w-fit max-w-[min(100%,42rem)] shrink-0 items-center overflow-x-auto px-1.5 scrollbar-none xl:h-[3.35rem] xl:px-2 [&::-webkit-scrollbar]:hidden"
+      "nav-desktop-pill ml-auto inline-flex h-12 w-fit max-w-[min(100%,42rem)] shrink-0 items-center overflow-x-auto px-1.5 scrollbar-none xl:h-[3.35rem] xl:px-2 ultra:max-w-[min(100%,50rem)] tv:max-w-[min(100%,56rem)] [&::-webkit-scrollbar]:hidden"
      )}
      aria-label={t("nav.mainNav")}
     >

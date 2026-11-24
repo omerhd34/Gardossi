@@ -136,7 +136,11 @@ export function MobileMenuDrawer({ pathname, onClose }) {
       className={mobileNavSheetCloseBtnClass}
       aria-label={t("nav.closeMenu")}
      >
-      <CloseIcon className="size-5 shrink-0" strokeWidth={3.25} aria-hidden />
+      <CloseIcon
+       className="size-5 shrink-0 lg:size-5 ultra:size-6.5 tv:size-7"
+       strokeWidth={3.25}
+       aria-hidden
+      />
      </button>
     </SheetClose>
    </div>
@@ -168,10 +172,14 @@ export function MobileMenuDrawer({ pathname, onClose }) {
       <Link
        href="/urunler"
        onClick={onClose}
-       className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-2.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm touch-manipulation transition-[color,background-color,border-color,scale] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-[1.02] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150 motion-reduce:active:scale-100 lg:py-2"
+       className="inline-flex w-full items-center justify-center gap-1 rounded-full border border-white/18 bg-white/10 px-3 py-2.5 text-[0.8125rem] font-semibold text-white/92 shadow-[0_4px_18px_rgb(0_0_0/12%)] backdrop-blur-sm touch-manipulation transition-[color,background-color,border-color,scale] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-[1.02] hover:border-white/28 hover:bg-white/18 hover:text-white motion-reduce:duration-150 motion-reduce:active:scale-100 lg:py-2 ultra:gap-2 ultra:px-4 ultra:py-3 ultra:text-base tv:px-5 tv:py-3.5 tv:text-lg"
       >
        {t("categories.allProducts")}
-       <HeroChevronRight className="size-3.5 shrink-0" strokeWidth={3.5} aria-hidden />
+       <HeroChevronRight
+        className="size-3.5 shrink-0 ultra:size-4.5 tv:size-5"
+        strokeWidth={3.5}
+        aria-hidden
+       />
       </Link>
      </div>
     </div>
@@ -194,7 +202,7 @@ export function MobileMenuDrawer({ pathname, onClose }) {
       )}
       aria-label={t("nav.mainNav")}
      >
-      <ul className="flex flex-col px-0 lg:gap-1">
+      <ul className="flex flex-col px-0 lg:gap-1 ultra:gap-1.5 tv:gap-2">
        {mobileNavItems.map((item) =>
         item.href === "/favoriler" ? (
          <MobileDrawerFavoritesItem

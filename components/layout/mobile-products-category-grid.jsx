@@ -28,7 +28,7 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
   <div
    className={cn(
     "grid grid-cols-2 gap-2.5 pb-2 sm:gap-3",
-    isDrawer && "lg:gap-3 lg:pb-1"
+    isDrawer && "lg:gap-3 lg:pb-1 ultra:gap-4 tv:gap-5"
    )}
   >
    {menuCategories.map((category) => (
@@ -51,18 +51,18 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
          <CategoryCoverPicture
           group={category.group}
           alt={category.label}
-          sizes="(max-width: 640px) 50vw, (max-width: 1440px) 45vw, 240px"
+          sizes="(max-width: 640px) 50vw, (max-width: 1440px) 45vw, (max-width: 160rem) 22vw, 360px"
           className="object-cover transition-transform duration-700 ease-out scale-[1.03] group-hover:scale-[1.05] lg:scale-[1.04] lg:group-hover:scale-[1.06]"
          />
          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/45 via-black/5 to-transparent lg:from-black/40 lg:via-transparent lg:to-transparent" />
          <div className="pointer-events-none absolute inset-0 hidden bg-black/0 transition-colors duration-300 lg:block lg:group-hover:bg-black/8" />
          <div className="absolute right-2.5 bottom-2.5 left-2.5 sm:right-3.5 sm:bottom-3.5 sm:left-3.5 lg:hidden">
-          <OverlaySurface className="inline-flex origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out group-hover:scale-105 motion-reduce:duration-150 sm:px-3.5 sm:text-sm">
+          <OverlaySurface className="inline-flex origin-left rounded-full px-3 py-1.5 text-xs font-semibold transition-[scale] duration-200 ease-out group-hover:scale-105 motion-reduce:duration-150 sm:px-3.5 sm:text-sm ultra:px-4 ultra:py-2 ultra:text-base tv:px-5 tv:py-2.5 tv:text-lg">
            {category.label}
           </OverlaySurface>
          </div>
         </div>
-        <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/35 lg:backdrop-blur-sm">
+        <span className="hidden w-full shrink-0 rounded-b-xl px-3 py-2.5 text-[0.8125rem] font-semibold leading-snug text-white/92 lg:block lg:border-t lg:border-(--glass-hero-border) lg:bg-charcoal/35 lg:backdrop-blur-sm ultra:px-4 ultra:py-3 ultra:text-base tv:px-5 tv:py-3.5 tv:text-lg">
          {category.label}
         </span>
        </>
@@ -76,7 +76,7 @@ export function MobileProductsCategoryGrid({ onClose, variant = "default" }) {
         />
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-black/5" />
         <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/12" />
-        <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/35 bg-black/28 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm">
+        <span className="absolute bottom-2.5 left-2.5 inline-flex rounded-full border border-white/35 bg-black/28 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-[border-color,background-color] duration-300 sm:bottom-3.5 sm:left-3.5 sm:px-3.5 sm:text-sm ultra:bottom-4 ultra:left-4 ultra:px-4 ultra:py-2 ultra:text-base tv:bottom-5 tv:left-5 tv:px-5 tv:py-2.5 tv:text-lg">
          {category.label}
         </span>
        </>
