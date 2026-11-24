@@ -41,7 +41,9 @@ module.exports = {
    },
    maxWidth: {
     site: "1440px",
-    "site-wide": "1600px",
+    "site-wide": "1680px",
+    "site-ultra": "120rem",
+    "site-tv": "140rem",
     "site-shell": "96rem",
    },
    colors: {
