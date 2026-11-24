@@ -13,6 +13,7 @@ import {
  storeShowcaseGridClass,
  storeShowcaseInfoClass,
 } from "@/lib/layout/page-styles";
+import { pageLeadParagraphClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 import { getFlagshipStore } from "@/lib/stores";
 
@@ -51,7 +52,10 @@ export function StoreShowcase() {
      {t("contact.title")}
     </SeoH1>
     <p
-     className="text-muted-foreground mx-auto mt-3 max-w-2xl text-sm md:text-base"
+     className={cn(
+      pageLeadParagraphClass,
+      "text-muted-foreground mx-auto mt-3 max-w-2xl ultra:max-w-3xl tv:max-w-4xl"
+     )}
      data-nosnippet
     >
      {t("contact.seoIntro")}

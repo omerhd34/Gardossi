@@ -25,7 +25,7 @@ export function FaqCategorySection({ category }) {
     {title}
    </h2>
 
-   <div className="mx-auto mt-8 max-w-3xl">
+   <div className="mx-auto mt-8 max-w-3xl ultra:max-w-4xl tv:max-w-5xl">
     <FaqAccordionList items={visibleItems} idPrefix={id} />
 
     {hasMore ? (
