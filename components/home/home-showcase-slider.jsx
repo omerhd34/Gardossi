@@ -7,6 +7,7 @@ import { contactFloatBtnClass } from "@/lib/layout/header-styles";
 import {
  containerPremiumClass,
  headingDisplayClass,
+ pageLeadParagraphClass,
  interactiveMotionClass,
  sectionPaddingClass,
 } from "@/lib/layout/shared-styles";
@@ -39,8 +40,8 @@ const navOverlayButtonClassName = cn(
 
 const navFlankButtonClassName = cn(
  contactFloatBtnClass,
- "size-10 text-white/96 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-11 lg:size-12",
- "[&_svg]:size-5 md:[&_svg]:size-[1.375rem] [&_svg]:[stroke-width:3.5]"
+ "size-10 text-white/96 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-25 sm:size-11 lg:size-12 ultra:size-14 tv:size-16",
+ "[&_svg]:size-5 md:[&_svg]:size-[1.375rem] ultra:[&_svg]:size-6 tv:[&_svg]:size-7 [&_svg]:[stroke-width:3.5]"
 );
 
 const navOverlayPrevClassName =
@@ -161,7 +162,7 @@ function HomeShowcaseTrack({ children }) {
   <div
    className={cn(
     containerPremiumClass,
-    "md:grid md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-3 xl:gap-4"
+    "md:grid md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-3 xl:gap-4 ultra:gap-5 tv:gap-6"
    )}
   >
    <HomeShowcaseNav direction="prev" variant="flank" />
@@ -210,7 +211,12 @@ export function HomeShowcaseSlider({
     <div className="mb-10 text-center md:mb-14">
      <h2 className={cn(headingDisplayClass, "text-charcoal")}>{title}</h2>
      {description ? (
-      <p className="text-muted-foreground mx-auto mt-3 max-w-2xl text-sm md:text-base">
+      <p
+       className={cn(
+        pageLeadParagraphClass,
+        "text-muted-foreground mx-auto mt-3 max-w-2xl ultra:mt-4 ultra:max-w-3xl tv:max-w-4xl"
+       )}
+      >
        {description}
       </p>
      ) : null}
@@ -218,7 +224,7 @@ export function HomeShowcaseSlider({
       <Link
        href={action.href}
        className={cn(
-        "group/action mt-6 inline-flex origin-center items-center gap-1.5 rounded-full border border-charcoal/12 bg-white px-5 py-2.5 text-sm font-semibold text-charcoal shadow-[0_1px_2px_rgb(0_0_0/4%)] hover:scale-105 hover:border-charcoal/25 hover:bg-cream/60",
+        "group/action mt-6 inline-flex origin-center items-center gap-1.5 rounded-full border border-charcoal/12 bg-white px-5 py-2.5 text-sm font-semibold text-charcoal shadow-[0_1px_2px_rgb(0_0_0/4%)] hover:scale-105 hover:border-charcoal/25 hover:bg-cream/60 ultra:mt-8 ultra:gap-2 ultra:px-6 ultra:py-3 ultra:text-base tv:px-7 tv:py-3.5 tv:text-lg",
         interactiveMotionClass
        )}
       >

@@ -37,7 +37,7 @@ export function BrandExperienceBanner() {
       <span
        className={cn(
         visualHeroTitleLineClass.lead,
-        "block whitespace-nowrap text-[clamp(0.72rem,2.8vw,1.38rem)] tracking-[0.16em] sm:tracking-[0.24em] md:tracking-[0.3em]"
+        "block whitespace-nowrap text-[clamp(0.72rem,2.8vw,1.38rem)] tracking-[0.16em] sm:tracking-[0.24em] md:tracking-[0.3em] ultra:text-[clamp(0.95rem,1.4vw,1.65rem)] tv:text-[clamp(1.05rem,1.2vw,1.85rem)]"
        )}
       >
        {brandExperienceTitleLines[0]}{" "}
@@ -56,7 +56,7 @@ export function BrandExperienceBanner() {
        </span>
       </span>
      </h2>
-     <p className="hidden text-sm leading-relaxed text-white/85 drop-shadow-[0_2px_10px_rgb(0_0_0/35%)] sm:text-base xl:block">
+     <p className="hidden text-sm leading-relaxed text-white/85 drop-shadow-[0_2px_10px_rgb(0_0_0/35%)] sm:text-base xl:block ultra:text-lg tv:text-xl">
       {brandExperienceDescription}
      </p>
     </div>
@@ -64,7 +64,7 @@ export function BrandExperienceBanner() {
      <OverlaySurface
       as={Link}
       href="/hakkimizda"
-      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full px-8 text-sm font-semibold tracking-[0.08em] uppercase touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:border-white/50 motion-reduce:transition-none motion-reduce:active:scale-100"
+      className="inline-flex h-11 shrink-0 scale-100 items-center justify-center rounded-full px-8 text-sm font-semibold tracking-[0.08em] uppercase touch-manipulation transition-[scale,background-color,border-color] duration-200 ease-out active:scale-[0.98] active:duration-75 hover:scale-105 hover:border-white/50 ultra:h-14 ultra:px-10 ultra:text-base ultra:tracking-[0.1em] tv:h-16 tv:px-12 tv:text-lg motion-reduce:transition-none motion-reduce:active:scale-100"
      >
       {brandExperienceCta}
      </OverlaySurface>
