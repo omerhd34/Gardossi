@@ -107,6 +107,7 @@ function createEmptyProduct(categoryGroupId = "") {
   isFeatured: false,
   featuredOrder: 1,
   categoryGroupId,
+  priceTotal: "",
   dimensionItems: [{ ...emptyDimensionItem }],
   images: [],
  };
@@ -171,6 +172,10 @@ export function ProductForm({
    heightCm: product.heightCm ?? "",
    cornerStandardSideACm: product.cornerStandardSideACm ?? "",
    cornerStandardSideBCm: product.cornerStandardSideBCm ?? "",
+   priceTotal:
+    product.priceTotal != null && product.priceTotal !== ""
+     ? formatTurkishAmountInput(String(product.priceTotal))
+     : "",
    dimensionItems:
     product.dimensionItems?.length > 0
      ? product.dimensionItems.map((item) => ({
@@ -219,7 +224,7 @@ export function ProductForm({
  const imageDeviceLabel =
   PRODUCT_IMAGE_DEVICE_IMAGES[imageDevice]?.label ?? "Masaüstü";
 
- const totalPrice = useMemo(() => {
+ const lineItemsPriceSum = useMemo(() => {
   return form.dimensionItems.reduce((sum, item) => {
    const amount = parseTurkishAmount(item.amount);
    const quantity = Number(item.quantity) > 0 ? Number(item.quantity) : 1;
@@ -684,18 +689,38 @@ export function ProductForm({
      value="dimensions"
      title="Parça Ölçüleri ve Fiyatlar"
      contentClassName="space-y-4"
-     headerAction={
-      <div
-       className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs font-medium shadow-sm"
-       aria-label="Toplam fiyat"
-      >
-       <span className="text-muted-foreground">Toplam:</span>
-       <span className="tabular-nums text-foreground">
-        {totalPrice > 0 ? `${totalPrice.toLocaleString("tr-TR")} TL` : "-"}
-       </span>
-      </div>
-     }
     >
+     <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+       <Label
+        htmlFor="product-price-total"
+        className="shrink-0 text-sm font-medium leading-none"
+       >
+        Toplam fiyat (TL)
+       </Label>
+       <Input
+        id="product-price-total"
+        type="text"
+        inputMode="decimal"
+        value={form.priceTotal}
+        onChange={(e) =>
+         updateField("priceTotal", formatTurkishAmountInput(e.target.value))
+        }
+        maxLength={MAX_TURKISH_AMOUNT_INPUT_LENGTH}
+        className="h-9 w-full tabular-nums sm:max-w-36"
+        placeholder="Takım fiyatı"
+        aria-label="Toplam fiyat"
+       />
+      </div>
+      {lineItemsPriceSum > 0 ? (
+       <p className="text-xs text-muted-foreground sm:text-right">
+        Parça toplamı:{" "}
+        <span className="font-medium tabular-nums text-foreground">
+         {lineItemsPriceSum.toLocaleString("tr-TR")} TL
+        </span>
+       </p>
+      ) : null}
+     </div>
      <p className="text-xs text-muted-foreground">{ADMIN_PART_FIELDS_HINT}</p>
 
      {form.dimensionItems.map((item, index) => (

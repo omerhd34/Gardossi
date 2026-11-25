@@ -18,6 +18,7 @@ import {
  parseCornerStandardFields,
  parseDimensionItems,
  parseProductMedia,
+ parseProductPriceTotal,
  validateProductImages,
 } from "@/lib/admin/product-payload";
 import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
@@ -56,6 +57,7 @@ export async function GET(_request, { params }) {
     product.cornerStandardSideBCm != null
      ? Number(product.cornerStandardSideBCm)
      : null,
+   priceTotal: product.priceTotal != null ? Number(product.priceTotal) : null,
    dimensionItems: Array.isArray(product.dimensionItems)
     ? product.dimensionItems.map((item) => ({
      ...item,
@@ -160,6 +162,7 @@ export async function PUT(request, { params }) {
      descriptionEn: body.descriptionEn?.trim() || null,
      dimensions: null,
      dimensionItems: parseDimensionItems(body.dimensionItems),
+     priceTotal: parseProductPriceTotal(body.priceTotal),
      widthCm: body.widthCm != null && body.widthCm !== "" ? Number(body.widthCm) : null,
      depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
      heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,

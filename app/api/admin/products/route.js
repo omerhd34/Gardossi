@@ -12,6 +12,7 @@ import {
  parseCornerStandardFields,
  parseDimensionItems,
  parseProductMedia,
+ parseProductPriceTotal,
  validateProductImages,
 } from "@/lib/admin/product-payload";
 import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
@@ -113,6 +114,7 @@ export async function POST(request) {
      descriptionEn: body.descriptionEn?.trim() || null,
      dimensions: null,
      dimensionItems: parseDimensionItems(body.dimensionItems),
+     priceTotal: parseProductPriceTotal(body.priceTotal),
      widthCm: body.widthCm != null && body.widthCm !== "" ? Number(body.widthCm) : null,
      depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
      heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,

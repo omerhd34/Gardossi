@@ -30,9 +30,10 @@ import {
  getFormattedProductPriceParts,
  getPriceItemDisplayAmount,
  getPriceItemLabel,
- getPriceItems,
+ getPriceBreakdownItems,
  getProductCardBottomLabel,
  getProductDisplayPrice,
+ hasManualProductPriceTotal,
  getProductFavoriteToastLabel,
 } from "@/lib/product-utils";
 import { formatSeoTitle } from "@/lib/site-metadata";
@@ -49,22 +50,58 @@ const productBreadcrumbCategoryLinkClass = cn(
  "origin-left"
 );
 
+function formatLineItemPrice(item, locale, totalValue) {
+ const lineAmount = getPriceItemDisplayAmount(item);
+ const resolvedAmount = lineAmount ?? totalValue ?? null;
+
+ if (resolvedAmount == null) {
+  return { itemAmount: "—", currency: "" };
+ }
+
+ const { amount: itemAmount, currency } = getFormattedProductPriceParts(
+  resolvedAmount,
+  locale
+ );
+
+ return { itemAmount, currency };
+}
+
+function ProductDetailPriceTotalRow({ amount, currency, t }) {
+ return (
+  <div className="flex items-baseline justify-between gap-3 border-t border-charcoal/10 pt-3 ultra:gap-4 ultra:pt-4 tv:gap-5 tv:pt-5">
+   <span className={productDetailPriceTotalLabelClass}>
+    {t("product.priceTotal")}
+   </span>
+   <div className="flex items-baseline gap-2 ultra:gap-2.5 tv:gap-3">
+    <span className={productDetailPriceAmountClass}>{amount}</span>
+    <span className={productDetailPriceCurrencyClass}>{currency}</span>
+   </div>
+  </div>
+ );
+}
+
 function ProductDetailPriceBody({
  displayPriceItems,
  locale,
  isSingleItem,
  amount,
  currency,
+ totalValue,
+ showLinePrices,
  t,
  showLabel = true,
 }) {
- if (isSingleItem) {
+ const showTotalRow = !isSingleItem || !showLinePrices;
+
+ if (isSingleItem && showLinePrices) {
   const item = displayPriceItems[0];
   const itemLabel = getPriceItemLabel(item);
-  const { amount: itemAmount } = getFormattedProductPriceParts(
-   getPriceItemDisplayAmount(item),
-   locale
+  const { itemAmount, currency: itemCurrency } = formatLineItemPrice(
+   item,
+   locale,
+   totalValue
   );
+  const lineCurrency = itemCurrency || currency;
 
   return (
    <div className="flex min-w-0 flex-1 flex-col gap-2 ultra:gap-3 tv:gap-4">
@@ -78,13 +115,17 @@ function ProductDetailPriceBody({
       <p className="font-medium wrap-break-word text-charcoal">{itemLabel}</p>
       <div className="flex shrink-0 items-baseline justify-end gap-1.5 text-right ultra:gap-2 tv:gap-2.5">
        <span className={productDetailPriceAmountClass}>{itemAmount}</span>
-       <span className={productDetailPriceCurrencyClass}>{currency}</span>
+       {lineCurrency ? (
+        <span className={productDetailPriceCurrencyClass}>{lineCurrency}</span>
+       ) : null}
       </div>
      </div>
     ) : (
      <div className="flex items-baseline gap-2 ultra:gap-2.5 tv:gap-3">
       <span className={productDetailPriceAmountClass}>{itemAmount}</span>
-      <span className={productDetailPriceCurrencyClass}>{currency}</span>
+      {lineCurrency ? (
+       <span className={productDetailPriceCurrencyClass}>{lineCurrency}</span>
+      ) : null}
      </div>
     )}
    </div>
@@ -98,33 +139,40 @@ function ProductDetailPriceBody({
      {t("product.price")}
     </span>
    ) : null}
-   <ul className="flex flex-col gap-2 ultra:gap-2.5 tv:gap-3">
-    {displayPriceItems.map((item) => {
-     const itemLabel = getPriceItemLabel(item);
-     const { amount: itemAmount } = getFormattedProductPriceParts(
-      getPriceItemDisplayAmount(item),
-      locale
-     );
+   {displayPriceItems.length > 0 ? (
+    <ul className="flex flex-col gap-2 ultra:gap-2.5 tv:gap-3">
+     {displayPriceItems.map((item) => {
+      const itemLabel = getPriceItemLabel(item);
 
-     return (
-      <li key={item._displayKey} className={productDetailPriceRowClass}>
-       <span className="font-medium wrap-break-word">{itemLabel ?? "-"}</span>
-       <span className="shrink-0 text-right tabular-nums text-charcoal/75">
-        {itemAmount} {currency}
-       </span>
-      </li>
-     );
-    })}
-   </ul>
-   <div className="flex items-baseline justify-between gap-3 border-t border-charcoal/10 pt-3 ultra:gap-4 ultra:pt-4 tv:gap-5 tv:pt-5">
-    <span className={productDetailPriceTotalLabelClass}>
-     {t("product.priceTotal")}
-    </span>
-    <div className="flex items-baseline gap-2 ultra:gap-2.5 tv:gap-3">
-     <span className={productDetailPriceAmountClass}>{amount}</span>
-     <span className={productDetailPriceCurrencyClass}>{currency}</span>
-    </div>
-   </div>
+      if (!showLinePrices) {
+       return (
+        <li key={item._displayKey}>
+         <span className="font-medium wrap-break-word text-charcoal">{itemLabel ?? "-"}</span>
+        </li>
+       );
+      }
+
+      const { itemAmount, currency: itemCurrency } = formatLineItemPrice(
+       item,
+       locale,
+       null
+      );
+
+      return (
+       <li key={item._displayKey} className={productDetailPriceRowClass}>
+        <span className="font-medium wrap-break-word">{itemLabel ?? "-"}</span>
+        <span className="shrink-0 text-right tabular-nums text-charcoal/75">
+         {itemAmount}
+         {itemCurrency ? ` ${itemCurrency}` : ""}
+        </span>
+       </li>
+      );
+     })}
+    </ul>
+   ) : null}
+   {showTotalRow ? (
+    <ProductDetailPriceTotalRow amount={amount} currency={currency} t={t} />
+   ) : null}
   </div>
  );
 }
@@ -132,7 +180,6 @@ function ProductDetailPriceBody({
 function ProductDetailPrice({ product, locale, className }) {
  const { t } = useLocale();
  const [open, setOpen] = useState("");
- const priceItems = getPriceItems(product);
  const total = getProductDisplayPrice(product);
 
  useEffect(() => {
@@ -141,11 +188,14 @@ function ProductDetailPrice({ product, locale, className }) {
   }
  }, []);
 
- if (priceItems.length === 0 || total == null) return null;
+ if (total == null) return null;
 
+ const priceItems = getPriceBreakdownItems(product);
  const { amount, currency } = getFormattedProductPriceParts(total, locale);
- const displayPriceItems = getDisplayPriceItems(priceItems);
+ const displayPriceItems =
+  priceItems.length > 0 ? getDisplayPriceItems(priceItems) : [];
  const isSingleItem = displayPriceItems.length === 1;
+ const showLinePrices = !hasManualProductPriceTotal(product);
  const isOpen = open === "price";
 
  return (
@@ -182,6 +232,8 @@ function ProductDetailPrice({ product, locale, className }) {
       isSingleItem={isSingleItem}
       amount={amount}
       currency={currency}
+      totalValue={total}
+      showLinePrices={showLinePrices}
       t={t}
       showLabel={false}
      />
