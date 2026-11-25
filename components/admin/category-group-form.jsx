@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdSave } from "react-icons/md";
 import { toast } from "sonner";
-import { DeleteButton } from "@/components/admin/delete-button";
 import { AdminImageUpload } from "@/components/admin/admin-image-upload";
 import {
  ADMIN_CATEGORY_NAME_FIELDS_HINT,
@@ -26,6 +24,10 @@ import {
 } from "@/lib/admin/image-specs";
 import { slugify } from "@/lib/admin/slug";
 import {
+ DEFAULT_CATEGORY_DESCRIPTIONS_EN,
+ DEFAULT_CATEGORY_DESCRIPTIONS_TR,
+} from "@/lib/content/default-category-descriptions";
+import {
  CATEGORY_COVER_DEVICES,
  EMPTY_CATEGORY_COVER_IMAGES,
  mergeCategoryCoverDeviceImage,
@@ -37,8 +39,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const DEFAULT_DEVICE = "desktop";
+
+export const ADMIN_CATEGORY_GROUP_FORM_ID = "admin-category-group-form";
 
 const emptyCategoryGroup = {
  name: "",
@@ -48,6 +53,8 @@ const emptyCategoryGroup = {
  coverImages: { ...EMPTY_CATEGORY_COVER_IMAGES },
  sortOrder: 0,
  isPublished: true,
+ description: "",
+ descriptionEn: "",
 };
 
 function initForm(categoryGroup) {
@@ -59,8 +66,20 @@ function initForm(categoryGroup) {
   limited.coverImage
  );
 
+ const slug = limited.slug ?? slugify(limited.name);
+ const description =
+  limited.description?.trim() ||
+  DEFAULT_CATEGORY_DESCRIPTIONS_TR[slug] ||
+  "";
+ const descriptionEn =
+  limited.descriptionEn?.trim() ||
+  DEFAULT_CATEGORY_DESCRIPTIONS_EN[slug] ||
+  "";
+
  return {
   ...limited,
+  description,
+  descriptionEn,
   coverImage,
   coverImages,
  };
@@ -220,6 +239,8 @@ export function CategoryGroupForm({ categoryGroup = null }) {
       coverImages,
       sortOrder: form.sortOrder,
       isPublished: form.isPublished,
+      description: form.description?.trim() || null,
+      descriptionEn: form.descriptionEn?.trim() || null,
      }),
     }
    );
@@ -244,7 +265,12 @@ export function CategoryGroupForm({ categoryGroup = null }) {
  }
 
  return (
-  <form onSubmit={handleSubmit} noValidate className="space-y-6">
+  <form
+   id={ADMIN_CATEGORY_GROUP_FORM_ID}
+   onSubmit={handleSubmit}
+   noValidate
+   className="space-y-6"
+  >
    <Card>
     <CardHeader>
      <CardTitle>{isEdit ? "Kategori Grubu Düzenle" : "Yeni Kategori Grubu"}</CardTitle>
@@ -277,7 +303,31 @@ export function CategoryGroupForm({ categoryGroup = null }) {
        onChange={(e) => updateField("sortOrder", Number(e.target.value))}
       />
      </div>
-     <p className="text-xs text-muted-foreground md:col-span-8">{ADMIN_CATEGORY_NAME_FIELDS_HINT}</p>
+     <p className="text-xs text-muted-foreground md:col-span-10">{ADMIN_CATEGORY_NAME_FIELDS_HINT}</p>
+     <div className="grid gap-4 md:col-span-10 md:grid-cols-2">
+      <div className="flex flex-col gap-2">
+       <Label htmlFor="description">Açıklama (TR)</Label>
+       <Textarea
+        id="description"
+        value={form.description ?? ""}
+        onChange={(e) => updateField("description", e.target.value)}
+        rows={4}
+        placeholder="Ürünler sayfasında kategori başlığının altında görünür"
+        className="field-sizing-fixed min-h-28 resize-y"
+       />
+      </div>
+      <div className="flex flex-col gap-2">
+       <Label htmlFor="descriptionEn">Açıklama (EN)</Label>
+       <Textarea
+        id="descriptionEn"
+        value={form.descriptionEn ?? ""}
+        onChange={(e) => updateField("descriptionEn", e.target.value)}
+        rows={4}
+        placeholder="Category subtitle on the products page (English)"
+        className="field-sizing-fixed min-h-28 resize-y"
+       />
+      </div>
+     </div>
      <div className="space-y-3 md:col-span-10">
       <div className="flex flex-wrap items-start justify-between gap-3">
        <div className="min-w-0 flex-1 space-y-1">
@@ -311,31 +361,13 @@ export function CategoryGroupForm({ categoryGroup = null }) {
     </CardContent>
    </Card>
 
-   <div className="flex items-center justify-between gap-3">
-    {isEdit ? (
-     <DeleteButton
-      href={`/api/admin/category-groups/${categoryGroup.id}`}
-      confirmTitle="Kategori grubunu sil?"
-      confirmDescription="Bu gruba bağlı ürünlerin kategori bilgisi kaldırılır."
-      redirectTo="/admin/categories"
-      iconOnly={false}
-     />
-    ) : (
-     <div />
-    )}
-    <Button type="submit" className="cursor-pointer gap-2" disabled={loading || uploading}>
-     {loading ? (
-      "Kaydediliyor…"
-     ) : isEdit ? (
-      <>
-       <MdSave className="size-4" />
-       Güncelle
-      </>
-     ) : (
-      "Oluştur"
-     )}
-    </Button>
-   </div>
+   {!isEdit ? (
+    <div className="flex justify-end">
+     <Button type="submit" className="cursor-pointer gap-2" disabled={loading || uploading}>
+      {loading ? "Kaydediliyor…" : "Oluştur"}
+     </Button>
+    </div>
+   ) : null}
   </form>
  );
 }

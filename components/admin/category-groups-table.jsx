@@ -17,6 +17,7 @@ import {
  TableHeader,
  TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const SORT_COLUMNS = {
  name: {
@@ -93,35 +94,46 @@ export function CategoryGroupsTable({ groups }) {
    </AdminMobileList>
 
    <div className="hidden md:block">
-    <Table>
+    <Table className="table-fixed">
      <TableHeader>
-      <TableRow>
+      <TableRow className="bg-muted/20 hover:bg-muted/20">
        {Object.entries(SORT_COLUMNS).map(([key, column]) => (
-        <TableHead key={key}>
+        <TableHead
+         key={key}
+         className={cn(
+          "px-4 py-3 sm:px-5",
+          key === "name" && "w-auto",
+          key === "products" && "w-24",
+          key === "status" && "w-32"
+         )}
+        >
          <SortableTableHead
           label={column.label}
           columnKey={key}
           sortKey={sort.key}
           sortDir={sort.dir}
           onSort={handleSort}
+          centered={key === "products"}
          />
         </TableHead>
        ))}
-       <TableHead className="text-right">İşlem</TableHead>
+       <TableHead className="w-28 px-4 py-3 text-center sm:px-5">İşlem</TableHead>
       </TableRow>
      </TableHeader>
      <TableBody>
       {pageItems.map((group) => (
        <TableRow key={group.id}>
-        <TableCell className="font-medium">{group.name}</TableCell>
-        <TableCell>{group._count.products}</TableCell>
-        <TableCell>
+        <TableCell className="px-4 py-3 font-medium sm:px-5">{group.name}</TableCell>
+        <TableCell className="px-4 py-3 text-center tabular-nums sm:px-5">
+         {group._count.products}
+        </TableCell>
+        <TableCell className="px-4 py-3 sm:px-5">
          <Badge variant={group.isPublished ? "default" : "secondary"}>
           {group.isPublished ? "Yayında" : "Taslak"}
          </Badge>
         </TableCell>
-        <TableCell className="text-right">
-         <div className="inline-flex items-center justify-end gap-2">
+        <TableCell className="px-4 py-3 sm:px-5">
+         <div className="flex items-center justify-center gap-2">
           <DeleteButton
            href={`/api/admin/category-groups/${group.id}`}
            confirmTitle="Kategori grubunu sil?"

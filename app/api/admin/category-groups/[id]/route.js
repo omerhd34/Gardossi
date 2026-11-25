@@ -82,6 +82,14 @@ export async function PUT(request, { params }) {
     coverImages: coverSource.coverImage ? coverSource.coverImages : null,
     sortOrder: Number(body.sortOrder) ?? existing.sortOrder,
     isPublished: body.isPublished ?? existing.isPublished,
+    description:
+     body.description !== undefined
+      ? body.description?.trim() || null
+      : existing.description,
+    descriptionEn:
+     body.descriptionEn !== undefined
+      ? body.descriptionEn?.trim() || null
+      : existing.descriptionEn,
    },
   });
 

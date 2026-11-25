@@ -64,6 +64,8 @@ export async function POST(request) {
     coverImages: coverImage ? coverImages : null,
     sortOrder: Number(body.sortOrder) || 0,
     isPublished: body.isPublished !== false,
+    description: body.description?.trim() || null,
+    descriptionEn: body.descriptionEn?.trim() || null,
    },
   });
 

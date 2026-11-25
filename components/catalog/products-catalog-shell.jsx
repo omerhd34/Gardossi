@@ -58,12 +58,7 @@ export function ProductsCatalogShell({
  const [sort, setSort] = useState(null);
 
  const isCategoryLanding = !categorySlug;
- const categoryDescription = categorySlug
-  ? t(`catalog.categoryDescriptions.${categorySlug}`)
-  : null;
- const hasCategoryDescription =
-  categoryDescription &&
-  categoryDescription !== `catalog.categoryDescriptions.${categorySlug}`;
+ const categoryDescription = activeGroup?.description?.trim() || null;
 
  const filteredProducts = useMemo(() => {
   const query = search.trim().toLowerCase();
@@ -114,7 +109,7 @@ export function ProductsCatalogShell({
     >
      {activeGroup ? activeGroup.label : t("catalog.allProductsTitle")}
     </SeoH1>
-    {hasCategoryDescription ? (
+    {categoryDescription ? (
      <p
       className={cn(
        pageLeadParagraphClass,
@@ -143,7 +138,6 @@ export function ProductsCatalogShell({
         priority={index < 2}
         variant="catalog"
         showFavoriteButton
-        omitCategoryInLabel
        />
       ))}
      </div>
