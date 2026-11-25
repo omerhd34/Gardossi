@@ -20,8 +20,11 @@ import { cn } from "@/lib/utils";
 const footerContactIconLinkClass =
  "inline-flex scale-100 text-charcoal/70 touch-manipulation transition-[scale,color] duration-200 ease-out hover:scale-110 hover:text-charcoal active:scale-95 active:duration-75 motion-reduce:transition-none";
 
+const footerContactIconClass =
+ "size-6 shrink-0 ultra:size-8 tv:size-10";
+
 const footerTitleClassName =
- "font-body text-sm font-semibold tracking-wide text-charcoal touch-manipulation transition-[color,transform] duration-75 hover:text-charcoal/80 active:scale-[0.98] motion-reduce:active:scale-100 ultra:text-base tv:text-lg";
+ "inline-block w-fit max-w-full border-b-2 border-black pb-1 font-display text-base font-semibold tracking-[0.14em] text-charcoal uppercase touch-manipulation transition-[color,transform] duration-75 hover:text-charcoal/80 active:scale-[0.98] motion-reduce:active:scale-100 md:text-lg ultra:pb-3.5 ultra:text-xl ultra:tracking-[0.18em] tv:pb-4 tv:text-2xl tv:tracking-[0.2em]";
 
 const footerLinkClassName =
  "font-body text-sm leading-relaxed text-charcoal/75 transition-[color,transform] duration-200 hover:text-charcoal active:scale-[0.98] active:opacity-80 active:duration-75 ultra:text-base ultra:leading-relaxed tv:text-lg";
@@ -36,7 +39,7 @@ function FooterColumn({ title, titleHref, children, className }) {
  const titleClassName = footerTitleClassName;
 
  return (
-  <div className={cn("flex min-w-0 flex-col gap-4", className)}>
+  <div className={cn("flex min-w-0 flex-col gap-5 ultra:gap-6 tv:gap-7", className)}>
    {titleHref ? (
     <Link href={titleHref} className={titleClassName}>
      {title}
@@ -99,14 +102,14 @@ export function Footer() {
         ))}
        </div>
 
-       <div className="flex flex-wrap items-center gap-4 ultra:gap-5 tv:gap-6">
+       <div className="flex flex-wrap items-center gap-4 ultra:gap-6 tv:gap-8">
         {sitePhoneHref ? (
          <Link
           href={sitePhoneHref}
           className={footerContactIconLinkClass}
           aria-label={t("footer.phone", { phone: sitePhone })}
          >
-          <Phone className="size-4 shrink-0 ultra:size-5 tv:size-6" aria-hidden />
+          <Phone className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
         {whatsAppHref ? (
@@ -117,7 +120,7 @@ export function Footer() {
           className={footerContactIconLinkClass}
           aria-label={t("contact.whatsapp")}
          >
-          <FaWhatsapp className="size-4 ultra:size-5 tv:size-6" aria-hidden />
+          <FaWhatsapp className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
         {siteEmail ? (
@@ -126,7 +129,7 @@ export function Footer() {
           className={footerContactIconLinkClass}
           aria-label={t("footer.email", { email: siteEmail })}
          >
-          <Mail className="size-4 shrink-0 ultra:size-5 tv:size-6" aria-hidden />
+          <Mail className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
         {flagshipStore.mapUrl ? (
@@ -137,7 +140,7 @@ export function Footer() {
           className={footerContactIconLinkClass}
           aria-label={t("footer.location")}
          >
-          <MapPin className="size-4 shrink-0 ultra:size-5 tv:size-6" aria-hidden />
+          <MapPin className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
         {socialLinks.map((item) => (
@@ -149,7 +152,7 @@ export function Footer() {
           className={footerContactIconLinkClass}
           aria-label={item.label}
          >
-          <SocialIcon label={item.label} className="ultra:size-5 tv:size-6" />
+          <SocialIcon label={item.label} className={footerContactIconClass} />
          </Link>
         ))}
        </div>
