@@ -35,9 +35,12 @@ export function ProductsCatalogToolbar({
      onSubmit={(event) => event.preventDefault()}
      className={cn(catalogSearchPillClass, "flex-1")}
     >
-     <div className={catalogSearchFieldClass}>
+     <div className={cn(catalogSearchFieldClass, "bg-transparent")}>
       <input
-       type="search"
+       type="text"
+       inputMode="search"
+       enterKeyHint="search"
+       autoComplete="off"
        value={search}
        onChange={(event) => onSearchChange(event.target.value)}
        placeholder={t("catalog.searchProductsPlaceholder")}

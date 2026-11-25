@@ -15,7 +15,7 @@ export function AdminTablePagination({
  if (totalItems === 0) return null;
 
  return (
-  <div className="flex flex-col gap-3 border-t border-border/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+  <div className="flex flex-col gap-3 border-t border-border/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
    <p className="text-sm text-muted-foreground">
     {rangeStart}–{rangeEnd} / {totalItems} kayıt
    </p>

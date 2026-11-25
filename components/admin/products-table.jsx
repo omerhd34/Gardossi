@@ -349,13 +349,18 @@ export function ProductsTable({ products }) {
    </AdminMobileList>
 
    <div className="hidden md:block">
-    <Table>
+    <Table className="table-fixed">
      <TableHeader>
       <TableRow className="bg-muted/20 hover:bg-muted/20">
        {Object.entries(SORT_COLUMNS).map(([key, column]) => (
         <TableHead
          key={key}
-         className={cn("px-4 py-3", key === "name" && "min-w-56 w-[40%]")}
+         className={cn(
+          "px-4 py-3 sm:px-5",
+          key === "category" && "w-36",
+          key === "price" && "w-32",
+          key === "status" && "w-44"
+         )}
         >
          <SortableTableHead
           label={column.label}
@@ -366,13 +371,13 @@ export function ProductsTable({ products }) {
          />
         </TableHead>
        ))}
-       <TableHead className="w-24 px-4 py-3 text-center">İşlem</TableHead>
+       <TableHead className="w-28 px-4 py-3 text-center sm:px-5">İşlem</TableHead>
       </TableRow>
      </TableHeader>
      <TableBody>
       {pageItems.length === 0 ? (
        <TableRow className="hover:bg-transparent">
-        <TableCell colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
+        <TableCell colSpan={5} className="px-4 py-12 text-center text-muted-foreground sm:px-5">
          Filtrelere uygun ürün bulunamadı.
         </TableCell>
        </TableRow>
@@ -383,19 +388,22 @@ export function ProductsTable({ products }) {
 
         return (
          <TableRow key={product.id}>
-          <TableCell className="min-w-56 w-[40%] px-4 py-3 font-medium">
+          <TableCell className="px-4 py-3 font-medium sm:px-5">
            {product.name}
           </TableCell>
           <TableCell
-           className="px-4 py-3"
+           className="px-4 py-3 sm:px-5"
            title={product.categoryGroup?.name ?? undefined}
           >
            {truncateTableText(product.categoryGroup?.name) ?? "-"}
           </TableCell>
-          <TableCell className="px-4 py-3 tabular-nums" title={priceLabel ?? undefined}>
+          <TableCell
+           className="px-4 py-3 tabular-nums sm:px-5"
+           title={priceLabel ?? undefined}
+          >
            {truncateTableText(priceLabel) ?? "-"}
           </TableCell>
-          <TableCell className="px-4 py-3">
+          <TableCell className="px-4 py-3 sm:px-5">
            <div className="flex flex-wrap items-center gap-1">
             <Badge variant={product.isPublished ? "default" : "secondary"}>
              {product.isPublished ? "Yayında" : "Taslak"}
@@ -408,7 +416,7 @@ export function ProductsTable({ products }) {
             ) : null}
            </div>
           </TableCell>
-          <TableCell className="px-4 py-3">
+          <TableCell className="px-4 py-3 sm:px-5">
            <div className="flex items-center justify-center gap-2">
             <DeleteButton
              href={`/api/admin/products/${product.id}`}

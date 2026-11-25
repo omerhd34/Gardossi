@@ -82,41 +82,34 @@ export function ProductCard({
 
      <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-black/15" />
 
-     <div
-      className={cn(
-       "absolute inset-3 z-10 flex flex-col",
-       "lg:inset-x-4 lg:top-auto lg:bottom-4 lg:flex-row lg:items-end lg:gap-3",
-       "ultra:inset-5 ultra:bottom-5 ultra:gap-4 tv:inset-6 tv:bottom-6 tv:gap-5"
-      )}
-     >
-      {priceLabel ? (
-       <OverlaySurface
-        className={cn(
-         badgeClassName,
-         "w-fit shrink-0 self-start origin-left lg:order-2 lg:ml-auto lg:self-auto lg:origin-right"
-        )}
-       >
-        {priceLabel}
-       </OverlaySurface>
-      ) : null}
-
+     {priceLabel ? (
       <OverlaySurface
        className={cn(
         badgeClassName,
-        "mt-auto w-fit max-w-full min-w-0 origin-left text-left leading-snug line-clamp-2",
-        "lg:order-1 lg:mt-0 lg:max-w-[calc(100%-9.5rem)] ultra:max-w-[calc(100%-12rem)] tv:max-w-[calc(100%-14.5rem)]"
+        "absolute top-3 right-3 z-10 w-fit shrink-0 origin-top-right",
+        "lg:top-4 lg:right-4 ultra:top-5 ultra:right-5 tv:top-6 tv:right-6"
        )}
       >
-       {bottomLabel}
+       {priceLabel}
       </OverlaySurface>
-     </div>
+     ) : null}
+
+     <OverlaySurface
+      className={cn(
+       badgeClassName,
+       "absolute inset-x-3 bottom-3 z-10 w-fit max-w-full min-w-0 origin-bottom-left text-left leading-snug line-clamp-2",
+       "lg:inset-x-4 lg:bottom-4 ultra:inset-x-5 ultra:bottom-5 tv:inset-x-6 tv:bottom-6"
+      )}
+     >
+      {bottomLabel}
+     </OverlaySurface>
     </Link>
 
     {showFavoriteButton ? (
      <ProductFavoriteButton
       product={product}
       className={cn(
-       "absolute top-3 right-3 z-20 lg:top-4 lg:right-4",
+       "absolute top-3 left-3 z-20 lg:top-4 lg:left-4 ultra:top-5 ultra:left-5 tv:top-6 tv:left-6",
        (isCatalog || isFeatured) &&
        "size-10 sm:size-9 [&_svg]:size-5.5 sm:[&_svg]:size-5 lg:size-11 lg:[&_svg]:size-6 ultra:size-12 ultra:[&_svg]:size-6.5 tv:size-14 tv:[&_svg]:size-7"
       )}
