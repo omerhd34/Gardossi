@@ -1209,6 +1209,10 @@ const CATEGORY_GROUP_LABELS = {
 
 async function seedCategoryGroups() {
  const { productMenuGroupsData } = await import("../lib/i18n/navigation-data.js");
+ const {
+  DEFAULT_CATEGORY_DESCRIPTIONS_EN,
+  DEFAULT_CATEGORY_DESCRIPTIONS_TR,
+ } = await import("../lib/content/default-category-descriptions.js");
 
  console.log("Kategori grupları ekleniyor…");
 
@@ -1223,6 +1227,8 @@ async function seedCategoryGroups() {
     slug: group.slug,
     name: labels.name,
     nameEn: labels.nameEn,
+    description: DEFAULT_CATEGORY_DESCRIPTIONS_TR[group.slug] ?? null,
+    descriptionEn: DEFAULT_CATEGORY_DESCRIPTIONS_EN[group.slug] ?? null,
     coverImage: resolveMediaUrl(group.coverImage ?? group.items[0]?.image ?? null),
     sortOrder: index + 1,
     isPublished: true,

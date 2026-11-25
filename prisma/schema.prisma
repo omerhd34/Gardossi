@@ -13,6 +13,8 @@ model ProductCategoryGroup {
   slug        String    @unique
   name        String
   nameEn      String?
+  description   String? @db.Text
+  descriptionEn String? @db.Text
   coverImage  String?
   coverImages Json?
   sortOrder   Int       @default(0)
@@ -38,6 +40,8 @@ model Product {
   dimensions      String?
   /// Parça bazlı ölçü ve fiyat tablosu: [{ name?, nameEn?, widthCm, depthCm, heightCm, amount?, quantity? }]
   dimensionItems  Json?
+  /// Elle girilen takım / vitrin toplam fiyatı. Doluysa parça fiyatları toplamının yerine geçer.
+  priceTotal      Decimal? @db.Decimal(12, 2)
   widthCm         Decimal? @db.Decimal(8, 2)
   heightCm        Decimal? @db.Decimal(8, 2)
   depthCm         Decimal? @db.Decimal(8, 2)
