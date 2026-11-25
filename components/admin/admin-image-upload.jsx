@@ -144,7 +144,7 @@ export function AdminImageUpload({
     className={cn(
      "overflow-hidden rounded-xl border bg-card shadow-sm transition-[border-color,box-shadow] duration-150",
      isDragging
-      ? "border-charcoal/40 shadow-[0_0_0_3px_oklch(0.22_0.01_260/12%)]"
+      ? "border-charcoal/40 shadow-[0_0_0_3px_rgb(56_57_63/12%)]"
       : "border-border/70",
      fullWidth ? "w-full" : "mx-auto w-full max-w-2xl",
      stretch && "flex flex-1 flex-col",

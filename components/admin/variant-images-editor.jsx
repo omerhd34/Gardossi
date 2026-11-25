@@ -105,7 +105,7 @@ export function VariantImagesEditor({
     className={cn(
      "space-y-3 rounded-lg border border-dashed bg-muted/10 p-3 transition-[border-color,box-shadow,background-color] duration-150",
      isDragging
-      ? "border-charcoal/40 bg-muted/30 shadow-[0_0_0_3px_oklch(0.22_0.01_260/12%)]"
+      ? "border-charcoal/40 bg-muted/30 shadow-[0_0_0_3px_rgb(56_57_63/12%)]"
       : "border-border/70"
     )}
     onDragEnter={handleDragOver}

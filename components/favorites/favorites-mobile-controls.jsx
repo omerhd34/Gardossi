@@ -85,11 +85,14 @@ export function FavoritesMobileControls({
    >
     <Search className="size-4 shrink-0 text-charcoal/45" aria-hidden />
     <input
-     type="search"
+     type="text"
+     inputMode="search"
+     enterKeyHint="search"
+     autoComplete="off"
      value={search}
      onChange={(event) => onSearchChange(event.target.value)}
      placeholder={t("favorites.searchPlaceholder")}
-     className="min-w-0 flex-1 bg-transparent text-sm text-charcoal outline-none placeholder:text-charcoal/45"
+     className="min-w-0 flex-1 appearance-none border-0 bg-transparent text-sm text-charcoal outline-none placeholder:text-charcoal/45"
      aria-label={t("favorites.search")}
     />
     {search ? (

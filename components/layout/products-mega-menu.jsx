@@ -96,7 +96,7 @@ function CategoryNavItem({ group, isActive, index, onSelect, menuOpen }) {
     "products-mega-menu-category flex w-full cursor-pointer items-center gap-3 rounded-2xl px-2 py-2 text-left transition-[background-color,box-shadow] duration-300 ease-out motion-reduce:transition-none md:px-2.5 md:py-2.5",
     menuOpen && "animate-[mega-menu-category-in_0.55s_cubic-bezier(0.22,1,0.36,1)_both]",
     isActive
-     ? "bg-white/16 shadow-[inset_0_0_0_1px_oklch(1_0_0/22%)]"
+     ? "bg-white/16 shadow-[inset_0_0_0_1px_rgb(255_255_255/22%)]"
      : "hover:bg-white/8",
     lightMegaMenuCategoryItemClass
    )}
@@ -248,7 +248,7 @@ export function ProductsMegaMenu({ open, panelRef, onClose }) {
 
        <nav
         className={cn(
-         "products-mega-menu-categories min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain px-2 pb-3 md:px-3 [scrollbar-color:oklch(1_0_0/42%)_transparent] scrollbar-thin hover:[&::-webkit-scrollbar-thumb]:bg-white/55 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/38 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1",
+         "products-mega-menu-categories min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain px-2 pb-3 md:px-3 [scrollbar-color:rgb(255_255_255/42%)_transparent] scrollbar-thin hover:[&::-webkit-scrollbar-thumb]:bg-white/55 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/38 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1",
          lightMegaMenuSidebarScrollClass
         )}
         aria-label={t("nav.productCategories")}
@@ -286,7 +286,7 @@ export function ProductsMegaMenu({ open, panelRef, onClose }) {
        ref={scrollRef}
        className={cn(
         "products-mega-menu-scroll relative min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain p-4 md:p-5 lg:p-6",
-        "[scrollbar-color:oklch(0.62_0.01_260/0.38)_transparent] scrollbar-thin hover:[&::-webkit-scrollbar-thumb]:bg-charcoal/48 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-charcoal/32 [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1",
+        "[scrollbar-color:rgb(140_143_152/38%)_transparent] scrollbar-thin hover:[&::-webkit-scrollbar-thumb]:bg-charcoal/48 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-charcoal/32 [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1",
         heroMegaMenuScrollClass
        )}
       >
@@ -319,7 +319,7 @@ export function ProductsMegaMenu({ open, panelRef, onClose }) {
          <div className="mb-5 flex items-center justify-between gap-4 md:mb-6">
           <h3
            className={cn(
-            "products-mega-menu-section-title min-w-0 font-heading text-xl font-semibold tracking-[-0.02em] text-white [text-shadow:0_2px_18px_oklch(0_0_0/35%)] md:text-2xl",
+            "products-mega-menu-section-title min-w-0 font-heading text-xl font-semibold tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgb(0_0_0/35%)] md:text-2xl",
             lightMegaMenuTitleClass
            )}
           >

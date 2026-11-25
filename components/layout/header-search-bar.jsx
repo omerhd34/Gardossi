@@ -145,7 +145,7 @@ export function HeaderSearchBar({
   showResultsPanel ? (
    <div
     className={cn(
-     "mt-3 max-h-[min(70vh,36rem)] overflow-y-auto rounded-[1.75rem] border border-(--pill-border) bg-[oklch(0.995_0.004_90/96%)] p-5 shadow-[0_12px_48px_rgb(0_0_0/12%)] transition-[opacity,transform] duration-220 ease-out",
+     "mt-3 max-h-[min(70vh,36rem)] overflow-y-auto rounded-[1.75rem] border border-(--pill-border) bg-[rgb(249_248_244/96%)] p-5 shadow-[0_12px_48px_rgb(0_0_0/12%)] transition-[opacity,transform] duration-220 ease-out",
      (hasResults || loading || showEmpty)
       ? "translate-y-0 opacity-100"
       : "translate-y-[-0.35rem] opacity-0"
@@ -154,8 +154,8 @@ export function HeaderSearchBar({
     {loading ? (
      <div className="flex justify-center px-2 py-6 text-center text-sm text-charcoal/60">
       <div className="relative grid size-13 place-items-center" role="status" aria-label={t("common.searching")}>
-       <div className="absolute inset-0 animate-[search-overlay-loader-spin_0.9s_cubic-bezier(0.45,0.05,0.35,0.95)_infinite] rounded-full border-2 border-charcoal/10 border-t-kalif-blue border-r-[oklch(0.52_0.14_250/40%)]" />
-       <div className="absolute inset-[0.4rem] animate-[search-overlay-loader-glow_1.6s_ease-in-out_infinite] rounded-full bg-[oklch(0.52_0.14_250/6%)]" />
+       <div className="absolute inset-0 animate-[search-overlay-loader-spin_0.9s_cubic-bezier(0.45,0.05,0.35,0.95)_infinite] rounded-full border-2 border-charcoal/10 border-t-kalif-blue border-r-[rgb(58_111_165/40%)]" />
+       <div className="absolute inset-[0.4rem] animate-[search-overlay-loader-glow_1.6s_ease-in-out_infinite] rounded-full bg-[rgb(58_111_165/6%)]" />
        <Search className="relative z-1 size-4.5 animate-[search-overlay-loader-icon_1.6s_ease-in-out_infinite] text-charcoal/70" aria-hidden />
       </div>
      </div>
@@ -208,7 +208,7 @@ export function HeaderSearchBar({
     <button
      type="button"
      className={cn(
-      "search-results-backdrop fixed right-0 bottom-0 left-0 z-40 cursor-pointer border-0 bg-[oklch(0.99_0.006_88/55%)] [backdrop-filter:blur(14px)_saturate(120%)] [-webkit-backdrop-filter:blur(14px)_saturate(120%)]",
+      "search-results-backdrop fixed right-0 bottom-0 left-0 z-40 cursor-pointer border-0 bg-[rgb(252_251_248/55%)] [backdrop-filter:blur(14px)_saturate(120%)] [-webkit-backdrop-filter:blur(14px)_saturate(120%)]",
       searchResultsBackdropTopClass
      )}
      onClick={onClose}
