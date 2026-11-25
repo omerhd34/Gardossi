@@ -27,7 +27,7 @@ function compareByPrice(a, b, ascending) {
 }
 
 function sortProducts(products, sort, t) {
- if (!sort) return products;
+ if (!sort || sort === "panel") return products;
 
  const list = [...products];
 

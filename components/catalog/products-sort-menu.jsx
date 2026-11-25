@@ -85,7 +85,9 @@ export function ProductsSortMenu({
 
      <div className="space-y-1 px-3 py-3 lg:space-y-1.5 lg:px-4 lg:py-4 ultra:space-y-2 ultra:px-5 ultra:py-5 tv:space-y-2.5 tv:px-6 tv:py-6">
       {sortOptions.map((option) => {
-       const active = sort === option.value;
+       const active =
+        sort === option.value ||
+        (sort == null && option.value === "panel");
 
        return (
         <DropdownMenuItem
