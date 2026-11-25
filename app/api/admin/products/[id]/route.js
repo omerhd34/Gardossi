@@ -5,6 +5,14 @@ import {
 } from "@/lib/admin/field-limits";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/admin/slug";
+import {
+ assignCategoryProductOrder,
+ compactCategoryProductOrders,
+} from "@/lib/admin/category-product-order";
+import {
+ assignFeaturedOrder,
+ compactFeaturedOrders,
+} from "@/lib/admin/featured-order";
 import { getFeaturedLimitError } from "@/lib/admin/featured-products";
 import {
  parseCornerStandardFields,
@@ -12,6 +20,8 @@ import {
  parseProductMedia,
  validateProductImages,
 } from "@/lib/admin/product-payload";
+import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
+import { revalidateProductPages } from "@/lib/admin/revalidate-products";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
 
 const productInclude = {
@@ -131,10 +141,16 @@ export async function PUT(request, { params }) {
    return Response.json({ error: featuredLimitError }, { status: 400 });
   }
 
+  const requestedFeaturedOrder = parseAdminRank(
+   body.featuredOrder,
+   existing.featuredOrder || 1
+  );
+  const requestedSortOrder = parseAdminRank(body.sortOrder, existing.sortOrder || 1);
+
   const product = await prisma.$transaction(async (tx) => {
    await tx.image.deleteMany({ where: { productId: id } });
 
-   return tx.product.update({
+   await tx.product.update({
     where: { id },
     data: {
      slug,
@@ -148,19 +164,81 @@ export async function PUT(request, { params }) {
      depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
      heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,
      ...cornerStandard,
-     sortOrder: Number(body.sortOrder) ?? existing.sortOrder,
+     sortOrder: requestedSortOrder,
      isPublished: body.isPublished ?? existing.isPublished,
      isFeatured,
-     featuredOrder: Number(body.featuredOrder) ?? existing.featuredOrder,
+     featuredOrder: isFeatured ? requestedFeaturedOrder : 0,
      categoryGroupId,
      sku: media.sku,
      images: media.images,
     },
+   });
+
+   if (isFeatured) {
+    await assignFeaturedOrder(tx, id, requestedFeaturedOrder);
+   } else if (existing.isFeatured) {
+    await compactFeaturedOrders(tx);
+   }
+
+   await assignCategoryProductOrder(tx, id, categoryGroupId, requestedSortOrder);
+   if (
+    existing.categoryGroupId &&
+    existing.categoryGroupId !== categoryGroupId
+   ) {
+    await compactCategoryProductOrders(tx, existing.categoryGroupId);
+   }
+
+   return tx.product.findUnique({
+    where: { id },
     include: productInclude,
    });
   });
 
+  revalidateProductPages();
+
   return Response.json(product);
+ } catch (error) {
+  return handleAdminError(error);
+ }
+}
+
+export async function PATCH(request, { params }) {
+ try {
+  await requireAdmin();
+  const { id } = await params;
+  const body = await request.json();
+
+  if (body.featuredOrder === undefined) {
+   return Response.json({ error: "Vitrin sırası gerekli." }, { status: 400 });
+  }
+
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) {
+   return Response.json({ error: "Ürün bulunamadı." }, { status: 404 });
+  }
+
+  if (!existing.isFeatured) {
+   return Response.json(
+    { error: "Vitrin sırası yalnızca vitrindeki ürünler için güncellenebilir." },
+    { status: 400 }
+   );
+  }
+
+  const finalOrder = await prisma.$transaction(async (tx) =>
+   assignFeaturedOrder(tx, id, body.featuredOrder)
+  );
+
+  if (finalOrder == null) {
+   return Response.json({ error: "Vitrin sırası güncellenemedi." }, { status: 400 });
+  }
+
+  revalidateProductPages();
+
+  return Response.json({
+   id,
+   featuredOrder: finalOrder,
+   isFeatured: true,
+  });
  } catch (error) {
   return handleAdminError(error);
  }
@@ -171,7 +249,20 @@ export async function DELETE(_request, { params }) {
   await requireAdmin();
   const { id } = await params;
 
-  await prisma.product.delete({ where: { id } });
+  await prisma.$transaction(async (tx) => {
+   const existing = await tx.product.findUnique({
+    where: { id },
+    select: { isFeatured: true, categoryGroupId: true },
+   });
+   await tx.product.delete({ where: { id } });
+   if (existing?.isFeatured) {
+    await compactFeaturedOrders(tx);
+   }
+   if (existing?.categoryGroupId) {
+    await compactCategoryProductOrders(tx, existing.categoryGroupId);
+   }
+  });
+  revalidateProductPages();
   return Response.json({ ok: true });
  } catch (error) {
   return handleAdminError(error);

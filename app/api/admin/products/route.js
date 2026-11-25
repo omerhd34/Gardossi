@@ -5,6 +5,8 @@ import {
 } from "@/lib/admin/field-limits";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/admin/slug";
+import { assignCategoryProductOrder } from "@/lib/admin/category-product-order";
+import { assignFeaturedOrder } from "@/lib/admin/featured-order";
 import { getFeaturedLimitError } from "@/lib/admin/featured-products";
 import {
  parseCornerStandardFields,
@@ -12,6 +14,8 @@ import {
  parseProductMedia,
  validateProductImages,
 } from "@/lib/admin/product-payload";
+import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
+import { revalidateProductPages } from "@/lib/admin/revalidate-products";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
 
 const productInclude = {
@@ -96,29 +100,51 @@ export async function POST(request) {
    return Response.json({ error: featuredLimitError }, { status: 400 });
   }
 
-  const product = await prisma.product.create({
-   data: {
-    slug,
-    name,
-    nameEn,
-    description: body.description?.trim() || null,
-    descriptionEn: body.descriptionEn?.trim() || null,
-    dimensions: null,
-    dimensionItems: parseDimensionItems(body.dimensionItems),
-    widthCm: body.widthCm != null && body.widthCm !== "" ? Number(body.widthCm) : null,
-    depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
-    heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,
-    ...cornerStandard,
-    sortOrder: Number(body.sortOrder) || 0,
-    isPublished: body.isPublished !== false,
-    isFeatured,
-    featuredOrder: Number(body.featuredOrder) || 0,
+  const requestedFeaturedOrder = parseAdminRank(body.featuredOrder, 1);
+  const requestedSortOrder = parseAdminRank(body.sortOrder, 1);
+
+  const product = await prisma.$transaction(async (tx) => {
+   const created = await tx.product.create({
+    data: {
+     slug,
+     name,
+     nameEn,
+     description: body.description?.trim() || null,
+     descriptionEn: body.descriptionEn?.trim() || null,
+     dimensions: null,
+     dimensionItems: parseDimensionItems(body.dimensionItems),
+     widthCm: body.widthCm != null && body.widthCm !== "" ? Number(body.widthCm) : null,
+     depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
+     heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,
+     ...cornerStandard,
+     sortOrder: requestedSortOrder,
+     isPublished: body.isPublished !== false,
+     isFeatured,
+     featuredOrder: isFeatured ? requestedFeaturedOrder : 0,
+     categoryGroupId,
+     sku: media.sku,
+     images: media.images,
+    },
+   });
+
+   if (isFeatured) {
+    await assignFeaturedOrder(tx, created.id, requestedFeaturedOrder);
+   }
+
+   await assignCategoryProductOrder(
+    tx,
+    created.id,
     categoryGroupId,
-    sku: media.sku,
-    images: media.images,
-   },
-   include: productInclude,
+    requestedSortOrder
+   );
+
+   return tx.product.findUnique({
+    where: { id: created.id },
+    include: productInclude,
+   });
   });
+
+  revalidateProductPages();
 
   return Response.json(product, { status: 201 });
  } catch (error) {
