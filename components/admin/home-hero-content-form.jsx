@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { MdSave } from "react-icons/md";
+import { useId, useState } from "react";
+import { AdminContentFormHeader } from "@/components/admin/admin-content-form-header";
 import {
  AdminHeroSlideImage,
  getHomeHeroSlideImageHint,
@@ -237,36 +237,41 @@ export function HomeHeroFields({
  );
 }
 
-export function HomeHeroContentForm({ initial }) {
+export function HomeHeroContentForm({ initial, title = "Anasayfa Hero" }) {
+ const formId = useId();
  const [form, setForm] = useState(() => normalizeInitialForm(initial));
  const [loading, setLoading] = useState(false);
  const [uploadingSlot, setUploadingSlot] = useState(null);
 
  return (
-  <form
-   className="space-y-6"
-   onSubmit={(event) => {
-    event.preventDefault();
-    handleContentSave(
-     "homeHero",
-     stripHeroLockedFields(form.contentTr),
-     stripHeroLockedFields(form.contentEn),
-     setLoading,
-     "Anasayfa hero slaytları"
-    );
-   }}
-  >
-   <HomeHeroFields
-    form={form}
-    setForm={setForm}
-    uploadingSlot={uploadingSlot}
-    setUploadingSlot={setUploadingSlot}
+  <div className="space-y-6">
+   <AdminContentFormHeader
+    formId={formId}
+    title={title}
+    loading={loading}
+    submitDisabled={uploadingSlot !== null}
    />
-
-   <Button type="submit" className="cursor-pointer gap-1.5" disabled={loading}>
-    {!loading ? <MdSave className="size-4" aria-hidden /> : null}
-    {loading ? "Kaydediliyor..." : "Kaydet"}
-   </Button>
-  </form>
+   <form
+    id={formId}
+    className="space-y-6"
+    onSubmit={(event) => {
+     event.preventDefault();
+     handleContentSave(
+      "homeHero",
+      stripHeroLockedFields(form.contentTr),
+      stripHeroLockedFields(form.contentEn),
+      setLoading,
+      "Anasayfa hero slaytları"
+     );
+    }}
+   >
+    <HomeHeroFields
+     form={form}
+     setForm={setForm}
+     uploadingSlot={uploadingSlot}
+     setUploadingSlot={setUploadingSlot}
+    />
+   </form>
+  </div>
  );
 }

@@ -122,22 +122,22 @@ export default async function AdminDashboardPage() {
     })}
    </div>
 
-   <div className="grid gap-4 lg:grid-cols-2">
+   <div className="grid gap-4 items-stretch lg:grid-cols-2">
     {quickActions.map((action) => {
      const ActionIcon = action.icon;
 
      return (
       <Card
        key={action.href}
-       className="border-border/70 bg-card/90 shadow-sm transition-shadow hover:shadow-md"
+       className="h-full gap-0 py-0 border-border/70 bg-card/90 shadow-sm transition-shadow hover:shadow-md"
       >
-       <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
+       <CardContent className="flex h-full flex-col gap-3.5 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0 flex-1 space-y-1">
          <div className="flex items-center gap-2">
           {ActionIcon ? <ActionIcon className="size-5 text-muted-foreground" /> : null}
-          <h2 className="text-lg font-semibold tracking-tight">{action.title}</h2>
+          <h2 className="text-base font-semibold tracking-tight">{action.title}</h2>
          </div>
-         <p className="text-sm text-muted-foreground">{action.description}</p>
+         <p className="min-h-10 text-sm leading-snug text-muted-foreground">{action.description}</p>
         </div>
         <Button variant="outline" className="cursor-pointer shrink-0" asChild>
          <Link href={action.href}>{action.cta}</Link>

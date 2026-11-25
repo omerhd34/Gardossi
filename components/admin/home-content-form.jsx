@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { MdSave } from "react-icons/md";
-import { HomeBrandExperienceFields, stripBrandLockedFields } from "@/components/admin/home-brand-experience-content-form";
+import { useId, useState } from "react";
+import { AdminContentFormHeader } from "@/components/admin/admin-content-form-header";
+import {
+ HomeBrandExperienceFields,
+ normalizeBrandExperienceContent,
+ stripBrandLockedFields,
+} from "@/components/admin/home-brand-experience-content-form";
 import { HomeHeroFields, stripHeroLockedFields } from "@/components/admin/home-hero-content-form";
+import {
+ HomeShowcaseFields,
+ stripHomeShowcaseFields,
+} from "@/components/admin/home-showcase-content-form";
 import { saveContentBlock } from "@/components/admin/content-block-save";
 import { normalizeHomeHeroContent } from "@/lib/content/home-hero-slides";
-import { normalizePageHeroImages } from "@/lib/content/page-hero-images";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 function normalizeHeroInitial(initial) {
@@ -21,14 +27,19 @@ function normalizeHeroInitial(initial) {
 function normalizeBrandInitial(initial) {
  return {
   ...initial,
-  contentTr: normalizePageHeroImages(initial.contentTr),
-  contentEn: normalizePageHeroImages(initial.contentEn),
+  contentTr: normalizeBrandExperienceContent(initial.contentTr),
+  contentEn: normalizeBrandExperienceContent(initial.contentEn),
  };
 }
 
-export function HomeContentForm({ initialHero, initialBrand }) {
+export function HomeContentForm({ initialHero, initialBrand, initialShowcase }) {
+ const formId = useId();
  const [heroForm, setHeroForm] = useState(() => normalizeHeroInitial(initialHero));
  const [brandForm, setBrandForm] = useState(() => normalizeBrandInitial(initialBrand));
+ const [showcaseForm, setShowcaseForm] = useState(() => ({
+  contentTr: { ...initialShowcase.contentTr },
+  contentEn: { ...initialShowcase.contentEn },
+ }));
  const [loading, setLoading] = useState(false);
  const [uploadingSlot, setUploadingSlot] = useState(null);
  const [uploadingBrandHero, setUploadingBrandHero] = useState(false);
@@ -38,7 +49,7 @@ export function HomeContentForm({ initialHero, initialBrand }) {
   setLoading(true);
 
   try {
-   const [savedHero, savedBrand] = await Promise.all([
+   const [savedHero, savedBrand, savedShowcase] = await Promise.all([
     saveContentBlock(
      "homeHero",
      stripHeroLockedFields(heroForm.contentTr),
@@ -49,6 +60,11 @@ export function HomeContentForm({ initialHero, initialBrand }) {
      stripBrandLockedFields(brandForm.contentTr),
      stripBrandLockedFields(brandForm.contentEn)
     ),
+    saveContentBlock(
+     "homeShowcase",
+     stripHomeShowcaseFields(showcaseForm.contentTr),
+     stripHomeShowcaseFields(showcaseForm.contentEn)
+    ),
    ]);
 
    setHeroForm({
@@ -58,8 +74,12 @@ export function HomeContentForm({ initialHero, initialBrand }) {
    });
    setBrandForm({
     ...savedBrand,
-    contentTr: normalizePageHeroImages(savedBrand.contentTr),
-    contentEn: normalizePageHeroImages(savedBrand.contentEn),
+    contentTr: normalizeBrandExperienceContent(savedBrand.contentTr),
+    contentEn: normalizeBrandExperienceContent(savedBrand.contentEn),
+   });
+   setShowcaseForm({
+    contentTr: { ...savedShowcase.contentTr },
+    contentEn: { ...savedShowcase.contentEn },
    });
 
    toast.success("Anasayfa kaydedildi.");
@@ -71,25 +91,30 @@ export function HomeContentForm({ initialHero, initialBrand }) {
  }
 
  return (
-  <form className="space-y-6" onSubmit={handleSubmit}>
-   <HomeHeroFields
-    form={heroForm}
-    setForm={setHeroForm}
-    uploadingSlot={uploadingSlot}
-    setUploadingSlot={setUploadingSlot}
+  <div className="space-y-6">
+   <AdminContentFormHeader
+    formId={formId}
+    title="Anasayfa"
+    loading={loading}
+    submitDisabled={uploadingSlot !== null || uploadingBrandHero}
    />
+   <form id={formId} className="space-y-6" onSubmit={handleSubmit}>
+    <HomeHeroFields
+     form={heroForm}
+     setForm={setHeroForm}
+     uploadingSlot={uploadingSlot}
+     setUploadingSlot={setUploadingSlot}
+    />
 
-   <HomeBrandExperienceFields
-    form={brandForm}
-    setForm={setBrandForm}
-    uploadingHero={uploadingBrandHero}
-    setUploadingHero={setUploadingBrandHero}
-   />
+    <HomeShowcaseFields form={showcaseForm} setForm={setShowcaseForm} />
 
-   <Button type="submit" className="cursor-pointer gap-1.5" disabled={loading}>
-    {!loading ? <MdSave className="size-4" aria-hidden /> : null}
-    {loading ? "Kaydediliyor..." : "Kaydet"}
-   </Button>
-  </form>
+    <HomeBrandExperienceFields
+     form={brandForm}
+     setForm={setBrandForm}
+     uploadingHero={uploadingBrandHero}
+     setUploadingHero={setUploadingBrandHero}
+    />
+   </form>
+  </div>
  );
 }

@@ -38,16 +38,24 @@ export async function PUT(request, { params }) {
    return Response.json({ error: "TR ve EN içerik gereklidir." }, { status: 400 });
   }
 
+  const existing = await prisma.contentBlock.findUnique({ where: { key } });
+  const contentTr = existing?.contentTr
+   ? { ...existing.contentTr, ...body.contentTr }
+   : body.contentTr;
+  const contentEn = existing?.contentEn
+   ? { ...existing.contentEn, ...body.contentEn }
+   : body.contentEn;
+
   const block = await prisma.contentBlock.upsert({
    where: { key },
    create: {
     key,
-    contentTr: body.contentTr,
-    contentEn: body.contentEn,
+    contentTr,
+    contentEn,
    },
    update: {
-    contentTr: body.contentTr,
-    contentEn: body.contentEn,
+    contentTr,
+    contentEn,
    },
   });
 

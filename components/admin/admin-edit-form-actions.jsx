@@ -10,7 +10,7 @@ export function AdminEditFormActions({
  deleteTitle = "Silmek istediğinize emin misiniz?",
  deleteDescription = "Bu işlem geri alınamaz.",
  deleteRedirect,
- submitLabel = "Güncelle",
+ submitLabel = "Kaydet",
 }) {
  return (
   <>

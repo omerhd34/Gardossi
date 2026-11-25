@@ -6,37 +6,42 @@ const sections = [
  {
   href: "/admin/content/home",
   title: "Anasayfa",
-  description: "Hero slayt görselleri ve marka deneyimi bölümü.",
+  description: "Hero slaytlar, kategori/öne çıkan açıklamaları ve marka bandı.",
  },
  {
   href: "/admin/content/about",
-  title: "Hakkımızda",
+  title: "Hakkımızda Sayfası",
   description: "Sayfa görseli, hikâye, giriş metni ve içerikler.",
  },
  {
   href: "/admin/content/mission",
-  title: "Misyon & Vizyon",
-  description: "Sayfa görseli, misyon ve vizyon metinleri.",
+  title: "Misyon & Vizyon Sayfası",
+  description: "Sayfa görseli ve misyon/vizyon metinleri.",
  },
  {
   href: "/admin/content/values",
-  title: "Değerlerimiz",
+  title: "Değerlerimiz Sayfası",
   description: "Sayfa görseli ve kurumsal değerler.",
  },
  {
   href: "/admin/content/commitments",
-  title: "Taahhütlerimiz",
+  title: "Taahhütlerimiz Sayfası",
   description: "Sayfa görseli ve kalite taahhütleri.",
  },
  {
   href: "/admin/content/faq",
-  title: "Sıkça Sorulan Sorular",
-  description: "Sayfa görseli, kategoriler, sorular ve yanıtlar.",
+  title: "Sıkça Sorulan Sorular Sayfası",
+  description: "Giriş metni, sayfa görseli, kategoriler, sorular ve yanıtlar.",
  },
  {
   href: "/admin/content/contact",
-  title: "İletişim",
-  description: "Showroom çalışma saatleri.",
+  title: "İletişim Sayfası",
+  description: "Telefon, e-posta, sosyal medya, giriş metni ve saatler.",
+ },
+ {
+  href: "/admin/content/mission-cta",
+  title: "Alt çağrı bandı",
+  description: "Misyon, değerler ve taahhüt sayfalarında ortak band metinleri.",
  },
 ];
 
@@ -50,11 +55,11 @@ export default function AdminContentPage() {
 
    <div className="grid gap-4 md:grid-cols-2">
     {sections.map((section) => (
-     <Card key={section.href}>
-      <CardHeader>
+     <Card key={section.href} className="gap-0">
+      <CardHeader className="pb-0">
        <CardTitle>{section.title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <CardContent className="flex flex-col gap-0 pt-0 sm:flex-row sm:items-end sm:justify-between">
        <p className="text-sm text-muted-foreground">{section.description}</p>
        <EditButton href={section.href} className="shrink-0" />
       </CardContent>

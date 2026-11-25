@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaqAccordionList } from "@/components/faq/faq-accordion-list";
 import { useLocale } from "@/contexts/locale-provider";
+import { ChevronDownIcon } from "@/lib/icons";
 
 export function FaqCategorySection({ category }) {
  const { t } = useLocale();
@@ -33,9 +34,10 @@ export function FaqCategorySection({ category }) {
       <button
        type="button"
        onClick={() => setVisibleCount(items.length)}
-       className="cursor-pointer font-display text-[0.8rem] tracking-[0.12em] text-charcoal/55 uppercase transition-colors hover:text-charcoal"
+       className="inline-flex cursor-pointer items-center gap-1.5 font-display text-[0.8rem] tracking-[0.12em] text-charcoal/55 uppercase transition-colors hover:text-charcoal"
       >
        {t("faq.showMore")}
+       <ChevronDownIcon className="size-3.5 shrink-0" aria-hidden />
       </button>
      </div>
     ) : null}

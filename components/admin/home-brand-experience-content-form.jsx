@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { MdSave } from "react-icons/md";
+import { useId, useState } from "react";
+import { AdminContentFormHeader } from "@/components/admin/admin-content-form-header";
 import { AdminPageHeroImages } from "@/components/admin/admin-page-hero-images";
 import { handleContentSave } from "@/components/admin/content-block-save";
+import { normalizeBrandExperienceTitleLines } from "@/lib/content/brand-experience-title-lines";
 import {
  keepPageHeroImages,
  normalizePageHeroImages,
@@ -17,19 +18,35 @@ import { Textarea } from "@/components/ui/textarea";
 const HOME_BRAND_EXPERIENCE_UPLOAD_FOLDER = "anasayfa-marka-banner";
 
 export function stripBrandLockedFields(content) {
- return keepPageHeroImages(content);
+ const kept = keepPageHeroImages(content);
+ return {
+  ...kept,
+  brandExperienceTitleLines: normalizeBrandExperienceTitleLines(
+   kept.brandExperienceTitleLines
+  ),
+ };
+}
+
+export function normalizeBrandExperienceContent(content) {
+ const withImages = normalizePageHeroImages(content);
+ return {
+  ...withImages,
+  brandExperienceTitleLines: normalizeBrandExperienceTitleLines(
+   withImages.brandExperienceTitleLines
+  ),
+ };
 }
 
 function normalizeInitialForm(initial) {
  return {
   ...initial,
-  contentTr: normalizePageHeroImages(initial.contentTr),
-  contentEn: normalizePageHeroImages(initial.contentEn),
+  contentTr: normalizeBrandExperienceContent(initial.contentTr),
+  contentEn: normalizeBrandExperienceContent(initial.contentEn),
  };
 }
 
 function updateTitleLine(content, index, value) {
- const lines = [...(content.brandExperienceTitleLines ?? ["", "", ""])];
+ const lines = [...(content.brandExperienceTitleLines ?? ["", ""])];
  lines[index] = value;
  return { ...content, brandExperienceTitleLines: lines };
 }
@@ -97,7 +114,7 @@ export function HomeBrandExperienceFields({
 
     <div className="space-y-4">
      <Label className="text-sm font-medium">Başlık satırları</Label>
-     {[0, 1, 2].map((index) => (
+     {[0, 1].map((index) => (
       <div
        key={index}
        className="grid gap-4 rounded-lg border border-border/60 p-4 md:grid-cols-2"
@@ -163,36 +180,44 @@ export function HomeBrandExperienceFields({
  );
 }
 
-export function HomeBrandExperienceContentForm({ initial }) {
+export function HomeBrandExperienceContentForm({
+ initial,
+ title = "Anasayfa Marka Deneyimi",
+}) {
+ const formId = useId();
  const [form, setForm] = useState(() => normalizeInitialForm(initial));
  const [loading, setLoading] = useState(false);
  const [uploadingHero, setUploadingHero] = useState(false);
 
  return (
-  <form
-   className="space-y-6"
-   onSubmit={(event) => {
-    event.preventDefault();
-    handleContentSave(
-     "homeBrandExperience",
-     stripBrandLockedFields(form.contentTr),
-     stripBrandLockedFields(form.contentEn),
-     setLoading,
-     "Anasayfa marka banner"
-    );
-   }}
-  >
-   <HomeBrandExperienceFields
-    form={form}
-    setForm={setForm}
-    uploadingHero={uploadingHero}
-    setUploadingHero={setUploadingHero}
+  <div className="space-y-6">
+   <AdminContentFormHeader
+    formId={formId}
+    title={title}
+    loading={loading}
+    submitDisabled={uploadingHero}
    />
-
-   <Button type="submit" className="cursor-pointer gap-1.5" disabled={loading}>
-    {!loading ? <MdSave className="size-4" aria-hidden /> : null}
-    {loading ? "Kaydediliyor..." : "Kaydet"}
-   </Button>
-  </form>
+   <form
+    id={formId}
+    className="space-y-6"
+    onSubmit={(event) => {
+     event.preventDefault();
+     handleContentSave(
+      "homeBrandExperience",
+      stripBrandLockedFields(form.contentTr),
+      stripBrandLockedFields(form.contentEn),
+      setLoading,
+      "Anasayfa marka banner"
+     );
+    }}
+   >
+    <HomeBrandExperienceFields
+     form={form}
+     setForm={setForm}
+     uploadingHero={uploadingHero}
+     setUploadingHero={setUploadingHero}
+    />
+   </form>
+  </div>
  );
 }
