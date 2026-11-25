@@ -16,7 +16,6 @@ export function FeaturedProductsGrid({ products }) {
     id="one-cikan-urunler"
     title={t("home.featuredTitle")}
     description={t("home.featuredDescription")}
-    action={{ href: "/urunler", label: t("nav.products") }}
     itemCount={products.length}
     slidesPerView={2}
    >
