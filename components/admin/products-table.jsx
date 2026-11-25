@@ -7,6 +7,7 @@ import { AdminMobileList, AdminMobileListItem } from "@/components/admin/admin-m
 import { AdminTablePagination } from "@/components/admin/admin-table-pagination";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { EditButton } from "@/components/admin/edit-button";
+import { FeaturedOrderControl } from "@/components/admin/featured-order-control";
 import { SortableTableHead } from "@/components/admin/sortable-table-head";
 import { sortRows } from "@/lib/admin/table-sort";
 import { useAdminTablePagination } from "@/lib/admin/use-admin-table-pagination";
@@ -323,7 +324,12 @@ export function ProductsTable({ products }) {
           <Badge variant={product.isPublished ? "default" : "secondary"}>
            {product.isPublished ? "Yayında" : "Taslak"}
           </Badge>
-          {product.isFeatured ? <Badge variant="outline">Vitrin</Badge> : null}
+          {product.isFeatured ? (
+           <FeaturedOrderControl
+            productId={product.id}
+            featuredOrder={product.featuredOrder}
+           />
+          ) : null}
          </>
         }
         actions={
@@ -394,7 +400,12 @@ export function ProductsTable({ products }) {
             <Badge variant={product.isPublished ? "default" : "secondary"}>
              {product.isPublished ? "Yayında" : "Taslak"}
             </Badge>
-            {product.isFeatured ? <Badge variant="outline">Vitrin</Badge> : null}
+            {product.isFeatured ? (
+             <FeaturedOrderControl
+              productId={product.id}
+              featuredOrder={product.featuredOrder}
+             />
+            ) : null}
            </div>
           </TableCell>
           <TableCell className="px-4 py-3">
