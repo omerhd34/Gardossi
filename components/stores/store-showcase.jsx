@@ -4,9 +4,8 @@ import Link from "next/link";
 import { SocialIcon } from "@/components/layout/social-icon";
 import { SeoH1 } from "@/components/seo/seo-h1";
 import { FaLocationArrow, FaWhatsapp, Mail, Phone } from "@/lib/icons";
-import { getWhatsAppHref, socialLinks } from "@/lib/site-contact";
 import { useMemo } from "react";
-import { useTranslations } from "@/contexts/locale-provider";
+import { useSiteContact, useTranslations } from "@/contexts/locale-provider";
 import {
  storeMapClass,
  storeMapEmbedClass,
@@ -35,11 +34,12 @@ const contactLinkClassName =
 
 export function StoreShowcase() {
  const { t, locale, dictionary } = useTranslations();
+ const siteContact = useSiteContact();
+ const { whatsappHref, socialLinks } = siteContact;
  const store = useMemo(
-  () => getFlagshipStore(locale, dictionary),
-  [locale, dictionary]
+  () => getFlagshipStore(locale, dictionary, siteContact),
+  [locale, dictionary, siteContact]
  );
- const whatsAppHref = getWhatsAppHref();
 
  return (
   <div className="space-y-10 md:space-y-12">
@@ -90,9 +90,9 @@ export function StoreShowcase() {
           <span>{store.phone}</span>
          </Link>
         ) : null}
-        {whatsAppHref ? (
+        {whatsappHref ? (
          <Link
-          href={whatsAppHref}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           className={contactLinkClassName}

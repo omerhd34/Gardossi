@@ -2,18 +2,11 @@
 
 import Link from "next/link";
 import { FaWhatsapp, Mail, MapPin, Phone } from "@/lib/icons";
-import { flagshipStore } from "@/lib/stores";
+import { getFlagshipStore } from "@/lib/stores";
 import { SocialIcon } from "@/components/layout/social-icon";
-import { useTranslations } from "@/contexts/locale-provider";
+import { useSiteContact, useTranslations } from "@/contexts/locale-provider";
 import { brandFullName } from "@/lib/brand";
-import {
- getSiteWorkingHours,
- getWhatsAppHref,
- siteEmail,
- sitePhone,
- sitePhoneHref,
- socialLinks,
-} from "@/lib/site-contact";
+import { getSiteWorkingHours } from "@/lib/site-contact";
 import { containerPremiumClass } from "@/lib/layout/shared-styles";
 import { cn } from "@/lib/utils";
 
@@ -71,8 +64,10 @@ function FooterLinkList({ links }) {
 
 export function Footer() {
  const { navigation, t, locale, dictionary } = useTranslations();
+ const siteContact = useSiteContact();
  const { footerExploreLinks, footerCategoryLinks } = navigation;
- const whatsAppHref = getWhatsAppHref();
+ const { phone, phoneHref, email, whatsappHref, socialLinks } = siteContact;
+ const store = getFlagshipStore(locale, dictionary, siteContact);
  const year = new Date().getFullYear();
  const workingHours = getSiteWorkingHours(locale, dictionary);
 
@@ -103,18 +98,18 @@ export function Footer() {
        </div>
 
        <div className="flex flex-wrap items-center gap-4 ultra:gap-6 tv:gap-8">
-        {sitePhoneHref ? (
+        {phoneHref ? (
          <Link
-          href={sitePhoneHref}
+          href={phoneHref}
           className={footerContactIconLinkClass}
-          aria-label={t("footer.phone", { phone: sitePhone })}
+          aria-label={t("footer.phone", { phone })}
          >
           <Phone className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
-        {whatsAppHref ? (
+        {whatsappHref ? (
          <Link
-          href={whatsAppHref}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           className={footerContactIconLinkClass}
@@ -123,18 +118,18 @@ export function Footer() {
           <FaWhatsapp className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
-        {siteEmail ? (
+        {email ? (
          <Link
-          href={`mailto:${siteEmail}`}
+          href={`mailto:${email}`}
           className={footerContactIconLinkClass}
-          aria-label={t("footer.email", { email: siteEmail })}
+          aria-label={t("footer.email", { email })}
          >
           <Mail className={footerContactIconClass} aria-hidden />
          </Link>
         ) : null}
-        {flagshipStore.mapUrl ? (
+        {store.mapUrl ? (
          <Link
-          href={flagshipStore.mapUrl}
+          href={store.mapUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={footerContactIconLinkClass}

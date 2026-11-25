@@ -3,12 +3,19 @@
 import { createContext, useCallback, useContext, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { buildNavigation } from "@/lib/i18n/build-navigation";
+import { EMPTY_SITE_CONTACT } from "@/lib/site-contact-resolve";
 import { localeLabels } from "@/lib/i18n/config";
 import { t as translate } from "@/lib/i18n/translate";
 
 const LocaleContext = createContext(null);
 
-export function LocaleProvider({ locale, dictionary, menuGroups = null, children }) {
+export function LocaleProvider({
+ locale,
+ dictionary,
+ menuGroups = null,
+ siteContact = null,
+ children,
+}) {
  const router = useRouter();
 
  const navigation = useMemo(
@@ -36,11 +43,12 @@ export function LocaleProvider({ locale, dictionary, menuGroups = null, children
    locale,
    dictionary,
    navigation,
+   siteContact,
    setLocale,
    t: (key, vars) => translate(dictionary, key, vars),
    localeLabel: localeLabels[locale],
   }),
-  [locale, dictionary, navigation, setLocale]
+  [locale, dictionary, navigation, siteContact, setLocale]
  );
 
  return (
@@ -57,6 +65,11 @@ export function useLocale() {
 }
 
 export function useTranslations() {
- const { t, dictionary, locale, navigation } = useLocale();
- return { t, dictionary, locale, navigation };
+ const { t, dictionary, locale, navigation, siteContact } = useLocale();
+ return { t, dictionary, locale, navigation, siteContact };
+}
+
+export function useSiteContact() {
+ const { siteContact } = useLocale();
+ return siteContact ?? EMPTY_SITE_CONTACT;
 }

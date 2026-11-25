@@ -1,13 +1,7 @@
 "use client";
 
-import { useTranslations } from "@/contexts/locale-provider";
+import { useSiteContact, useTranslations } from "@/contexts/locale-provider";
 import { FaWhatsapp, Mail, Phone } from "@/lib/icons";
-import {
- getWhatsAppHref,
- siteEmail,
- sitePhone,
- sitePhoneHref,
-} from "@/lib/site-contact";
 import Link from "next/link";
 import { containerPremiumClass } from "@/lib/layout/shared-styles";
 import {
@@ -21,8 +15,8 @@ const legalContactIconClass =
 
 export function LegalPageContent({ contentKey }) {
  const { dictionary, t } = useTranslations();
+ const { phone, phoneHref, email, whatsappHref } = useSiteContact();
  const content = dictionary.legal[contentKey];
- const whatsAppHref = getWhatsAppHref();
 
  return (
   <article className="legal-page pb-20 md:pb-28">
@@ -77,18 +71,18 @@ export function LegalPageContent({ contentKey }) {
       {t("legal.shared.contactDescription")}
      </p>
      <div className="mt-6 flex flex-wrap items-center gap-6">
-      {sitePhoneHref ? (
+      {phoneHref ? (
        <Link
-        href={sitePhoneHref}
+        href={phoneHref}
         className={legalContactIconClass}
-        aria-label={t("footer.phone", { phone: sitePhone })}
+        aria-label={t("footer.phone", { phone })}
        >
         <Phone className="size-5 shrink-0" aria-hidden />
        </Link>
       ) : null}
-      {whatsAppHref ? (
+      {whatsappHref ? (
        <Link
-        href={whatsAppHref}
+        href={whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
         className={legalContactIconClass}
@@ -97,11 +91,11 @@ export function LegalPageContent({ contentKey }) {
         <FaWhatsapp className="size-5" aria-hidden />
        </Link>
       ) : null}
-      {siteEmail ? (
+      {email ? (
        <Link
-        href={`mailto:${siteEmail}`}
+        href={`mailto:${email}`}
         className={legalContactIconClass}
-        aria-label={t("footer.email", { email: siteEmail })}
+        aria-label={t("footer.email", { email })}
        >
         <Mail className="size-5 shrink-0" aria-hidden />
        </Link>

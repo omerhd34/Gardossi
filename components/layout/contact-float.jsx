@@ -5,12 +5,11 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowUp as TbArrowUp, Phone as TbPhone } from "lucide-react";
 import { TbBrandWhatsapp } from "react-icons/tb";
-import { useTranslations } from "@/contexts/locale-provider";
+import { useSiteContact, useTranslations } from "@/contexts/locale-provider";
 import {
  contactFloatBtnClass,
  contactFloatIconClass,
 } from "@/lib/layout/header-styles";
-import { getWhatsAppHref, sitePhoneHref } from "@/lib/site-contact";
 
 const FLOAT_ICON_STROKE = 3;
 
@@ -21,8 +20,7 @@ function getScrollThreshold() {
 
 export function ContactFloat() {
  const { t } = useTranslations();
- const whatsAppHref = getWhatsAppHref();
- const phoneHref = sitePhoneHref;
+ const { phoneHref, whatsappHref } = useSiteContact();
  const [showBackToTop, setShowBackToTop] = useState(false);
 
  const updateBackToTopVisibility = useCallback(() => {
@@ -44,10 +42,10 @@ export function ContactFloat() {
   window.scrollTo({ top: 0, behavior: "smooth" });
  };
 
- if (!whatsAppHref && !phoneHref) return null;
+ if (!whatsappHref && !phoneHref) return null;
 
  return (
-  <div className="pointer-events-none fixed inset-x-auto right-5 bottom-(--contact-float-bottom) z-50 ultra:right-8 tv:right-10">
+  <div className="contact-float-shell pointer-events-none fixed inset-x-auto right-5 bottom-(--contact-float-bottom) z-50 ultra:right-8 tv:right-10">
    <div className="pointer-events-auto flex flex-col items-center gap-3 ultra:gap-4 tv:gap-6">
     {showBackToTop ? (
      <button
@@ -76,9 +74,9 @@ export function ContactFloat() {
       />
      </Link>
     ) : null}
-    {whatsAppHref ? (
+    {whatsappHref ? (
      <Link
-      href={whatsAppHref}
+      href={whatsappHref}
       target="_blank"
       rel="noopener noreferrer"
       className={contactFloatBtnClass}
