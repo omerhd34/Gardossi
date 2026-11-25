@@ -3,9 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { MdAdd, MdDeleteOutline, MdSave } from "react-icons/md";
+import { MdAdd, MdDeleteOutline } from "react-icons/md";
 import { AdminFormSelect } from "@/components/admin/admin-form-select";
-import { DeleteButton } from "@/components/admin/delete-button";
 import { VariantImagesEditor } from "@/components/admin/variant-images-editor";
 import { MAX_FEATURED_PRODUCTS } from "@/lib/admin/featured-products";
 import {
@@ -38,8 +37,14 @@ import {
 } from "@/lib/content/product-images";
 import { PRODUCT_IMAGE_DEVICE_IMAGES } from "@/lib/admin/image-specs";
 import { CORNER_CATEGORY_SLUG } from "@/lib/product-category";
+import {
+ Accordion,
+ AccordionContent,
+ AccordionItem,
+ AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,6 +56,7 @@ import {
  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { InfoIcon } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 const emptyDimensionItem = {
  name: "",
@@ -77,6 +83,13 @@ const emptyImage = {
 
 const DEFAULT_IMAGE_DEVICE = "desktop";
 
+function parseRankInput(value, fallback = 1) {
+ if (value === "" || value == null) return fallback;
+ const parsed = Number(value);
+ if (!Number.isFinite(parsed)) return fallback;
+ return Math.max(1, Math.trunc(parsed));
+}
+
 function createEmptyProduct(categoryGroupId = "") {
  return {
   name: "",
@@ -89,14 +102,53 @@ function createEmptyProduct(categoryGroupId = "") {
   heightCm: "",
   cornerStandardSideACm: "",
   cornerStandardSideBCm: "",
-  sortOrder: 0,
+  sortOrder: 1,
   isPublished: true,
   isFeatured: false,
-  featuredOrder: 0,
+  featuredOrder: 1,
   categoryGroupId,
   dimensionItems: [{ ...emptyDimensionItem }],
   images: [],
  };
+}
+
+export const ADMIN_PRODUCT_FORM_ID = "admin-product-form";
+
+const PRODUCT_FORM_SECTION_CLASS =
+ "flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 data-[state=closed]:gap-0";
+
+const PRODUCT_FORM_ACCORDION_SECTIONS = ["general", "dimensions", "images"];
+
+const PRODUCT_FORM_HEADER_TRIGGER_CLASS =
+ "flex h-9 w-full min-w-0 cursor-pointer items-center gap-3 py-0 text-left hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4";
+
+function ProductFormSection({ value, title, headerAction, contentClassName, children }) {
+ return (
+  <AccordionItem value={value} className={PRODUCT_FORM_SECTION_CLASS}>
+   <CardHeader className="grid-cols-1 pb-0">
+    <AccordionTrigger className={PRODUCT_FORM_HEADER_TRIGGER_CLASS}>
+     <CardTitle className="min-w-0 flex-1">{title}</CardTitle>
+     {headerAction ? <div className="shrink-0">{headerAction}</div> : null}
+    </AccordionTrigger>
+   </CardHeader>
+   <AccordionContent className="pb-0">
+    <CardContent className={cn("pt-0", contentClassName)}>{children}</CardContent>
+   </AccordionContent>
+  </AccordionItem>
+ );
+}
+
+function ProductFormSections({ openSections, onOpenSectionsChange, children }) {
+ return (
+  <Accordion
+   type="multiple"
+   value={openSections}
+   onValueChange={onOpenSectionsChange}
+   className="space-y-6"
+  >
+   {children}
+  </Accordion>
+ );
 }
 
 export function ProductForm({
@@ -143,13 +195,24 @@ export function ProductForm({
      isPrimary: Boolean(image.isPrimary),
     })) ?? [],
    categoryGroupId: product.categoryGroupId ?? product.categoryGroup?.id ?? "",
+   sortOrder: Math.max(1, product.sortOrder ?? 1),
+   featuredOrder: product.isFeatured
+    ? Math.max(1, product.featuredOrder ?? 1)
+    : product.featuredOrder ?? 0,
   });
  });
  const [loading, setLoading] = useState(false);
  const [uploading, setUploading] = useState(false);
  const [uploadStatus, setUploadStatus] = useState("");
  const [imageDevice, setImageDevice] = useState(DEFAULT_IMAGE_DEVICE);
+ const [openSections, setOpenSections] = useState(() => ["general"]);
  const fileInputRef = useRef(null);
+
+ function handleOpenSectionsChange(nextValue) {
+  setOpenSections(
+   nextValue.filter((section) => PRODUCT_FORM_ACCORDION_SECTIONS.includes(section))
+  );
+ }
  const canMarkFeatured = Boolean(form.isFeatured) || featuredCount < maxFeatured;
  const selectedCategory = categoryGroups.find((group) => group.id === form.categoryGroupId);
  const isCornerCategory = selectedCategory?.slug === CORNER_CATEGORY_SLUG;
@@ -377,6 +440,8 @@ export function ProductForm({
   try {
    const payload = {
     ...form,
+    sortOrder: parseRankInput(form.sortOrder),
+    featuredOrder: form.isFeatured ? parseRankInput(form.featuredOrder) : 0,
     slug: slugify(form.name),
     images: (form.images ?? []).map((image, index) => {
      const normalized = normalizeProductImage(image);
@@ -412,12 +477,17 @@ export function ProductForm({
  }
 
  return (
-  <form onSubmit={handleSubmit} noValidate className="space-y-6">
-   <Card>
-    <CardHeader>
-     <CardTitle>Genel Bilgiler</CardTitle>
-    </CardHeader>
-    <CardContent className="grid gap-4 md:grid-cols-2">
+  <form
+   id={ADMIN_PRODUCT_FORM_ID}
+   onSubmit={handleSubmit}
+   noValidate
+   className="space-y-6"
+  >
+   <ProductFormSections
+    openSections={openSections}
+    onOpenSectionsChange={handleOpenSectionsChange}
+   >
+    <ProductFormSection value="general" title="Genel Bilgiler" contentClassName="grid gap-4 md:grid-cols-2">
      <div className="space-y-2 md:col-span-2">
       <div className="grid gap-4 md:grid-cols-2">
        <div className="space-y-2">
@@ -454,23 +524,98 @@ export function ProductForm({
        }))}
       />
      </div>
-     <div className="space-y-2">
-      <Label htmlFor="sortOrder">Sıra</Label>
-      <Input
-       id="sortOrder"
-       type="number"
-       value={form.sortOrder ?? 0}
-       onChange={(e) => updateField("sortOrder", Number(e.target.value))}
-      />
+     <div className="flex flex-wrap items-center gap-4 md:col-span-2">
+      <label className="flex cursor-pointer items-center gap-2">
+       <Checkbox
+        checked={form.isPublished !== false}
+        onCheckedChange={(checked) => updateField("isPublished", Boolean(checked))}
+       />
+       <span className="text-sm">Yayında</span>
+      </label>
+      <div className="flex items-center gap-2">
+       <label
+        className={`flex items-center gap-2 ${canMarkFeatured ? "cursor-pointer" : "cursor-default"}`}
+       >
+        <Checkbox
+         checked={Boolean(form.isFeatured)}
+         disabled={!canMarkFeatured}
+         className="disabled:cursor-default"
+         onCheckedChange={(checked) => {
+          if (checked && !canMarkFeatured) {
+           toast.error(`Anasayfa vitrininde en fazla ${maxFeatured} ürün olabilir.`);
+           return;
+          }
+          const isFeatured = Boolean(checked);
+          setForm((current) => ({
+           ...current,
+           isFeatured,
+           featuredOrder: isFeatured ? parseRankInput(current.featuredOrder) : 0,
+          }));
+         }}
+        />
+        <span
+         className={`text-sm ${!canMarkFeatured ? "text-muted-foreground" : ""}`}
+        >
+         Anasayfa vitrininde göster
+        </span>
+       </label>
+       {!canMarkFeatured ? (
+        <TooltipProvider>
+         <Tooltip>
+          <TooltipTrigger asChild>
+           <button
+            type="button"
+            className="inline-flex cursor-pointer items-center rounded-md p-0.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            aria-label="Vitrin limiti hakkında bilgi"
+           >
+            <InfoIcon className="size-4" />
+           </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={6}>
+           Vitrin dolu ({featuredCount}/{maxFeatured}). Yeni vitrin eklemek için mevcut bir
+           vitrin işaretini kaldırın.
+          </TooltipContent>
+         </Tooltip>
+        </TooltipProvider>
+       ) : null}
+      </div>
      </div>
-     <div className="space-y-2">
-      <Label htmlFor="featuredOrder">Vitrin sırası</Label>
-      <Input
-       id="featuredOrder"
-       type="number"
-       value={form.featuredOrder ?? 0}
-       onChange={(e) => updateField("featuredOrder", Number(e.target.value))}
-      />
+     <div
+      className={cn(
+       "grid gap-4 md:col-span-2",
+       form.isFeatured ? "md:grid-cols-2" : "md:grid-cols-1"
+      )}
+     >
+      <div className="space-y-2">
+       <Label htmlFor="sortOrder">Sıra</Label>
+       <Input
+        id="sortOrder"
+        type="number"
+        min={1}
+        value={form.sortOrder ?? 1}
+        onChange={(e) => updateField("sortOrder", parseRankInput(e.target.value))}
+        className="w-full"
+       />
+       <p className="text-xs text-muted-foreground">
+        Seçili kategori listesindeki sıra; aynı numaradaki ürünle yer değişir.
+       </p>
+      </div>
+      {form.isFeatured ? (
+       <div className="space-y-2">
+        <Label htmlFor="featuredOrder">Vitrin sırası</Label>
+        <Input
+         id="featuredOrder"
+         type="number"
+         min={1}
+         value={form.featuredOrder ?? 1}
+         onChange={(e) => updateField("featuredOrder", parseRankInput(e.target.value))}
+         className="w-full"
+        />
+        <p className="text-xs text-muted-foreground">
+         Anasayfa vitrinindeki sıra; aynı numaradaki vitrin ürünüyle yer değişir.
+        </p>
+       </div>
+      ) : null}
      </div>
      <div className="grid gap-4 md:col-span-2 md:grid-cols-2">
       <div className="flex flex-col gap-2">
@@ -494,57 +639,8 @@ export function ProductForm({
        />
       </div>
      </div>
-     <label className="flex cursor-pointer items-center gap-2">
-      <Checkbox
-       checked={form.isPublished !== false}
-       onCheckedChange={(checked) => updateField("isPublished", Boolean(checked))}
-      />
-      <span className="text-sm">Yayında</span>
-     </label>
-     <div className="flex items-center gap-2">
-      <label
-       className={`flex items-center gap-2 ${canMarkFeatured ? "cursor-pointer" : "cursor-default"}`}
-      >
-       <Checkbox
-        checked={Boolean(form.isFeatured)}
-        disabled={!canMarkFeatured}
-        className="disabled:cursor-default"
-        onCheckedChange={(checked) => {
-         if (checked && !canMarkFeatured) {
-          toast.error(`Anasayfa vitrininde en fazla ${maxFeatured} ürün olabilir.`);
-          return;
-         }
-         updateField("isFeatured", Boolean(checked));
-        }}
-       />
-       <span
-        className={`text-sm ${!canMarkFeatured ? "text-muted-foreground" : ""}`}
-       >
-        Anasayfa vitrininde göster
-       </span>
-      </label>
-      {!canMarkFeatured ? (
-       <TooltipProvider>
-        <Tooltip>
-         <TooltipTrigger asChild>
-          <button
-           type="button"
-           className="inline-flex cursor-pointer items-center rounded-md p-0.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-           aria-label="Vitrin limiti hakkında bilgi"
-          >
-           <InfoIcon className="size-4" />
-          </button>
-         </TooltipTrigger>
-         <TooltipContent side="top" sideOffset={6}>
-          Vitrin dolu ({featuredCount}/{maxFeatured}). Yeni vitrin eklemek için mevcut bir
-          vitrin işaretini kaldırın.
-         </TooltipContent>
-        </Tooltip>
-       </TooltipProvider>
-      ) : null}
-     </div>
-    </CardContent>
-   </Card>
+    </ProductFormSection>
+   </ProductFormSections>
 
    {isCornerCategory ? (
     <Card>
@@ -580,12 +676,17 @@ export function ProductForm({
     </Card>
    ) : null}
 
-   <Card>
-    <CardHeader>
-     <CardTitle>Parça Ölçüleri ve Fiyatlar</CardTitle>
-     <CardAction>
+   <ProductFormSections
+    openSections={openSections}
+    onOpenSectionsChange={handleOpenSectionsChange}
+   >
+    <ProductFormSection
+     value="dimensions"
+     title="Parça Ölçüleri ve Fiyatlar"
+     contentClassName="space-y-4"
+     headerAction={
       <div
-       className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm font-medium shadow-sm"
+       className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs font-medium shadow-sm"
        aria-label="Toplam fiyat"
       >
        <span className="text-muted-foreground">Toplam:</span>
@@ -593,9 +694,8 @@ export function ProductForm({
         {totalPrice > 0 ? `${totalPrice.toLocaleString("tr-TR")} TL` : "-"}
        </span>
       </div>
-     </CardAction>
-    </CardHeader>
-    <CardContent className="space-y-4">
+     }
+    >
      <p className="text-xs text-muted-foreground">{ADMIN_PART_FIELDS_HINT}</p>
 
      {form.dimensionItems.map((item, index) => (
@@ -714,14 +814,9 @@ export function ProductForm({
       <MdAdd aria-hidden />
       Parça ekle
      </Button>
-    </CardContent>
-   </Card>
+    </ProductFormSection>
 
-   <Card>
-    <CardHeader>
-     <CardTitle>Görseller</CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-4">
+    <ProductFormSection value="images" title="Görseller" contentClassName="space-y-4">
      <input
       ref={fileInputRef}
       type="file"
@@ -743,50 +838,23 @@ export function ProductForm({
       onSetPrimary={setPrimaryImage}
       onMove={moveImage}
       onRemove={(imageIndex) =>
-       updateImages((images) =>
-        images
-         .map((image, index) =>
-          index === imageIndex ? mergeProductImageDeviceUrl(image, imageDevice, "") : image
-         )
-         .filter((image) => {
-          const normalized = normalizeProductImage(image);
-          return PRODUCT_IMAGE_DEVICES.some((device) => normalized.urls[device]);
-         })
-       )
+       updateImages((images) => images.filter((_, index) => index !== imageIndex))
       }
      />
-    </CardContent>
-   </Card>
+    </ProductFormSection>
+   </ProductFormSections>
 
-   <div className="flex items-center justify-between gap-3">
-    {isEdit ? (
-     <DeleteButton
-      href={`/api/admin/products/${product.id}`}
-      confirmTitle="Ürünü sil?"
-      confirmDescription="Bu ürün kalıcı olarak silinir."
-      redirectTo="/admin/products"
-      iconOnly={false}
-     />
-    ) : (
-     <div />
-    )}
-    <Button
-     type="submit"
-     className="cursor-pointer gap-2"
-     disabled={loading || uploading}
-    >
-     {loading ? (
-      "Kaydediliyor…"
-     ) : isEdit ? (
-      <>
-       <MdSave className="size-4" />
-       Güncelle
-      </>
-     ) : (
-      "Oluştur"
-     )}
-    </Button>
-   </div>
+   {!isEdit ? (
+    <div className="flex justify-end">
+     <Button
+      type="submit"
+      className="cursor-pointer gap-2"
+      disabled={loading || uploading}
+     >
+      {loading ? "Kaydediliyor…" : "Oluştur"}
+     </Button>
+    </div>
+   ) : null}
   </form>
  );
 }

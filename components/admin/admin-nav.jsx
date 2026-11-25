@@ -23,7 +23,25 @@ const links = [
 export function AdminNav() {
  const pathname = usePathname();
  const router = useRouter();
+ const headerRef = useRef(null);
  const navRef = useRef(null);
+
+ useEffect(() => {
+  const header = headerRef.current;
+  if (!header) return;
+
+  const syncNavHeight = () => {
+   document.documentElement.style.setProperty(
+    "--admin-nav-height",
+    `${header.offsetHeight}px`
+   );
+  };
+
+  syncNavHeight();
+  const observer = new ResizeObserver(syncNavHeight);
+  observer.observe(header);
+  return () => observer.disconnect();
+ }, []);
 
  useEffect(() => {
   const activeLink = navRef.current?.querySelector('[aria-current="page"]');
@@ -37,7 +55,10 @@ export function AdminNav() {
  }
 
  return (
-  <header className="sticky top-0 z-50 border-b border-border/70 bg-card/90 shadow-sm backdrop-blur-md">
+  <header
+   ref={headerRef}
+   className="sticky top-0 z-50 border-b border-border/70 bg-card/90 shadow-sm backdrop-blur-md"
+  >
    <div className="mx-auto flex max-w-7xl flex-col gap-2.5 px-4 py-2.5 sm:gap-3 sm:py-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-4">
     <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-3 lg:justify-start">
      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
