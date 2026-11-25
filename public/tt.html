@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<body style="font:28px sans-serif;padding:20px">
+ <div id="o" style="white-space:pre-wrap"></div>
+ <script>
+  var r = [], C = window.CSS && CSS.supports;
+  function t(n, v) { r.push(n + ': ' + (v ? 'VAR' : 'YOK')) }
+  r.push('UA: ' + navigator.userAgent);
+  r.push('Ekran: ' + innerWidth + 'x' + innerHeight + ' dpr ' + devicePixelRatio);
+  t('oklch', C && CSS.supports('color', 'oklch(0.5 0.1 90)'));
+  t('dvh', C && CSS.supports('height', '1dvh'));
+  t('color-mix', C && CSS.supports('color', 'color-mix(in srgb,red,blue)'));
+  t('@layer', typeof CSSLayerBlockRule !== 'undefined');
+  t('@property', !!(window.CSS && CSS.registerProperty));
+  t('ResizeObserver', window.ResizeObserver);
+  t('IntersectionObserver', window.IntersectionObserver);
+  t('structuredClone', window.structuredClone);
+  t('Array.at', [].at);
+  t('URL.canParse', URL.canParse);
+  document.getElementById('o').innerText = r.join('\n');
+ </script>

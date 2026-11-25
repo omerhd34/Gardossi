@@ -79,6 +79,11 @@ export default async function RootLayout({ children }) {
      type="application/ld+json"
      dangerouslySetInnerHTML={{ __html: JSON.stringify(siteOrganizationJsonLd) }}
     />
+    <script
+     dangerouslySetInnerHTML={{
+      __html: `window.onerror=function(m,s,l,c){var d=document.createElement('div');d.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fff;color:#c00;font:20px monospace;padding:10px;white-space:pre-wrap';d.textContent=m+' @'+String(s).split('/').pop()+':'+l;(document.body||document.documentElement).appendChild(d)};`,
+     }}
+    />
    </head>
    <body className="min-h-full flex flex-col font-sans">
     <Suspense fallback={null}>
