@@ -16,6 +16,7 @@ import {
  validateProductImages,
 } from "@/lib/admin/product-payload";
 import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
+import { ADMIN_WRITE_TRANSACTION } from "@/lib/admin/prisma-transaction";
 import { revalidateProductPages } from "@/lib/admin/revalidate-products";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
 
@@ -144,7 +145,7 @@ export async function POST(request) {
     where: { id: created.id },
     include: productInclude,
    });
-  });
+  }, ADMIN_WRITE_TRANSACTION);
 
   revalidateProductPages();
 

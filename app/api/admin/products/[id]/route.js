@@ -22,6 +22,7 @@ import {
  validateProductImages,
 } from "@/lib/admin/product-payload";
 import { parseAdminInt, parseAdminRank } from "@/lib/admin/parse-admin-int";
+import { ADMIN_WRITE_TRANSACTION } from "@/lib/admin/prisma-transaction";
 import { revalidateProductPages } from "@/lib/admin/revalidate-products";
 import { requireAdmin, handleAdminError } from "@/lib/admin/require-admin";
 
@@ -149,6 +150,15 @@ export async function PUT(request, { params }) {
   );
   const requestedSortOrder = parseAdminRank(body.sortOrder, existing.sortOrder || 1);
 
+  const categoryChanged = categoryGroupId !== existing.categoryGroupId;
+  const sortOrderChanged = requestedSortOrder !== Math.max(1, existing.sortOrder || 1);
+  const featuredAdded = isFeatured && !existing.isFeatured;
+  const featuredRemoved = existing.isFeatured && !isFeatured;
+  const featuredOrderChanged =
+   isFeatured &&
+   (featuredAdded ||
+    requestedFeaturedOrder !== Math.max(1, existing.featuredOrder || 1));
+
   const product = await prisma.$transaction(async (tx) => {
    await tx.image.deleteMany({ where: { productId: id } });
 
@@ -167,27 +177,34 @@ export async function PUT(request, { params }) {
      depthCm: body.depthCm != null && body.depthCm !== "" ? Number(body.depthCm) : null,
      heightCm: body.heightCm != null && body.heightCm !== "" ? Number(body.heightCm) : null,
      ...cornerStandard,
-     sortOrder: requestedSortOrder,
+     sortOrder:
+      sortOrderChanged || categoryChanged
+       ? requestedSortOrder
+       : Math.max(1, existing.sortOrder || 1),
      isPublished: body.isPublished ?? existing.isPublished,
      isFeatured,
-     featuredOrder: isFeatured ? requestedFeaturedOrder : 0,
+     featuredOrder: isFeatured
+      ? featuredOrderChanged || featuredAdded
+       ? requestedFeaturedOrder
+       : Math.max(1, existing.featuredOrder || 1)
+      : 0,
      categoryGroupId,
      sku: media.sku,
      images: media.images,
     },
    });
 
-   if (isFeatured) {
+   if (featuredOrderChanged) {
     await assignFeaturedOrder(tx, id, requestedFeaturedOrder);
-   } else if (existing.isFeatured) {
+   } else if (featuredRemoved) {
     await compactFeaturedOrders(tx);
    }
 
-   await assignCategoryProductOrder(tx, id, categoryGroupId, requestedSortOrder);
-   if (
-    existing.categoryGroupId &&
-    existing.categoryGroupId !== categoryGroupId
-   ) {
+   if (sortOrderChanged || categoryChanged) {
+    await assignCategoryProductOrder(tx, id, categoryGroupId, requestedSortOrder);
+   }
+
+   if (categoryChanged && existing.categoryGroupId) {
     await compactCategoryProductOrders(tx, existing.categoryGroupId);
    }
 
@@ -195,7 +212,7 @@ export async function PUT(request, { params }) {
     where: { id },
     include: productInclude,
    });
-  });
+  }, ADMIN_WRITE_TRANSACTION);
 
   revalidateProductPages();
 
@@ -227,8 +244,11 @@ export async function PATCH(request, { params }) {
    );
   }
 
-  const finalOrder = await prisma.$transaction(async (tx) =>
-   assignFeaturedOrder(tx, id, body.featuredOrder)
+  const requestedOrder = parseAdminRank(body.featuredOrder, existing.featuredOrder || 1);
+
+  const finalOrder = await prisma.$transaction(
+   async (tx) => assignFeaturedOrder(tx, id, requestedOrder),
+   ADMIN_WRITE_TRANSACTION
   );
 
   if (finalOrder == null) {
@@ -264,7 +284,7 @@ export async function DELETE(_request, { params }) {
    if (existing?.categoryGroupId) {
     await compactCategoryProductOrders(tx, existing.categoryGroupId);
    }
-  });
+  }, ADMIN_WRITE_TRANSACTION);
   revalidateProductPages();
   return Response.json({ ok: true });
  } catch (error) {
