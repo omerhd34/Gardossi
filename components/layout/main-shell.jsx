@@ -9,7 +9,12 @@ export function MainShell({ children }) {
  const isAdmin = pathname?.startsWith("/admin");
 
  return (
-  <main className={cn("relative z-0 flex flex-1 flex-col", !isHome && !isAdmin && "site-inner")}>
+  <main
+   className={cn(
+    "relative z-0 flex min-h-0 flex-1 flex-col",
+    !isHome && !isAdmin && "site-inner"
+   )}
+  >
    {children}
   </main>
  );

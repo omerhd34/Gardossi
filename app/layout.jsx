@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { Montserrat, Poppins } from "next/font/google";
+import { SiteNavigationProgress } from "@/components/navigation/site-navigation-progress";
 import "@/app/styles/base.css";
 import { MainShell } from "@/components/layout/main-shell";
 import { SiteChrome } from "@/components/layout/site-chrome";
@@ -56,10 +58,10 @@ export async function generateMetadata() {
 export const revalidate = 0;
 
 export default async function RootLayout({ children }) {
- const { locale, dictionary } = await getServerDictionary();
+ const { locale, dictionary, siteContact } = await getServerDictionary();
  const menuGroups = await getCategoryGroupsForMenu(locale);
  const siteWebSiteJsonLd = buildWebSiteJsonLd();
- const siteOrganizationJsonLd = buildOrganizationJsonLd(locale);
+ const siteOrganizationJsonLd = buildOrganizationJsonLd(locale, siteContact);
 
  return (
   <html
@@ -79,7 +81,15 @@ export default async function RootLayout({ children }) {
     />
    </head>
    <body className="min-h-full flex flex-col font-sans">
-    <LocaleProvider locale={locale} dictionary={dictionary} menuGroups={menuGroups}>
+    <Suspense fallback={null}>
+     <SiteNavigationProgress />
+    </Suspense>
+    <LocaleProvider
+     locale={locale}
+     dictionary={dictionary}
+     menuGroups={menuGroups}
+     siteContact={siteContact}
+    >
      <FavoritesProvider>
       <MainShell>{children}</MainShell>
       <SiteChrome />
